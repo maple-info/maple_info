@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ character_info.basic_info.character_name }}의 정보</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        .section {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: white;
+            margin-bottom: 20px;
+        }
+        .stat {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #eaeaea;
+            border-radius: 4px;
+            background-color: #f1f1f1;
+        }
+        .stat-name {
+            font-weight: bold;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 500px;
+            overflow-y: auto;
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ character_info.basic_info.character_name }} 정보</h1>
+    
+    <!-- 기본 정보 -->
+    <div class="section">
+        <h2>기본 정보</h2>
+        <ul>
+            <li>레벨: {{ character_info.basic_info.character_level|default:"정보 없음" }}</li>
+            <li>직업: {{ character_info.basic_info.character_class|default:"정보 없음" }}</li>
+            <li>서버: {{ character_info.basic_info.world_name|default:"정보 없음" }}</li>
+        </ul>
+    </div>
+
+    <!-- 주요 스탯 -->
+    <div class="section">
+        <h3>주요 스탯</h3>
+        <ul>
+            <li>STR: {{ final_stats.STR|default:"N/A" }}</li>
+            <li>DEX: {{ final_stats.DEX|default:"N/A" }}</li>
+            <li>INT: {{ final_stats.INT|default:"N/A" }}</li>
+            <li>LUK: {{ final_stats.LUK|default:"N/A" }}</li>
+        </ul>
+    </div>
+
+    <!-- 전투 스탯 -->
+    <div class="section">
+        <h3>전투 스탯</h3>
+        <ul>
+            <li>전투력: {{ final_stats.전투력|default:"N/A" }}</li>
+            <li>최소 공격력: {{ final_stats.최소_스탯공격력|default:"N/A" }}</li>
+            <li>최대 공격력: {{ final_stats.최대_스탯공격력|default:"N/A" }}</li>
+            <li>데미지: {{ final_stats.데미지|default:"N/A" }}%</li>
+            <li>보스 몬스터 데미지: {{ final_stats.보스_몬스터_데미지|default:"N/A" }}%</li>
+            <li>방어율 무시: {{ final_stats.방어율_무시|default:"N/A" }}%</li>
+            <li>크리티컬 확률: {{ final_stats.크리티컬_확률|default:"N/A" }}%</li>
+            <li>크리티컬 데미지: {{ final_stats.크리티컬_데미지|default:"N/A" }}%</li>
+        </ul>
+    </div>
+
+    <!-- 장비 정보 -->
+    <div class="section">
+        <h2>장비 정보</h2>
+        <h3>장착된 아이템</h3>
+        <ul>
+            {% for item in equipment_data.equipped_items %}
+                <li>
+                    <img src="{{ item.icon }}" alt="{{ item.name }}" width="50" height="50">
+                    <strong>{{ item.name }}</strong> ({{ item.part }})
+                    <br>
+                    설명: {{ item.description }}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h3>프리셋 장비</h3>
+        {% for preset in equipment_data.presets %}
+            <h4>{{ preset.preset_name }}</h4>
+            <ul>
+                {% for item in preset.items %}
+                    <li>
+                        <img src="{{ item.icon }}" alt="{{ item.name }}" width="50" height="50">
+                        <strong>{{ item.name }}</strong> ({{ item.part }})
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    </div>
+
+    <!-- 능력치 정보 -->
+    <div class="section">
+        <h2>어빌리티 정보</h2>
+        <h3>기본 어빌리티</h3>
+        <ul>
+            <li>등급: {{ ability_data.grade }}</li>
+            {% for ability in ability_data.abilities %}
+                <li>번호: {{ ability.no }}, 등급: {{ ability.grade }}, 값: {{ ability.value }}</li>
+            {% endfor %}
+        </ul>
+
+        <h3>프리셋 어빌리티</h3>
+        {% for preset in ability_presets %}
+            {% if preset %}
+                <h4>프리셋 {{ forloop.counter }}</h4>
+                <ul>
+                    <li>등급: {{ preset.preset_grade }}</li>
+                    {% for ability in preset.abilities %}
+                        <li>번호: {{ ability.no }}, 등급: {{ ability.grade }}, 값: {{ ability.value }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- 세트 효과 정보 -->
+    <div class="section">
+        <h3>세트 효과 정보</h3>
+        <pre>{{ character_info.set_effect_info|default:"정보 없음" }}</pre>
+    </div>
+
+    <!-- 링크 스킬 정보 -->
+    <div class="section">
+        <h3>링크 스킬 정보</h3>
+        <pre>{{ character_info.link_skill_info|default:"정보 없음" }}</pre>
+    </div>
+
+    <!-- 하이퍼 스탯 정보 -->
+    <div class="section">
+        <h3>하이퍼 스탯 정보</h3>
+        <pre>{{ character_info.hyper_stat_info|default:"정보 없음" }}</pre>
+    </div>
+
+    <!-- 심볼 장비 정보 -->
+    <div class="section">
+        <h3>심볼 장비 정보</h3>
+        <pre>{{ character_info.symbol_equipment_info|default:"정보 없음" }}</pre>
+    </div>
+
+    <!-- 헥사 매트릭스 스탯 정보 -->
+    <div class="section">
+        <h3>헥사 매트릭스 스탯 정보</h3>
+        <pre>{{ character_info.hexamatrix_stat_info|default:"정보 없음" }}</pre>
+    </div>
+</body>
+</html>
