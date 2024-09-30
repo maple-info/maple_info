@@ -1,24 +1,3 @@
-<<<<<<< HEAD
-<h2>"{{ query }}" 검색 결과</h2>
-{% if character_info.basic_info %}
-  <div class="character-info">
-    <h3>
-      <a href="{% url 'character_info' character_name=character_info.basic_info.character_name %}">
-        {{ character_info.basic_info.character_name }}
-      </a>
-    </h3>
-    <ul>
-      <li>레벨: {{ character_info.basic_info.character_level }}</li>
-      <li>직업: {{ character_info.basic_info.character_class }}</li>
-      <li>서버: {{ character_info.basic_info.world_name }}</li>
-      <li>성별: {{ character_info.basic_info.character_gender }}</li>
-      <li>인기도: {{ character_info.popularity_info.popularity }}</li>
-      <li>길드: {% if character_info.basic_info.character_guild_name %}{{ character_info.basic_info.character_guild_name }}{% else %}X{% endif %}</li>
-    </ul>
-  </div>
-{% else %}
-  <p>검색 결과가 없습니다...!</p>
-=======
 <h2>"{{ query }}" 검색 결과</h2>
 {% if character_info.basic_info %}
   <div class="character-info">
@@ -38,5 +17,4 @@
   </div>
 {% else %}
   <p>검색 결과가 없습니다.</p>
->>>>>>> ability
 {% endif %}
