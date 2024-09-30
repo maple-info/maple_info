@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-from django.db import models
-
-# Create your models here.
-=======
 from django.db import models
 
 class Character(models.Model):
@@ -27,4 +22,3 @@ class Character(models.Model):
 
     def __str__(self):
         return self.name
->>>>>>> ability
