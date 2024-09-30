@@ -2,7 +2,7 @@
 {% if character_info.basic_info %}
   <div class="character-info">
     <h3>
-      <a href="{% url 'character_info:info' character_name=query %}">{{ query }} 상세 정보</a>
+      <a href="{% url 'character_info:info' character_name=query %}">{{ query }} 상세 정보.</a>
         {{ character_info.basic_info.character_name }}
       </a>
     </h3>
