@@ -97,3 +97,347 @@ INFO 2024-09-29 11:08:23,427 basehttp 18292 37336 "GET /api/search/?q=%EB%AC%B4%
 INFO 2024-09-29 11:08:25,533 basehttp 18292 37336 "GET /api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 3632
 INFO 2024-09-29 11:08:36,604 basehttp 18292 37336 "GET /api/search/?q=%EC%A0%84%EB%91%90%EA%B4%91%EB%B6%80%ED%95%98 HTTP/1.1" 200 404
 INFO 2024-09-29 11:08:38,879 basehttp 18292 37336 "GET /api/character/%EC%A0%84%EB%91%90%EA%B4%91%EB%B6%80%ED%95%98/ HTTP/1.1" 200 3625
+INFO 2024-09-30 18:19:27,111 autoreload 2980 3356 Watching for file changes with StatReloader
+INFO 2024-09-30 18:19:28,798 basehttp 2980 11036 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 18:19:33,202 basehttp 2980 11036 "GET /api/search/?q=%EC%95%84%EB%8D%B8 HTTP/1.1" 200 405
+INFO 2024-09-30 18:19:34,429 basehttp 2980 11036 "GET /character/api/character/%EC%95%84%EB%8D%B8/ HTTP/1.1" 200 68193
+INFO 2024-09-30 18:21:09,363 autoreload 29948 12820 Watching for file changes with StatReloader
+INFO 2024-09-30 18:22:51,609 autoreload 29948 12820 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 18:22:52,215 autoreload 27348 29832 Watching for file changes with StatReloader
+INFO 2024-09-30 18:22:57,976 autoreload 27348 29832 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 18:22:58,648 autoreload 6736 29808 Watching for file changes with StatReloader
+INFO 2024-09-30 19:50:41,922 autoreload 10268 24732 Watching for file changes with StatReloader
+INFO 2024-09-30 19:50:43,069 basehttp 10268 15728 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 19:50:45,318 basehttp 10268 15728 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-09-30 19:50:53,478 basehttp 10268 15728 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 57682
+INFO 2024-09-30 19:54:16,656 autoreload 10268 24732 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 19:54:17,279 autoreload 11828 31232 Watching for file changes with StatReloader
+INFO 2024-09-30 19:54:18,775 autoreload 11828 31232 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 19:54:19,323 autoreload 30908 4288 Watching for file changes with StatReloader
+INFO 2024-09-30 19:54:20,914 autoreload 30908 4288 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 19:54:21,576 autoreload 7676 14228 Watching for file changes with StatReloader
+INFO 2024-09-30 19:54:25,004 autoreload 7676 14228 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 19:54:25,579 autoreload 31288 22204 Watching for file changes with StatReloader
+INFO 2024-09-30 19:54:27,127 autoreload 31288 22204 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 19:54:27,693 autoreload 18984 22072 Watching for file changes with StatReloader
+INFO 2024-09-30 19:54:39,544 autoreload 18984 22072 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 19:54:40,119 autoreload 32740 12928 Watching for file changes with StatReloader
+INFO 2024-09-30 19:54:43,760 autoreload 32740 12928 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 19:54:44,325 autoreload 21304 15528 Watching for file changes with StatReloader
+INFO 2024-09-30 19:54:50,871 autoreload 21304 15528 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 19:54:51,446 autoreload 32032 16448 Watching for file changes with StatReloader
+INFO 2024-09-30 19:55:01,270 autoreload 32032 16448 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 19:55:01,949 autoreload 18312 30716 Watching for file changes with StatReloader
+INFO 2024-09-30 20:24:06,020 autoreload 27904 4600 Watching for file changes with StatReloader
+INFO 2024-09-30 20:24:07,197 basehttp 27904 26032 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 20:24:09,768 basehttp 27904 26032 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-09-30 20:24:12,129 basehttp 27904 26032 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 28081
+INFO 2024-09-30 20:27:01,964 basehttp 27904 26032 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-09-30 20:27:03,376 basehttp 27904 26032 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 26895
+INFO 2024-09-30 20:31:27,848 autoreload 2632 30828 Watching for file changes with StatReloader
+INFO 2024-09-30 20:31:34,883 basehttp 2632 19968 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 20:31:36,856 basehttp 2632 19968 "GET /api/search/?q=%EC%95%84%EB%8D%B8 HTTP/1.1" 200 405
+INFO 2024-09-30 20:31:38,042 basehttp 2632 19968 "GET /character/api/character/%EC%95%84%EB%8D%B8/ HTTP/1.1" 200 30563
+INFO 2024-09-30 20:34:16,666 autoreload 30352 4480 Watching for file changes with StatReloader
+INFO 2024-09-30 20:34:18,667 basehttp 30352 29236 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 20:34:21,654 basehttp 30352 29236 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+ERROR 2024-09-30 20:34:23,907 log 30352 29236 Internal Server Error: /character/api/character/π´¥Á«‹Ω∫≈Õ/
+Traceback (most recent call last):
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\base.py", line 505, in parse
+    compile_func = self.tags[command]
+KeyError: 'static'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\asgiref\sync.py", line 277, in __call__
+    return call_result.result()
+  File "C:\Users\ccg70\anaconda3\lib\concurrent\futures\_base.py", line 451, in result
+    return self.__get_result()
+  File "C:\Users\ccg70\anaconda3\lib\concurrent\futures\_base.py", line 403, in __get_result
+    raise self._exception
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\asgiref\sync.py", line 353, in main_wrap
+    result = await self.awaitable(*args, **kwargs)
+  File "C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py", line 198, in character_info_view
+    return render(request, 'character_info/info.html', context)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\backends\django.py", line 33, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\engine.py", line 175, in get_template
+    template, origin = self.find_template(template_name)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\engine.py", line 157, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\base.py", line 200, in compile_nodelist
+    return parser.parse()
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\base.py", line 507, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\base.py", line 568, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 7: 'static'. Did you forget to register or load this tag?
+ERROR 2024-09-30 20:34:23,920 basehttp 30352 29236 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 500 217314
+INFO 2024-09-30 20:34:37,576 autoreload 3296 15212 Watching for file changes with StatReloader
+INFO 2024-09-30 20:34:40,348 basehttp 3296 17608 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 20:34:42,155 basehttp 3296 17608 "GET /api/search/?q=%EC%95%84%EB%8D%B8 HTTP/1.1" 200 405
+ERROR 2024-09-30 20:34:44,278 log 3296 17608 Internal Server Error: /character/api/character/æ∆µ®/
+Traceback (most recent call last):
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\asgiref\sync.py", line 277, in __call__
+    return call_result.result()
+  File "C:\Users\ccg70\anaconda3\lib\concurrent\futures\_base.py", line 451, in result
+    return self.__get_result()
+  File "C:\Users\ccg70\anaconda3\lib\concurrent\futures\_base.py", line 403, in __get_result
+    raise self._exception
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\asgiref\sync.py", line 353, in main_wrap
+    result = await self.awaitable(*args, **kwargs)
+  File "C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py", line 198, in character_info_view
+    return render(request, 'character_info/info.html', context)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\backends\django.py", line 33, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\engine.py", line 175, in get_template
+    template, origin = self.find_template(template_name)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\engine.py", line 157, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\base.py", line 200, in compile_nodelist
+    return parser.parse()
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\base.py", line 513, in parse
+    raise self.error(token, e)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\base.py", line 511, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\defaulttags.py", line 853, in do_for
+    nodelist_loop = parser.parse(
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\base.py", line 484, in parse
+    raise self.error(token, e)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\base.py", line 482, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\base.py", line 600, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\base.py", line 698, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\template\base.py", line 606, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'replace'
+ERROR 2024-09-30 20:34:44,286 basehttp 3296 17608 "GET /character/api/character/%EC%95%84%EB%8D%B8/ HTTP/1.1" 500 265449
+INFO 2024-09-30 20:36:22,469 autoreload 30624 28736 Watching for file changes with StatReloader
+INFO 2024-09-30 20:36:24,835 basehttp 30624 9092 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 20:36:28,077 basehttp 30624 9092 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-09-30 20:36:29,506 basehttp 30624 9092 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 26861
+INFO 2024-09-30 20:41:50,266 autoreload 30624 28736 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 20:41:50,892 autoreload 20176 29904 Watching for file changes with StatReloader
+INFO 2024-09-30 20:42:54,786 autoreload 20176 29904 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 20:42:55,392 autoreload 20320 2956 Watching for file changes with StatReloader
+INFO 2024-09-30 20:43:20,903 autoreload 20320 2956 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 20:43:21,571 autoreload 31644 7196 Watching for file changes with StatReloader
+INFO 2024-09-30 20:44:11,002 autoreload 31644 7196 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 20:44:11,672 autoreload 29408 15700 Watching for file changes with StatReloader
+INFO 2024-09-30 20:44:22,574 basehttp 29408 14444 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 20:44:24,629 basehttp 29408 14444 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-09-30 20:44:25,832 basehttp 29408 14444 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 26861
+INFO 2024-09-30 20:46:15,474 autoreload 28812 21276 Watching for file changes with StatReloader
+INFO 2024-09-30 20:46:16,987 basehttp 28812 7532 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 20:46:20,123 basehttp 28812 7532 "GET /api/search/?q=%EC%95%84%EB%8D%B8 HTTP/1.1" 200 405
+INFO 2024-09-30 20:46:21,235 basehttp 28812 7532 "GET /character/api/character/%EC%95%84%EB%8D%B8/ HTTP/1.1" 200 30529
+INFO 2024-09-30 20:47:35,347 autoreload 15568 28852 Watching for file changes with StatReloader
+INFO 2024-09-30 20:47:36,753 basehttp 15568 31888 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 20:47:40,427 basehttp 15568 31888 "GET /api/search/?q=%EC%95%84%EB%8D%B8 HTTP/1.1" 200 405
+INFO 2024-09-30 20:47:41,549 basehttp 15568 31888 "GET /character/api/character/%EC%95%84%EB%8D%B8/ HTTP/1.1" 200 30530
+INFO 2024-09-30 20:49:57,733 autoreload 32128 22992 Watching for file changes with StatReloader
+INFO 2024-09-30 20:50:04,305 basehttp 32128 31164 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 20:50:10,118 basehttp 32128 31164 "GET /api/search/?q=%EC%95%84%EB%8D%B8 HTTP/1.1" 200 405
+INFO 2024-09-30 20:50:12,044 basehttp 32128 31164 "GET /character/api/character/%EC%95%84%EB%8D%B8/ HTTP/1.1" 200 30534
+INFO 2024-09-30 20:51:50,956 autoreload 32128 22992 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 20:51:51,576 autoreload 19228 31172 Watching for file changes with StatReloader
+INFO 2024-09-30 20:51:56,266 autoreload 19228 31172 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 20:51:56,906 autoreload 26296 23576 Watching for file changes with StatReloader
+INFO 2024-09-30 20:52:02,620 autoreload 26296 23576 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 20:52:03,233 autoreload 2632 28996 Watching for file changes with StatReloader
+INFO 2024-09-30 20:52:05,875 autoreload 2632 28996 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 20:52:06,453 autoreload 30756 13104 Watching for file changes with StatReloader
+INFO 2024-09-30 20:52:07,717 basehttp 30756 18880 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 20:52:09,937 basehttp 30756 18880 "GET /api/search/?q=%EC%95%84%EB%8D%B8 HTTP/1.1" 200 405
+INFO 2024-09-30 20:52:11,451 basehttp 30756 18880 "GET /character/api/character/%EC%95%84%EB%8D%B8/ HTTP/1.1" 200 30534
+INFO 2024-09-30 20:55:12,046 autoreload 30756 13104 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 20:55:12,649 autoreload 27200 30444 Watching for file changes with StatReloader
+INFO 2024-09-30 20:59:34,773 autoreload 28424 21280 Watching for file changes with StatReloader
+INFO 2024-09-30 20:59:35,896 basehttp 28424 28248 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 20:59:37,883 basehttp 28424 28248 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-09-30 20:59:39,332 basehttp 28424 28248 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 26866
+INFO 2024-09-30 21:00:59,072 basehttp 28424 28248 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 21:01:02,749 basehttp 28424 28248 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-09-30 21:01:04,132 basehttp 28424 28248 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 26919
+INFO 2024-09-30 21:04:37,327 autoreload 28424 21280 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 21:04:37,988 autoreload 32200 4640 Watching for file changes with StatReloader
+INFO 2024-09-30 21:05:02,466 basehttp 32200 21868 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 21:05:04,626 basehttp 32200 21868 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-09-30 21:05:06,061 basehttp 32200 21868 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 26932
+INFO 2024-09-30 23:51:12,649 autoreload 28100 15012 Watching for file changes with StatReloader
+INFO 2024-09-30 23:51:13,961 basehttp 28100 29360 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 23:51:15,796 basehttp 28100 29360 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-09-30 23:51:17,047 basehttp 28100 29360 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 26930
+INFO 2024-09-30 23:53:15,870 autoreload 28100 15012 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 23:53:16,431 autoreload 25136 23640 Watching for file changes with StatReloader
+INFO 2024-09-30 23:53:17,681 basehttp 25136 30032 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 23:53:22,864 basehttp 25136 30032 "GET /api/search/?q=%EC%95%84%EB%8D%B8 HTTP/1.1" 200 405
+INFO 2024-09-30 23:53:24,223 basehttp 25136 30032 "GET /character/api/character/%EC%95%84%EB%8D%B8/ HTTP/1.1" 200 30600
+INFO 2024-09-30 23:54:00,746 autoreload 25136 23640 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 23:54:01,458 autoreload 12588 32676 Watching for file changes with StatReloader
+INFO 2024-09-30 23:55:03,550 basehttp 12588 31308 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 23:55:05,736 basehttp 12588 31308 "GET /api/search/?q=%EC%95%84%EB%8D%B8 HTTP/1.1" 200 405
+INFO 2024-09-30 23:55:07,006 basehttp 12588 31308 "GET /character/api/character/%EC%95%84%EB%8D%B8/ HTTP/1.1" 200 30537
+INFO 2024-09-30 23:56:48,690 autoreload 10364 17120 Watching for file changes with StatReloader
+INFO 2024-09-30 23:56:50,201 basehttp 10364 32656 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 23:56:51,937 basehttp 10364 32656 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-09-30 23:56:53,041 basehttp 10364 32656 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 26930
+INFO 2024-09-30 23:59:16,792 autoreload 10364 17120 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-09-30 23:59:17,400 autoreload 19184 24684 Watching for file changes with StatReloader
+INFO 2024-09-30 23:59:37,303 basehttp 19184 14808 "GET / HTTP/1.1" 200 480
+INFO 2024-09-30 23:59:39,423 basehttp 19184 14808 "GET /api/search/?q=%EC%95%84%EB%8D%B8 HTTP/1.1" 200 405
+INFO 2024-09-30 23:59:40,906 basehttp 19184 14808 "GET /character/api/character/%EC%95%84%EB%8D%B8/ HTTP/1.1" 200 30494
+INFO 2024-10-01 00:02:31,139 basehttp 19184 14808 "GET / HTTP/1.1" 200 480
+INFO 2024-10-01 00:02:33,627 basehttp 19184 14808 "GET /api/search/?q=%EC%95%84%EB%8D%B8 HTTP/1.1" 200 405
+INFO 2024-10-01 00:02:34,793 basehttp 19184 14808 "GET /character/api/character/%EC%95%84%EB%8D%B8/ HTTP/1.1" 200 30494
+INFO 2024-10-01 00:03:04,516 autoreload 19184 24684 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:03:05,328 autoreload 23408 21532 Watching for file changes with StatReloader
+INFO 2024-10-01 00:03:27,533 autoreload 23408 21532 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:03:28,063 autoreload 4620 25516 Watching for file changes with StatReloader
+INFO 2024-10-01 00:03:44,149 autoreload 4620 25516 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:03:44,677 autoreload 18284 31164 Watching for file changes with StatReloader
+INFO 2024-10-01 00:06:46,417 autoreload 18284 31164 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:06:46,978 autoreload 15336 32224 Watching for file changes with StatReloader
+INFO 2024-10-01 00:06:51,657 autoreload 15336 32224 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:06:52,203 autoreload 2148 23560 Watching for file changes with StatReloader
+INFO 2024-10-01 00:06:54,782 autoreload 2148 23560 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:06:55,362 autoreload 21548 22816 Watching for file changes with StatReloader
+INFO 2024-10-01 00:06:56,838 autoreload 21548 22816 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:06:57,359 autoreload 25452 27796 Watching for file changes with StatReloader
+INFO 2024-10-01 00:06:59,768 basehttp 25452 31416 "GET / HTTP/1.1" 200 480
+INFO 2024-10-01 00:07:01,645 basehttp 25452 31416 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+ERROR 2024-10-01 00:07:03,364 log 25452 31416 Internal Server Error: /character/api/character/π´¥Á«‹Ω∫≈Õ/
+Traceback (most recent call last):
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\asgiref\sync.py", line 277, in __call__
+    return call_result.result()
+  File "C:\Users\ccg70\anaconda3\lib\concurrent\futures\_base.py", line 451, in result
+    return self.__get_result()
+  File "C:\Users\ccg70\anaconda3\lib\concurrent\futures\_base.py", line 403, in __get_result
+    raise self._exception
+  File "C:\Users\ccg70\anaconda3\lib\site-packages\asgiref\sync.py", line 353, in main_wrap
+    result = await self.awaitable(*args, **kwargs)
+  File "C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py", line 197, in character_info_view
+    print(context('equipment_data'))
+TypeError: 'dict' object is not callable
+ERROR 2024-10-01 00:07:03,369 basehttp 25452 31416 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 500 97991
+INFO 2024-10-01 00:07:54,208 autoreload 25452 27796 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:07:54,996 autoreload 2696 11772 Watching for file changes with StatReloader
+INFO 2024-10-01 00:07:59,734 autoreload 2696 11772 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:08:00,316 autoreload 10820 31724 Watching for file changes with StatReloader
+INFO 2024-10-01 00:08:02,915 autoreload 10820 31724 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:08:03,496 autoreload 31508 24824 Watching for file changes with StatReloader
+INFO 2024-10-01 00:08:04,665 basehttp 31508 20376 "GET / HTTP/1.1" 200 480
+INFO 2024-10-01 00:08:06,374 basehttp 31508 20376 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-10-01 00:08:07,610 basehttp 31508 20376 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 26824
+INFO 2024-10-01 00:09:24,064 autoreload 31508 24824 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:09:24,591 autoreload 24452 29668 Watching for file changes with StatReloader
+INFO 2024-10-01 00:09:37,649 autoreload 24452 29668 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:09:38,342 autoreload 18656 25984 Watching for file changes with StatReloader
+INFO 2024-10-01 00:09:44,036 basehttp 18656 28624 "GET / HTTP/1.1" 200 480
+INFO 2024-10-01 00:09:48,380 basehttp 18656 28624 "GET /api/search/?q=%EC%95%84%EB%8D%B8 HTTP/1.1" 200 405
+INFO 2024-10-01 00:09:49,801 basehttp 18656 28624 "GET /character/api/character/%EC%95%84%EB%8D%B8/ HTTP/1.1" 200 30494
+INFO 2024-10-01 00:10:22,625 autoreload 18656 25984 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:10:23,161 autoreload 3988 31348 Watching for file changes with StatReloader
+INFO 2024-10-01 00:10:24,416 basehttp 3988 18312 "GET / HTTP/1.1" 200 480
+INFO 2024-10-01 00:10:27,314 basehttp 3988 18312 "GET /api/search/?q=%EC%95%84%EB%8D%B8 HTTP/1.1" 200 405
+INFO 2024-10-01 00:10:28,530 basehttp 3988 18312 "GET /character/api/character/%EC%95%84%EB%8D%B8/ HTTP/1.1" 200 30494
+INFO 2024-10-01 00:11:16,709 autoreload 3988 31348 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:11:17,266 autoreload 4352 24232 Watching for file changes with StatReloader
+INFO 2024-10-01 00:11:23,982 autoreload 4352 24232 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:11:24,520 autoreload 29204 21868 Watching for file changes with StatReloader
+INFO 2024-10-01 00:11:25,818 basehttp 29204 30576 "GET / HTTP/1.1" 200 480
+INFO 2024-10-01 00:11:27,635 basehttp 29204 30576 "GET /api/search/?q=%EC%95%84%EB%8D%B8 HTTP/1.1" 200 405
+INFO 2024-10-01 00:11:28,829 basehttp 29204 30576 "GET /character/api/character/%EC%95%84%EB%8D%B8/ HTTP/1.1" 200 30494
+INFO 2024-10-01 00:11:36,726 autoreload 29204 21868 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:11:37,444 autoreload 16032 30472 Watching for file changes with StatReloader
+INFO 2024-10-01 00:16:42,653 autoreload 16032 30472 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:16:43,213 autoreload 25608 10296 Watching for file changes with StatReloader
+INFO 2024-10-01 00:17:00,913 basehttp 25608 15068 "GET / HTTP/1.1" 200 480
+INFO 2024-10-01 00:17:02,551 basehttp 25608 15068 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-10-01 00:17:03,719 basehttp 25608 15068 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 26823
+INFO 2024-10-01 00:18:02,876 autoreload 25608 10296 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:18:03,479 autoreload 7792 24336 Watching for file changes with StatReloader
+INFO 2024-10-01 00:20:12,463 autoreload 7792 24336 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:20:13,054 autoreload 24220 29816 Watching for file changes with StatReloader
+INFO 2024-10-01 00:20:22,881 autoreload 24220 29816 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:20:23,547 autoreload 18880 29860 Watching for file changes with StatReloader
+INFO 2024-10-01 00:21:11,716 autoreload 18880 29860 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:21:12,474 autoreload 28540 7892 Watching for file changes with StatReloader
+INFO 2024-10-01 00:21:27,202 basehttp 28540 24128 "GET / HTTP/1.1" 200 480
+INFO 2024-10-01 00:21:28,990 basehttp 28540 24128 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-10-01 00:21:30,063 basehttp 28540 24128 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 26823
+INFO 2024-10-01 00:25:08,735 autoreload 28540 7892 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:25:09,257 autoreload 17732 12820 Watching for file changes with StatReloader
+INFO 2024-10-01 00:30:19,449 autoreload 17732 12820 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:30:20,232 autoreload 9356 15656 Watching for file changes with StatReloader
+INFO 2024-10-01 00:30:21,335 basehttp 9356 1008 "GET / HTTP/1.1" 200 480
+INFO 2024-10-01 00:30:23,031 basehttp 9356 1008 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-10-01 00:30:24,042 basehttp 9356 1008 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 99653
+INFO 2024-10-01 00:30:38,539 autoreload 9356 15656 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:30:39,066 autoreload 16284 12016 Watching for file changes with StatReloader
+INFO 2024-10-01 00:31:39,803 autoreload 16284 12016 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:31:40,421 autoreload 23216 8184 Watching for file changes with StatReloader
+INFO 2024-10-01 00:31:54,350 autoreload 23216 8184 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:31:54,887 autoreload 30956 32372 Watching for file changes with StatReloader
+INFO 2024-10-01 00:32:12,524 basehttp 30956 24232 "GET / HTTP/1.1" 200 480
+INFO 2024-10-01 00:32:14,823 basehttp 30956 24232 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-10-01 00:32:15,876 basehttp 30956 24232 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 142297
+INFO 2024-10-01 00:33:42,581 autoreload 30956 32372 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:33:43,188 autoreload 29860 31508 Watching for file changes with StatReloader
+INFO 2024-10-01 00:33:46,782 autoreload 29860 31508 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:33:47,380 autoreload 10344 24088 Watching for file changes with StatReloader
+INFO 2024-10-01 00:35:23,187 autoreload 10344 24088 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:35:23,796 autoreload 30196 16708 Watching for file changes with StatReloader
+INFO 2024-10-01 00:36:03,677 autoreload 30196 16708 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:36:04,327 autoreload 32528 17760 Watching for file changes with StatReloader
+INFO 2024-10-01 00:36:22,416 autoreload 32528 17760 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:36:23,020 autoreload 15008 15336 Watching for file changes with StatReloader
+INFO 2024-10-01 00:36:25,392 autoreload 15008 15336 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:36:25,956 autoreload 18436 22788 Watching for file changes with StatReloader
+INFO 2024-10-01 00:36:29,339 autoreload 18436 22788 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:36:29,864 autoreload 10140 25252 Watching for file changes with StatReloader
+INFO 2024-10-01 00:36:34,283 autoreload 10140 25252 C:\Users\ccg70\OneDrive\desktop\≥ÿΩº «¡∑Œ¡ß∆Æ\chatbot_project\character_info\views.py changed, reloading.
+INFO 2024-10-01 00:36:34,934 autoreload 18240 20964 Watching for file changes with StatReloader
+INFO 2024-10-01 00:41:33,054 autoreload 22204 29016 Watching for file changes with StatReloader
+INFO 2024-10-01 00:41:36,603 basehttp 22204 31936 "GET / HTTP/1.1" 200 480
+INFO 2024-10-01 00:41:39,412 basehttp 22204 31936 "GET /api/search/?q=%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0 HTTP/1.1" 200 452
+INFO 2024-10-01 00:41:40,561 basehttp 22204 31936 "GET /character/api/character/%EB%AC%B4%EB%8B%B9%ED%96%84%EC%8A%A4%ED%84%B0/ HTTP/1.1" 200 162864
