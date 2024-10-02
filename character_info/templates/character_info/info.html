@@ -179,8 +179,8 @@
 
     <div class="section">
         <h3>링크 스킬 정보</h3>
-        {% for preset, skills in link_skill_data.items %}
-            <h4>{{ preset|title }}</h4>
+        {% for preset_hexa_stat_core, skills in link_skill_data.items %}
+            <h4>{{ preset_hexa_stat_core|title }}</h4>
             {% if skills %}
                 {% for skill in skills %}
                     <div class="skill">
@@ -212,10 +212,39 @@
 
     <!-- 헥사 매트릭스 스탯 정보 -->
     <div class="section">
-        <h3>헥사 매트릭스 스탯 정보</h3>
-        <pre>{{ hexa_stats|default:"정보 없음" }}</pre>
-    </div>
+        <h2>헥사 스텟 정보</h2>
+        <ul>
+            {% for stat in hexa_stats.character_hexa_stat_core %}
+                <li>
+                    <strong>슬롯 ID:</strong> {{ stat.slot_id }}<br>
+                    <strong>주력 스탯 이름:</strong> {{ stat.main_stat_name }}<br>
+                    <strong>서브 스탯 1:</strong> {{ stat.sub_stat_name_1 }}<br>
+                    <strong>서브 스탯 2:</strong> {{ stat.sub_stat_name_2 }}<br>
+                    <strong>주력 스탯 레벨:</strong> {{ stat.main_stat_level }}<br>
+                    <strong>서브 스탯 1 레벨:</strong> {{ stat.sub_stat_level_1 }}<br>
+                    <strong>서브 스탯 2 레벨:</strong> {{ stat.sub_stat_level_2 }}<br>
+                    <strong>스탯 등급:</strong> {{ stat.stat_grade }}<br>
+                </li>
+            {% endfor %}
+        </ul>
+        <h4>프리셋 헥사 스텟 코어</h4>
+        <ul>
+            {% for preset_stat in hexa_stats.preset_hexa_stat_core %}
+                <li>
+                    <strong>슬롯 ID:</strong> {{ preset_stat.slot_id }}<br>
+                    <strong>주력 스탯 이름:</strong> {{ preset_stat.main_stat_name }}<br>
+                    <strong>서브 스탯 1:</strong> {{ preset_stat.sub_stat_name_1 }}<br>
+                    <strong>서브 스탯 2:</strong> {{ preset_stat.sub_stat_name_2 }}<br>
+                    <strong>주력 스탯 레벨:</strong> {{ preset_stat.main_stat_level }}<br>
+                    <strong>서브 스탯 1 레벨:</strong> {{ preset_stat.sub_stat_level_1 }}<br>
+                    <strong>서브 스탯 2 레벨:</strong> {{ preset_stat.sub_stat_level_2 }}<br>
+                    <strong>스탯 등급:</strong> {{ preset_stat.stat_grade }}<br>
+                </li>
+            {% endfor %}
+        </ul>
 
+
+    </div>
     <!-- 헥사 매트릭스 정보 -->
     <div class="section">
         <h3>헥사 매트릭스 정보</h3>

@@ -6,6 +6,7 @@ from django.conf import settings
 BASE_URL = "https://open.api.nexon.com/maplestory/v1"
 API_KEY = settings.NEXON_API_KEY
 
+
 async def get_api_data(session, endpoint, params=None):
     headers = {"x-nxopen-api-key": API_KEY}
     url = f"{BASE_URL}{endpoint}"
@@ -31,8 +32,9 @@ async def get_character_info(character_name, date=None):
         ability_info = await get_api_data(session, "/character/ability", params)
         set_effect_info = await get_api_data(session, "/character/set-effect", params)
         link_skill_info = await get_api_data(session, "/character/link-skill", params)
-        character_hexamatrix = await get_api_data(session, "/character/hexamatrix", params)
-
+        hexamatrix_info = await get_api_data(session, "/character/hexamatrix", params)
+        hexamatrix_stat_info = await get_api_data(session, "/character/hexamatrix-stat", params)
+        
         return {
             "basic_info": basic_info,
             "stat_info": stat_info,
@@ -40,7 +42,8 @@ async def get_character_info(character_name, date=None):
             "ability_info": ability_info,
             "set_effect_info": set_effect_info,
             "link_skill_info": link_skill_info,
-            "character_hexamatrix": character_hexamatrix
+            "hexamatrix_info": hexamatrix_info,
+            "hexamatrix_stat_info" : hexamatrix_stat_info
         }
 
 
@@ -169,13 +172,19 @@ def extract_link_skills(link_skill_info):
     
     return extracted_skills
 
-def extract_hexa_stats(hexa_stat_info):
-    if not isinstance(hexa_stat_info, list):
-        return []
+def extract_hexa_stats(hexamatrix_stat_info):
+    if not isinstance(hexamatrix_stat_info, dict):
+        return {}
 
-    extracted_stats = []
-    for stat in hexa_stat_info:
-        stat_data = {
+    # 헥사 스탯 정보를 담을 기본 구조
+    hexa_stat_data = {
+        "character_hexa_stat_core": [],
+        "preset_hexa_stat_core": []
+    }
+
+    # character_hexa_stat_core 정보 추출
+    for stat in hexamatrix_stat_info.get("character_hexa_stat_core", []):
+        hexa_stat_data["character_hexa_stat_core"].append({
             "slot_id": stat.get("slot_id", "정보 없음"),
             "main_stat_name": stat.get("main_stat_name", "정보 없음"),
             "sub_stat_name_1": stat.get("sub_stat_name_1", "정보 없음"),
@@ -184,10 +193,22 @@ def extract_hexa_stats(hexa_stat_info):
             "sub_stat_level_1": stat.get("sub_stat_level_1", 0),
             "sub_stat_level_2": stat.get("sub_stat_level_2", 0),
             "stat_grade": stat.get("stat_grade", 0)
-        }
-        extracted_stats.append(stat_data)
+        })
 
-    return extracted_stats
+    # preset_hexa_stat_core 정보 추출
+    for preset_stat in hexamatrix_stat_info.get("preset_hexa_stat_core", []):
+        hexa_stat_data["preset_hexa_stat_core"].append({
+            "slot_id": preset_stat.get("slot_id", "정보 없음"),
+            "main_stat_name": preset_stat.get("main_stat_name", "정보 없음"),
+            "sub_stat_name_1": preset_stat.get("sub_stat_name_1", "정보 없음"),
+            "sub_stat_name_2": preset_stat.get("sub_stat_name_2", "정보 없음"),
+            "main_stat_level": preset_stat.get("main_stat_level", 0),
+            "sub_stat_level_1": preset_stat.get("sub_stat_level_1", 0),
+            "sub_stat_level_2": preset_stat.get("sub_stat_level_2", 0),
+            "stat_grade": preset_stat.get("stat_grade", 0)
+        })
+
+    return hexa_stat_data
 
 async def character_info_view(request, character_name):
     character_info = await get_character_info(character_name)
@@ -199,7 +220,7 @@ async def character_info_view(request, character_name):
         ability_data = extract_ability_info(character_info.get('ability_info', {}))
         set_effect_data = extract_set_effect(character_info.get('set_effect_info', []))
         link_skill_data = extract_link_skills(character_info.get('link_skill_info', []))
-        hexa_stats = extract_hexa_stats(character_info.get('character_hexamatrix', []))
+        hexa_stats = extract_hexa_stats(character_info.get('hexamatrix_stat_info', []))
 
         # 템플릿으로 전달할 컨텍스트
         context = {

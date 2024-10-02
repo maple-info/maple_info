@@ -4,11 +4,14 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+API_KEY = os.getenv('API_KEY')
 
 SECRET_KEY = "django-insecure-pjgvix$#didu%=w@^h5daf5iomo5*=td6=(-y&jv_6shp$nw5u"
 
-NEXON_API_KEY = "test_c3a1c9dd9898748983795717d4054a73bb5713044ca4fec851806bea3c3a419aefe8d04e6d233bd35cf2fabdeb93fb0d"
+from decouple import config  # python-decouple 패키지에서 config 함수를 가져옴
+
+NEXON_API_KEY = config('NEXON_API_KEY')  # .env 파일에서 API 키를 불러옴
+
 DEBUG = True
 
 ALLOWED_HOSTS = []
