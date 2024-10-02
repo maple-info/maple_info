@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-insecure-pjgvix$#didu%=w@^h5daf5iomo5*=td6=(-y&jv_6shp$nw5u"
 
-NEXON_API_KEY = "test_c3a1c9dd9898748983795717d4054a73bb5713044ca4fec851806bea3c3a419aefe8d04e6d233bd35cf2fabdeb93fb0d"
+NEXON_API_KEY = "your_nexon_api_key"
 DEBUG = True
 
 ALLOWED_HOSTS = []
