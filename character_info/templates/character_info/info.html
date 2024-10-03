@@ -198,16 +198,64 @@
         {% endfor %}
     </div>
 
-    <!-- 하이퍼 스탯 정보 -->
-    <div class="section">
-        <h3>하이퍼 스탯 정보</h3>
-        <pre>{{ character_info.hyper_stat_info|default:"정보 없음" }}</pre>
-    </div>
-
     <!-- 심볼 장비 정보 -->
     <div class="section">
-        <h3>심볼 장비 정보</h3>
-        <pre>{{ character_info.symbol_equipment_info|default:"정보 없음" }}</pre>
+        
+        <!-- 아케인 심볼 -->
+        <h2>아케인 심볼</h2>
+        <div>
+            {% if symbol_data.arcane_symbols %}
+                {% for symbol in symbol_data.arcane_symbols %}
+                    <div class="symbol-item">
+                        <strong>이름:</strong> {{ symbol.name }} <br>
+                        <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
+                        <strong>레벨:</strong> {{ symbol.level }} <br>
+                        <strong>포스:</strong> {{ symbol.force }} <br>
+                        <strong>설명:</strong> {{ symbol.description }} <br>
+                        <strong>스탯:</strong>
+                        <ul>
+                            <li>힘: {{ symbol.stats.str }}</li>
+                            <li>덱스: {{ symbol.stats.dex }}</li>
+                            <li>인트: {{ symbol.stats.int }}</li>
+                            <li>럭: {{ symbol.stats.luk }}</li>
+                            <li>HP: {{ symbol.stats.hp }}</li>
+                        </ul>
+                        <strong>성장 횟수:</strong> {{ symbol.growth_count }} <br>
+                        <strong>필요한 성장 횟수:</strong> {{ symbol.require_growth_count }} <br>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>아케인 심볼이 없습니다.</p>
+            {% endif %}
+        </div>
+        <!-- 어센틱 심볼 -->
+        <h2>어센틱 심볼</h2>
+        <div>
+            {% if symbol_data.authentic_symbols %}
+                {% for symbol in symbol_data.authentic_symbols %}
+                    <div class="symbol-item">
+                        <strong>이름:</strong> {{ symbol.name }} <br>
+                        <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
+                        <strong>레벨:</strong> {{ symbol.level }} <br>
+                        <strong>포스:</strong> {{ symbol.force }} <br>
+                        <strong>설명:</strong> {{ symbol.description }} <br>
+                        <strong>스탯:</strong>
+                        <ul>
+                            <li>힘: {{ symbol.stats.str }}</li>
+                            <li>덱스: {{ symbol.stats.dex }}</li>
+                            <li>인트: {{ symbol.stats.int }}</li>
+                            <li>럭: {{ symbol.stats.luk }}</li>
+                            <li>HP: {{ symbol.stats.hp }}</li>
+                        </ul>
+                        <strong>성장 횟수:</strong> {{ symbol.growth_count }} <br>
+                        <strong>필요한 성장 횟수:</strong> {{ symbol.require_growth_count }} <br>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>어센틱 심볼이 없습니다.</p>
+            {% endif %}
+        </div>
+    
     </div>
 
     <!-- 헥사 매트릭스 스탯 정보 -->

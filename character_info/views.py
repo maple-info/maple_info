@@ -34,6 +34,7 @@ async def get_character_info(character_name, date=None):
         link_skill_info = await get_api_data(session, "/character/link-skill", params)
         hexamatrix_info = await get_api_data(session, "/character/hexamatrix", params)
         hexamatrix_stat_info = await get_api_data(session, "/character/hexamatrix-stat", params)
+        symbol_equipment_info = await get_api_data(session, "/character/symbol-equipment", params)
         
         return {
             "basic_info": basic_info,
@@ -43,7 +44,9 @@ async def get_character_info(character_name, date=None):
             "set_effect_info": set_effect_info,
             "link_skill_info": link_skill_info,
             "hexamatrix_info": hexamatrix_info,
-            "hexamatrix_stat_info" : hexamatrix_stat_info
+            "hexamatrix_stat_info" : hexamatrix_stat_info,
+            "symbol_equipment_info" : symbol_equipment_info
+
         }
 
 
@@ -231,6 +234,61 @@ def extract_hexa(hexamatrix_info):
     return hexa_data
 
 
+def extract_symbols(symbol_equipment_info):
+    if not isinstance(symbol_equipment_info, dict):
+        return {}
+
+    # 심볼 정보를 담을 기본 구조
+    symbol_data = {
+        "authentic_symbols": [],
+        "arcane_symbols": []
+    }
+
+    # symbol 데이터가 존재할 때
+    for symbol in symbol_equipment_info.get("symbol", []):
+        symbol_name = symbol.get("symbol_name", "")
+
+        # 어센틱 심볼 추출
+        if "어센틱" in symbol_name:
+            symbol_data["authentic_symbols"].append({
+                "name": symbol_name,
+                "icon": symbol.get("symbol_icon"),
+                "description": symbol.get("symbol_description"),
+                "force": symbol.get("symbol_force"),
+                "level": symbol.get("symbol_level"),
+                "stats": {
+                    "str": symbol.get("symbol_str"),
+                    "dex": symbol.get("symbol_dex"),
+                    "int": symbol.get("symbol_int"),
+                    "luk": symbol.get("symbol_luk"),
+                    "hp": symbol.get("symbol_hp"),
+                },
+                "growth_count": symbol.get("symbol_growth_count"),
+                "require_growth_count": symbol.get("symbol_require_growth_count")
+            })
+
+        # 아케인 심볼 추출
+        elif "아케인" in symbol_name:
+            symbol_data["arcane_symbols"].append({
+                "name": symbol_name,
+                "icon": symbol.get("symbol_icon"),
+                "description": symbol.get("symbol_description"),
+                "force": symbol.get("symbol_force"),
+                "level": symbol.get("symbol_level"),
+                "stats": {
+                    "str": symbol.get("symbol_str"),
+                    "dex": symbol.get("symbol_dex"),
+                    "int": symbol.get("symbol_int"),
+                    "luk": symbol.get("symbol_luk"),
+                    "hp": symbol.get("symbol_hp"),
+                },
+                "growth_count": symbol.get("symbol_growth_count"),
+                "require_growth_count": symbol.get("symbol_require_growth_count")
+            })
+
+    return symbol_data
+
+
 
 async def character_info_view(request, character_name):
     character_info = await get_character_info(character_name)
@@ -244,6 +302,7 @@ async def character_info_view(request, character_name):
         link_skill_data = extract_link_skills(character_info.get('link_skill_info', []))
         hexa_stats = extract_hexa_stats(character_info.get('hexamatrix_stat_info', []))
         hexa_data = extract_hexa(character_info.get('hexamatrix_info', []))
+        symbol_data = extract_symbols(character_info.get('symbol_equipment_info', []))
 
         # 템플릿으로 전달할 컨텍스트
         context = {
@@ -255,6 +314,7 @@ async def character_info_view(request, character_name):
             'link_skill_data': link_skill_data,
             'hexa_stats': hexa_stats,
             'hexa_data' : hexa_data,
+            'symbol_data' : symbol_data,
             'preset_range': range(1, 4)
         }
 
