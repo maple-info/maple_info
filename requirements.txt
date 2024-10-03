@@ -6,4 +6,5 @@ aiohttp
 django
 requests
 aiohttp
+decouple
 >>>>>>> ability
