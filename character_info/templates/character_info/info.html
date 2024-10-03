@@ -248,7 +248,16 @@
     <!-- 헥사 매트릭스 정보 -->
     <div class="section">
         <h3>헥사 매트릭스 정보</h3>
-        <pre>{{ character_info.character_hexamatrix|default:"정보 없음" }}</pre>
+        <ul>
+            {% for stat in hexa_data.character_hexa_core_equipment %}
+                <li>
+                    <strong>헥사 스킬 이름:</strong> {{ stat.hexa_core_name }}<br>
+                    <strong>헥사 스킬 레벨:</strong> {{ stat.hexa_core_level }}<br>
+                    <strong>헥사 스킬 타입:</strong> {{ stat.hexa_core_type }}<br>
+
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 </body>
 </html>

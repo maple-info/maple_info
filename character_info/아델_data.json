@@ -1,73 +1,95 @@
 [
     {
         "date": null,
-        "character_class": "아델",
-        "character_hexa_stat_core": [
+        "character_hexa_core_equipment": [
             {
-                "slot_id": "1",
-                "main_stat_name": "크리티컬 데미지 증가",
-                "sub_stat_name_1": "공격력 증가",
-                "sub_stat_name_2": "보스 데미지 증가",
-                "main_stat_level": 10,
-                "sub_stat_level_1": 4,
-                "sub_stat_level_2": 6,
-                "stat_grade": 20
-            }
-        ],
-        "character_hexa_stat_core_2": [
-            {
-                "slot_id": "1",
-                "main_stat_name": "보스 데미지 증가",
-                "sub_stat_name_1": "크리티컬 데미지 증가",
-                "sub_stat_name_2": "공격력 증가",
-                "main_stat_level": 9,
-                "sub_stat_level_1": 6,
-                "sub_stat_level_2": 5,
-                "stat_grade": 20
-            }
-        ],
-        "preset_hexa_stat_core": [
-            {
-                "slot_id": "0",
-                "main_stat_name": "크리티컬 데미지 증가",
-                "sub_stat_name_1": "공격력 증가",
-                "sub_stat_name_2": "보스 데미지 증가",
-                "main_stat_level": 10,
-                "sub_stat_level_1": 4,
-                "sub_stat_level_2": 6,
-                "stat_grade": 20
+                "hexa_core_name": "마에스트로",
+                "hexa_core_level": 30,
+                "hexa_core_type": "스킬 코어",
+                "linked_skill": [
+                    {
+                        "hexa_skill_id": "마에스트로"
+                    }
+                ]
             },
             {
-                "slot_id": "1",
-                "main_stat_name": "크리티컬 데미지 증가",
-                "sub_stat_name_1": "공격력 증가",
-                "sub_stat_name_2": "보스 데미지 증가",
-                "main_stat_level": 10,
-                "sub_stat_level_1": 4,
-                "sub_stat_level_2": 6,
-                "stat_grade": 20
-            }
-        ],
-        "preset_hexa_stat_core_2": [
-            {
-                "slot_id": "0",
-                "main_stat_name": "보스 데미지 증가",
-                "sub_stat_name_1": "크리티컬 데미지 증가",
-                "sub_stat_name_2": "공격력 증가",
-                "main_stat_level": 3,
-                "sub_stat_level_1": 1,
-                "sub_stat_level_2": 3,
-                "stat_grade": 7
+                "hexa_core_name": "디바이드 VI/샤드 VI/원더 VI",
+                "hexa_core_level": 30,
+                "hexa_core_type": "마스터리 코어",
+                "linked_skill": [
+                    {
+                        "hexa_skill_id": "디바이드 VI"
+                    },
+                    {
+                        "hexa_skill_id": "샤드 VI"
+                    },
+                    {
+                        "hexa_skill_id": "원더 VI"
+                    }
+                ]
             },
             {
-                "slot_id": "1",
-                "main_stat_name": "보스 데미지 증가",
-                "sub_stat_name_1": "크리티컬 데미지 증가",
-                "sub_stat_name_2": "공격력 증가",
-                "main_stat_level": 9,
-                "sub_stat_level_1": 6,
-                "sub_stat_level_2": 5,
-                "stat_grade": 20
+                "hexa_core_name": "오더 VI/트레드 VI",
+                "hexa_core_level": 30,
+                "hexa_core_type": "마스터리 코어",
+                "linked_skill": [
+                    {
+                        "hexa_skill_id": "오더 VI"
+                    },
+                    {
+                        "hexa_skill_id": "트레드 VI"
+                    }
+                ]
+            },
+            {
+                "hexa_core_name": "루인",
+                "hexa_core_level": 30,
+                "hexa_core_type": "강화 코어",
+                "linked_skill": [
+                    {
+                        "hexa_skill_id": "루인 강화"
+                    }
+                ]
+            },
+            {
+                "hexa_core_name": "인피니트",
+                "hexa_core_level": 30,
+                "hexa_core_type": "강화 코어",
+                "linked_skill": [
+                    {
+                        "hexa_skill_id": "인피니트 강화"
+                    }
+                ]
+            },
+            {
+                "hexa_core_name": "리스토어",
+                "hexa_core_level": 30,
+                "hexa_core_type": "강화 코어",
+                "linked_skill": [
+                    {
+                        "hexa_skill_id": "리스토어 강화"
+                    }
+                ]
+            },
+            {
+                "hexa_core_name": "스톰",
+                "hexa_core_level": 30,
+                "hexa_core_type": "강화 코어",
+                "linked_skill": [
+                    {
+                        "hexa_skill_id": "스톰 강화"
+                    }
+                ]
+            },
+            {
+                "hexa_core_name": "솔 야누스",
+                "hexa_core_level": 30,
+                "hexa_core_type": "공용 코어",
+                "linked_skill": [
+                    {
+                        "hexa_skill_id": "솔 야누스"
+                    }
+                ]
             }
         ]
     }

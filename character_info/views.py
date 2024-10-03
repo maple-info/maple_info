@@ -210,6 +210,28 @@ def extract_hexa_stats(hexamatrix_stat_info):
 
     return hexa_stat_data
 
+def extract_hexa(hexamatrix_info):
+    if not isinstance(hexamatrix_info, dict):
+        return {}
+
+    # 헥사 스킬 정보를 담을 기본 구조
+    hexa_data = {
+        "character_hexa_core_equipment" : []
+    }
+
+    # character_hexa_core_equipment 정보 추출
+    for hexa in hexamatrix_info.get("character_hexa_core_equipment", []):
+        hexa_data["character_hexa_core_equipment"].append({
+            "hexa_core_name": hexa.get("hexa_core_name", "정보 없음"),
+            "hexa_core_level": hexa.get("hexa_core_level", "정보 없음"),
+            "hexa_core_type": hexa.get("hexa_core_type", "정보 없음"),
+        })
+
+
+    return hexa_data
+
+
+
 async def character_info_view(request, character_name):
     character_info = await get_character_info(character_name)
 
@@ -221,6 +243,7 @@ async def character_info_view(request, character_name):
         set_effect_data = extract_set_effect(character_info.get('set_effect_info', []))
         link_skill_data = extract_link_skills(character_info.get('link_skill_info', []))
         hexa_stats = extract_hexa_stats(character_info.get('hexamatrix_stat_info', []))
+        hexa_data = extract_hexa(character_info.get('hexamatrix_info', []))
 
         # 템플릿으로 전달할 컨텍스트
         context = {
@@ -231,6 +254,7 @@ async def character_info_view(request, character_name):
             'set_effect_data': set_effect_data,
             'link_skill_data': link_skill_data,
             'hexa_stats': hexa_stats,
+            'hexa_data' : hexa_data,
             'preset_range': range(1, 4)
         }
 
