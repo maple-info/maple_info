@@ -8,9 +8,9 @@
 </head>
 <body>
     <h1>캐릭터 정보 검색</h1>
-    <form action="{% url 'character_search' %}" method="GET">
-        <input type="text" name="q" placeholder="캐릭터 이름 입력">
+    <form action="{% url 'character_info:search' %}" method="GET">
+        <input type="text" name="character_name" placeholder="캐릭터 이름 입력" required>
         <button type="submit">검색</button>
-      </form>
+    </form>
 </body>
 </html>

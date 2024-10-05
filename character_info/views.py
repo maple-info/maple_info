@@ -1,11 +1,12 @@
+# character_info/views.py
 import asyncio
 import aiohttp
 from django.shortcuts import render
 from django.conf import settings
+from asgiref.sync import async_to_sync
 
 BASE_URL = "https://open.api.nexon.com/maplestory/v1"
 API_KEY = settings.NEXON_API_KEY
-
 
 async def get_api_data(session, endpoint, params=None):
     headers = {"x-nxopen-api-key": API_KEY}
@@ -46,10 +47,10 @@ async def get_character_info(character_name, date=None):
             "hexamatrix_info": hexamatrix_info,
             "hexamatrix_stat_info" : hexamatrix_stat_info,
             "symbol_equipment_info" : symbol_equipment_info
-
         }
 
 
+    
 def extract_final_stats(stat_info):
     # final_stat에서 원하는 정보 추출
     final_stats = {}
@@ -131,17 +132,24 @@ def extract_ability_info(ability_info):
     return ability_data
 
 def extract_set_effect(set_effect_info):
-    if not isinstance(set_effect_info, list):
-        return []
+    # set_effect_info가 딕셔너리인지 확인하고 'set_effect' 필드를 가져옴
+    if not isinstance(set_effect_info, dict) or 'set_effect' not in set_effect_info:
+        print("set_effect_info의 구조가 잘못되었습니다:", set_effect_info)
+        return {}
 
-    # 여러 세트 효과를 저장할 리스트
-    set_effect_data_list = []
+    # 'set_effect' 리스트를 추출
+    set_effects_list = set_effect_info.get('set_effect', [])
+    if not isinstance(set_effects_list, list):
+        return {}
 
-    # 각 세트에 대한 정보 추출
-    for set_effect in set_effect_info:
-        # 기본 세트 정보
-        set_effect_data = {
-            "set_name": set_effect.get('set_name', "정보 없음"),
+    set_effect_data = {
+        "set_effects": []
+    }
+
+
+    for set_effect in set_effects_list:
+        set_data = {
+            "set_name": set_effect.get("set_name", "정보 없음"),
             "total_set_count": set_effect.get("total_set_count", "정보 없음"),
             "set_effects": [],
             "set_option_full": []
@@ -149,22 +157,24 @@ def extract_set_effect(set_effect_info):
 
         # 세트 효과 정보 (set_effect_info)
         for effect in set_effect.get("set_effect_info", []):
-            set_effect_data["set_effects"].append({
+            effect_data = {
                 "set_count": effect.get("set_count", "정보 없음"),
                 "set_option": effect.get("set_option", "정보 없음")
-            })
+            }
+            set_data["set_effects"].append(effect_data)
 
         # 전체 세트 옵션 정보 (set_option_full)
         for full_effect in set_effect.get("set_option_full", []):
-            set_effect_data["set_option_full"].append({
+            full_effect_data = {
                 "set_count": full_effect.get("set_count", "정보 없음"),
                 "set_option": full_effect.get("set_option", "정보 없음")
-            })
+            }
+            set_data["set_option_full"].append(full_effect_data)
 
-        # 세트 데이터를 리스트에 추가
-        set_effect_data_list.append(set_effect_data)
+        set_effect_data["set_effects"].append(set_data)
 
-    return set_effect_data_list
+
+    return set_effect_data
 
 
 
@@ -304,9 +314,11 @@ def extract_symbols(symbol_equipment_info):
 
     return symbol_data
 
+def character_info_view(request):
+    character_name = request.GET.get('character_name') 
 
-
-async def character_info_view(request, character_name):
+async def character_info_view(request):
+    character_name = request.GET.get('character_name') 
     character_info = await get_character_info(character_name)
 
     if character_info:
