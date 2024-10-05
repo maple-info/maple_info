@@ -132,25 +132,41 @@ def extract_ability_info(ability_info):
 
 def extract_set_effect(set_effect_info):
     if not isinstance(set_effect_info, list):
-        set_effect_info = []
-    
-    set_effect_data = []
-    for set_info in set_effect_info:
-        set_data = {
-            "set_name": set_info.get("set_name", "정보 없음"),
-            "total_set_count": set_info.get("total_set_count", 0),
-            "set_effects": []
-        }
-        for effect in set_info.get("set_effect_info", []):
-            effect_data = {
-                "set_count": effect.get("set_count", 0),
-                "set_option": effect.get("set_option", "정보 없음")
-            }
-            set_data["set_effects"].append(effect_data)
-        
-        set_effect_data.append(set_data)
+        return []
 
-    return set_effect_data
+    # 여러 세트 효과를 저장할 리스트
+    set_effect_data_list = []
+
+    # 각 세트에 대한 정보 추출
+    for set_effect in set_effect_info:
+        # 기본 세트 정보
+        set_effect_data = {
+            "set_name": set_effect.get('set_name', "정보 없음"),
+            "total_set_count": set_effect.get("total_set_count", "정보 없음"),
+            "set_effects": [],
+            "set_option_full": []
+        }
+
+        # 세트 효과 정보 (set_effect_info)
+        for effect in set_effect.get("set_effect_info", []):
+            set_effect_data["set_effects"].append({
+                "set_count": effect.get("set_count", "정보 없음"),
+                "set_option": effect.get("set_option", "정보 없음")
+            })
+
+        # 전체 세트 옵션 정보 (set_option_full)
+        for full_effect in set_effect.get("set_option_full", []):
+            set_effect_data["set_option_full"].append({
+                "set_count": full_effect.get("set_count", "정보 없음"),
+                "set_option": full_effect.get("set_option", "정보 없음")
+            })
+
+        # 세트 데이터를 리스트에 추가
+        set_effect_data_list.append(set_effect_data)
+
+    return set_effect_data_list
+
+
 
 def extract_link_skills(link_skill_info):
     if not isinstance(link_skill_info, dict):
