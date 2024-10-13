@@ -1,5 +1,5 @@
 #background{
-    background-image:url('../image/rimen.png');
+    background-image:url('../image/ai_maple.jpg');
     background-repeat: no-repeat;
     background-size : 100% 100%;
 }
@@ -22,8 +22,8 @@
 
 #container form{
     z-index: 2;
-    border: 1px solid rgb(178, 5, 221);
-    background: rgb(22, 22, 24);
+    border: 3px solid rgb(0, 0, 0);
+    background: rgb(255, 255, 255);
     border-radius: 4px;
     padding: 3px 11px;
     display: flex;
@@ -37,7 +37,7 @@
     padding: 0px;
     width: 104px;
     flex: 1 1 0%;
-    color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
     border: none;
     outline: none;
 
