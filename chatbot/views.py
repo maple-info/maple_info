@@ -1,4 +1,5 @@
 import openai
+from django.conf import settings
 from django.shortcuts import render
 from .forms import ChatForm
 from .models import ChatMessage
@@ -6,25 +7,22 @@ from .models import ChatMessage
 def chatbot_view(request):
     response_text = ""
     if request.method == 'POST':
-        form = ChatForm(request.POST)
-        if form.is_valid():
-            user_message = form.cleaned_data['message']
-            
-            # OpenAI API 호출
-            response = openai.Completion.create(
-                engine="text-davinci-003",  # GPT 모델 설정
-                prompt=user_message,
-                max_tokens=150
-            )
-            bot_response = response.choices[0].text.strip()
+        user_message = request.POST.get('message')
+        if user_message:
+            openai.api_key = settings.OPENAI_API_KEY
+            try:
+                response = openai.Completion.create(
+                    engine="text-davinci-003",  # 사용할 GPT 모델
+                    prompt=user_message,
+                    max_tokens=150
+                )
+                response_text = response.choices[0].text.strip()
+            except Exception as e:
+                response_text = "챗봇 응답을 가져오는 중 오류가 발생했습니다."
+    
+    return render(request, 'chatbot.html', {'response_text': response_text})
 
-            # 데이터베이스에 저장
-            chat_message = ChatMessage(user_message=user_message, bot_response=bot_response)
-            chat_message.save()
 
-            # 응답 텍스트 설정
-            response_text = bot_response
-    else:
-        form = ChatForm()
-
-    return render(request, 'chatbot.html', {'form': form, 'response_text': response_text})
+def character_info_view(request):
+    # 캐릭터 정보 처리 로직
+    return render(request, 'character_info.html', {})

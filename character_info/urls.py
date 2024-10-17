@@ -5,5 +5,7 @@ app_name = 'character_info'
 
 urlpatterns = [
     path('', views.character_info_view, name='search'),
-    path('api/character/<str:character_name>/', views.character_info_view, name='info'),  # 이 부분은 그대로 두세요
+    path('api/character/<str:character_name>/', views.character_info_view, name='info'),
+    path('chatbot/', views.chatbot_view, name='chatbot'),
+
 ]

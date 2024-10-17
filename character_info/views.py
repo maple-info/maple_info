@@ -350,3 +350,7 @@ async def character_info_view(request):
         return render(request, 'character_info/info.html', context)
     else:
         return render(request, 'error.html', {"message": "캐릭터 정보를 찾을 수 없습니다."})
+    
+
+def chatbot_view(request):
+    return render(request, 'character_info/info.html')  # 챗봇 템플릿 경로

@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'character_search',
     'character_info',
+    'chatbot',
 ]
 
 
