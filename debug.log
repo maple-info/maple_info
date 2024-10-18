@@ -5,3 +5,4 @@ INFO 2024-10-18 23:20:53,911 autoreload 4240 14480 Watching for file changes wit
 INFO 2024-10-18 23:20:57,672 basehttp 4240 9360 "GET / HTTP/1.1" 200 948
 INFO 2024-10-18 23:20:57,920 basehttp 4240 9360 "GET /static/image/ai_maple.jpg HTTP/1.1" 200 243361
 INFO 2024-10-18 23:25:37,371 autoreload 4240 14480 C:\Users\user\Desktop\m\maple_info\chatbot_project\settings.py changed, reloading.
+INFO 2024-10-18 23:28:29,186 autoreload 13216 9852 Watching for file changes with StatReloader
