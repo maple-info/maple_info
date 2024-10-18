@@ -1,2 +1,4 @@
 debug.log
 debug.log
+__pycache__/
+*.pyc
