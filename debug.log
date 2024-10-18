@@ -8,3 +8,6 @@ INFO 2024-10-18 23:25:37,371 autoreload 4240 14480 C:\Users\user\Desktop\m\maple
 INFO 2024-10-18 23:28:29,186 autoreload 13216 9852 Watching for file changes with StatReloader
 INFO 2024-10-18 23:33:54,864 basehttp 13216 4848 "GET / HTTP/1.1" 200 948
 INFO 2024-10-18 23:33:54,880 basehttp 13216 4848 "GET /static/image/ai_maple.jpg HTTP/1.1" 304 0
+INFO 2024-10-18 23:39:08,477 autoreload 8544 12384 Watching for file changes with StatReloader
+INFO 2024-10-18 23:39:10,487 basehttp 8544 15808 "GET / HTTP/1.1" 200 948
+INFO 2024-10-18 23:39:10,552 basehttp 8544 15808 "GET /static/image/ai_maple.jpg HTTP/1.1" 304 0
