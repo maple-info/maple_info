@@ -11,14 +11,18 @@ def chatbot_view(request):
         if user_message:
             openai.api_key = settings.OPENAI_API_KEY
             try:
-                response = openai.Completion.create(
-                    engine="text-davinci-003",  # 사용할 GPT 모델
-                    prompt=user_message,
+                # 이전 openai.Completion.create 대신 ChatCompletion 사용
+                response = openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo",  # 사용할 GPT 모델
+                    messages=[
+                        {"role": "system", "content": "You are a helpful assistant."},
+                        {"role": "user", "content": user_message}
+                    ],
                     max_tokens=150
                 )
-                response_text = response.choices[0].text.strip()
+                response_text = response['choices'][0]['message']['content'].strip()
             except Exception as e:
-                response_text = "챗봇 응답을 가져오는 중 오류가 발생했습니다."
+                response_text = f"챗봇 응답을 가져오는 중 오류가 발생했습니다: {str(e)}"
     
     return render(request, 'chatbot.html', {'response_text': response_text})
 
