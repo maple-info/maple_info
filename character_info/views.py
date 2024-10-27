@@ -1,7 +1,9 @@
+# character_info/views.py
 import asyncio
 import aiohttp
 from django.shortcuts import render
 from django.conf import settings
+from asgiref.sync import async_to_sync
 
 BASE_URL = "https://open.api.nexon.com/maplestory/v1"
 API_KEY = settings.NEXON_API_KEY
@@ -31,8 +33,10 @@ async def get_character_info(character_name, date=None):
         ability_info = await get_api_data(session, "/character/ability", params)
         set_effect_info = await get_api_data(session, "/character/set-effect", params)
         link_skill_info = await get_api_data(session, "/character/link-skill", params)
-        character_hexamatrix = await get_api_data(session, "/character/hexamatrix", params)
-
+        hexamatrix_info = await get_api_data(session, "/character/hexamatrix", params)
+        hexamatrix_stat_info = await get_api_data(session, "/character/hexamatrix-stat", params)
+        symbol_equipment_info = await get_api_data(session, "/character/symbol-equipment", params)
+        
         return {
             "basic_info": basic_info,
             "stat_info": stat_info,
@@ -40,10 +44,13 @@ async def get_character_info(character_name, date=None):
             "ability_info": ability_info,
             "set_effect_info": set_effect_info,
             "link_skill_info": link_skill_info,
-            "character_hexamatrix": character_hexamatrix
+            "hexamatrix_info": hexamatrix_info,
+            "hexamatrix_stat_info" : hexamatrix_stat_info,
+            "symbol_equipment_info" : symbol_equipment_info
         }
 
 
+    
 def extract_final_stats(stat_info):
     # final_stat에서 원하는 정보 추출
     final_stats = {}
@@ -125,26 +132,51 @@ def extract_ability_info(ability_info):
     return ability_data
 
 def extract_set_effect(set_effect_info):
-    if not isinstance(set_effect_info, list):
-        set_effect_info = []
-    
-    set_effect_data = []
-    for set_info in set_effect_info:
+    # set_effect_info가 딕셔너리인지 확인하고 'set_effect' 필드를 가져옴
+    if not isinstance(set_effect_info, dict) or 'set_effect' not in set_effect_info:
+        print("set_effect_info의 구조가 잘못되었습니다:", set_effect_info)
+        return {}
+
+    # 'set_effect' 리스트를 추출
+    set_effects_list = set_effect_info.get('set_effect', [])
+    if not isinstance(set_effects_list, list):
+        return {}
+
+    set_effect_data = {
+        "set_effects": []
+    }
+
+
+    for set_effect in set_effects_list:
         set_data = {
-            "set_name": set_info.get("set_name", "정보 없음"),
-            "total_set_count": set_info.get("total_set_count", 0),
-            "set_effects": []
+            "set_name": set_effect.get("set_name", "정보 없음"),
+            "total_set_count": set_effect.get("total_set_count", "정보 없음"),
+            "set_effects": [],
+            "set_option_full": []
         }
-        for effect in set_info.get("set_effect_info", []):
+
+        # 세트 효과 정보 (set_effect_info)
+        for effect in set_effect.get("set_effect_info", []):
             effect_data = {
-                "set_count": effect.get("set_count", 0),
+                "set_count": effect.get("set_count", "정보 없음"),
                 "set_option": effect.get("set_option", "정보 없음")
             }
             set_data["set_effects"].append(effect_data)
-        
-        set_effect_data.append(set_data)
+
+        # 전체 세트 옵션 정보 (set_option_full)
+        for full_effect in set_effect.get("set_option_full", []):
+            full_effect_data = {
+                "set_count": full_effect.get("set_count", "정보 없음"),
+                "set_option": full_effect.get("set_option", "정보 없음")
+            }
+            set_data["set_option_full"].append(full_effect_data)
+
+        set_effect_data["set_effects"].append(set_data)
+
 
     return set_effect_data
+
+
 
 def extract_link_skills(link_skill_info):
     if not isinstance(link_skill_info, dict):
@@ -169,13 +201,19 @@ def extract_link_skills(link_skill_info):
     
     return extracted_skills
 
-def extract_hexa_stats(hexa_stat_info):
-    if not isinstance(hexa_stat_info, list):
-        return []
+def extract_hexa_stats(hexamatrix_stat_info):
+    if not isinstance(hexamatrix_stat_info, dict):
+        return {}
 
-    extracted_stats = []
-    for stat in hexa_stat_info:
-        stat_data = {
+    # 헥사 스탯 정보를 담을 기본 구조
+    hexa_stat_data = {
+        "character_hexa_stat_core": [],
+        "preset_hexa_stat_core": []
+    }
+
+    # character_hexa_stat_core 정보 추출
+    for stat in hexamatrix_stat_info.get("character_hexa_stat_core", []):
+        hexa_stat_data["character_hexa_stat_core"].append({
             "slot_id": stat.get("slot_id", "정보 없음"),
             "main_stat_name": stat.get("main_stat_name", "정보 없음"),
             "sub_stat_name_1": stat.get("sub_stat_name_1", "정보 없음"),
@@ -184,12 +222,103 @@ def extract_hexa_stats(hexa_stat_info):
             "sub_stat_level_1": stat.get("sub_stat_level_1", 0),
             "sub_stat_level_2": stat.get("sub_stat_level_2", 0),
             "stat_grade": stat.get("stat_grade", 0)
-        }
-        extracted_stats.append(stat_data)
+        })
 
-    return extracted_stats
+    # preset_hexa_stat_core 정보 추출
+    for preset_stat in hexamatrix_stat_info.get("preset_hexa_stat_core", []):
+        hexa_stat_data["preset_hexa_stat_core"].append({
+            "slot_id": preset_stat.get("slot_id", "정보 없음"),
+            "main_stat_name": preset_stat.get("main_stat_name", "정보 없음"),
+            "sub_stat_name_1": preset_stat.get("sub_stat_name_1", "정보 없음"),
+            "sub_stat_name_2": preset_stat.get("sub_stat_name_2", "정보 없음"),
+            "main_stat_level": preset_stat.get("main_stat_level", 0),
+            "sub_stat_level_1": preset_stat.get("sub_stat_level_1", 0),
+            "sub_stat_level_2": preset_stat.get("sub_stat_level_2", 0),
+            "stat_grade": preset_stat.get("stat_grade", 0)
+        })
 
-async def character_info_view(request, character_name):
+    return hexa_stat_data
+
+def extract_hexa(hexamatrix_info):
+    if not isinstance(hexamatrix_info, dict):
+        return {}
+
+    # 헥사 스킬 정보를 담을 기본 구조
+    hexa_data = {
+        "character_hexa_core_equipment" : []
+    }
+
+    # character_hexa_core_equipment 정보 추출
+    for hexa in hexamatrix_info.get("character_hexa_core_equipment", []):
+        hexa_data["character_hexa_core_equipment"].append({
+            "hexa_core_name": hexa.get("hexa_core_name", "정보 없음"),
+            "hexa_core_level": hexa.get("hexa_core_level", "정보 없음"),
+            "hexa_core_type": hexa.get("hexa_core_type", "정보 없음"),
+        })
+
+
+    return hexa_data
+
+
+def extract_symbols(symbol_equipment_info):
+    if not isinstance(symbol_equipment_info, dict):
+        return {}
+
+    # 심볼 정보를 담을 기본 구조
+    symbol_data = {
+        "authentic_symbols": [],
+        "arcane_symbols": []
+    }
+
+    # symbol 데이터가 존재할 때
+    for symbol in symbol_equipment_info.get("symbol", []):
+        symbol_name = symbol.get("symbol_name", "")
+
+        # 어센틱 심볼 추출
+        if "어센틱" in symbol_name:
+            symbol_data["authentic_symbols"].append({
+                "name": symbol_name,
+                "icon": symbol.get("symbol_icon"),
+                "description": symbol.get("symbol_description"),
+                "force": symbol.get("symbol_force"),
+                "level": symbol.get("symbol_level"),
+                "stats": {
+                    "str": symbol.get("symbol_str"),
+                    "dex": symbol.get("symbol_dex"),
+                    "int": symbol.get("symbol_int"),
+                    "luk": symbol.get("symbol_luk"),
+                    "hp": symbol.get("symbol_hp"),
+                },
+                "growth_count": symbol.get("symbol_growth_count"),
+                "require_growth_count": symbol.get("symbol_require_growth_count")
+            })
+
+        # 아케인 심볼 추출
+        elif "아케인" in symbol_name:
+            symbol_data["arcane_symbols"].append({
+                "name": symbol_name,
+                "icon": symbol.get("symbol_icon"),
+                "description": symbol.get("symbol_description"),
+                "force": symbol.get("symbol_force"),
+                "level": symbol.get("symbol_level"),
+                "stats": {
+                    "str": symbol.get("symbol_str"),
+                    "dex": symbol.get("symbol_dex"),
+                    "int": symbol.get("symbol_int"),
+                    "luk": symbol.get("symbol_luk"),
+                    "hp": symbol.get("symbol_hp"),
+                },
+                "growth_count": symbol.get("symbol_growth_count"),
+                "require_growth_count": symbol.get("symbol_require_growth_count")
+            })
+
+    return symbol_data
+
+def character_info_view(request):
+    character_name = request.GET.get('character_name') 
+
+async def character_info_view(request):
+    character_name = request.GET.get('character_name') 
     character_info = await get_character_info(character_name)
 
     if character_info:
@@ -199,7 +328,9 @@ async def character_info_view(request, character_name):
         ability_data = extract_ability_info(character_info.get('ability_info', {}))
         set_effect_data = extract_set_effect(character_info.get('set_effect_info', []))
         link_skill_data = extract_link_skills(character_info.get('link_skill_info', []))
-        hexa_stats = extract_hexa_stats(character_info.get('character_hexamatrix', []))
+        hexa_stats = extract_hexa_stats(character_info.get('hexamatrix_stat_info', []))
+        hexa_data = extract_hexa(character_info.get('hexamatrix_info', []))
+        symbol_data = extract_symbols(character_info.get('symbol_equipment_info', []))
 
         # 템플릿으로 전달할 컨텍스트
         context = {
@@ -210,6 +341,8 @@ async def character_info_view(request, character_name):
             'set_effect_data': set_effect_data,
             'link_skill_data': link_skill_data,
             'hexa_stats': hexa_stats,
+            'hexa_data' : hexa_data,
+            'symbol_data' : symbol_data,
             'preset_range': range(1, 4)
         }
 
@@ -217,3 +350,7 @@ async def character_info_view(request, character_name):
         return render(request, 'character_info/info.html', context)
     else:
         return render(request, 'error.html', {"message": "캐릭터 정보를 찾을 수 없습니다."})
+    
+
+def chatbot_view(request):
+    return render(request, 'character_info/info.html')  # 챗봇 템플릿 경로
