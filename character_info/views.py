@@ -36,6 +36,7 @@ async def get_character_info(character_name, date=None):
         hexamatrix_info = await get_api_data(session, "/character/hexamatrix", params)
         hexamatrix_stat_info = await get_api_data(session, "/character/hexamatrix-stat", params)
         symbol_equipment_info = await get_api_data(session, "/character/symbol-equipment", params)
+        vmatrix_info = await get_api_data(session, "/character/vmatrix", params)
         
         return {
             "basic_info": basic_info,
@@ -46,7 +47,8 @@ async def get_character_info(character_name, date=None):
             "link_skill_info": link_skill_info,
             "hexamatrix_info": hexamatrix_info,
             "hexamatrix_stat_info" : hexamatrix_stat_info,
-            "symbol_equipment_info" : symbol_equipment_info
+            "symbol_equipment_info" : symbol_equipment_info,
+            "vmatrix_info": vmatrix_info
         }
 
 
@@ -256,6 +258,30 @@ def extract_hexa(hexamatrix_info):
 
     return hexa_data if hexa_data["character_hexa_core_equipment"] else None
 
+def extract_vmatrix(vmatrix_info):
+    if not isinstance(vmatrix_info, dict):
+        return {}
+
+    vmatrix_data = {
+        "character_class": vmatrix_info.get("character_class", "정보 없음"),
+        "v_cores": [],
+        "remain_slot_upgrade_point": vmatrix_info.get("character_v_matrix_remain_slot_upgrade_point", 0)
+    }
+
+    for core in vmatrix_info.get("character_v_core_equipment", []):
+        vmatrix_data["v_cores"].append({
+            "slot_id": core.get("slot_id", "정보 없음"),
+            "slot_level": core.get("slot_level", 0),
+            "name": core.get("v_core_name", "정보 없음"),
+            "type": core.get("v_core_type", "정보 없음"),
+            "level": core.get("v_core_level", 0),
+            "skill_1": core.get("v_core_skill_1", "정보 없음"),
+            "skill_2": core.get("v_core_skill_2", "정보 없음"),
+            "skill_3": core.get("v_core_skill_3", "정보 없음")
+        })
+
+    return vmatrix_data
+
 
 def extract_symbols(symbol_equipment_info):
     if not isinstance(symbol_equipment_info, dict):
@@ -327,6 +353,7 @@ async def character_info_view(request):
         hexa_stats = extract_hexa_stats(character_info.get('hexamatrix_stat_info', []))
         hexa_data = extract_hexa(character_info.get('hexamatrix_info', []))
         symbol_data = extract_symbols(character_info.get('symbol_equipment_info', []))
+        vmatrix_data = extract_vmatrix(character_info.get('vmatrix_info', {}))
 
         context = {
             'character_info': character_info,
@@ -338,7 +365,8 @@ async def character_info_view(request):
             'hexa_stats': hexa_stats,
             'hexa_data' : hexa_data,
             'symbol_data' : symbol_data,
-            'preset_range': range(1, 4)
+            'preset_range': range(1, 4),
+            'vmatrix_data': vmatrix_data,
         }
 
         return render(request, 'character_info/info.html', context)

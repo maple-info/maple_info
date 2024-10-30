@@ -210,7 +210,28 @@
             <p>링크 스킬 정보가 없습니다.</p>
         {% endfor %}
     </div>
-
+    <div class="section">
+        {% if vmatrix_data %}
+        <h2>V매트릭스 정보</h2>
+        <p>직업: {{ vmatrix_data.character_class }}</p>
+        <p>남은 슬롯 업그레이드 포인트: {{ vmatrix_data.remain_slot_upgrade_point }}</p>
+        
+        <h3>V코어 장비</h3>
+        {% for core in vmatrix_data.v_cores %}
+            <div>
+                <p>슬롯 ID: {{ core.slot_id }}</p>
+                <p>슬롯 레벨: {{ core.slot_level }}</p>
+                <p>코어 이름: {{ core.name }}</p>
+                <p>코어 타입: {{ core.type }}</p>
+                <p>코어 레벨: {{ core.level }}</p>
+                <p>스킬 1: {{ core.skill_1 }}</p>
+                <p>스킬 2: {{ core.skill_2 }}</p>
+                <p>스킬 3: {{ core.skill_3 }}</p>
+            </div>
+            <hr>
+        {% endfor %}
+    {% endif %}
+    </div>
     <!-- 심볼 장비 정보 -->
     <div class="section">
         
@@ -270,6 +291,7 @@
         </div>
     
     </div>
+    
 
     <!-- 헥사 매트릭스 스탯 정보 -->
     <div class="section">
