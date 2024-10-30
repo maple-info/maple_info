@@ -317,8 +317,8 @@ def extract_symbols(symbol_equipment_info):
 def character_info_view(request):
     character_name = request.GET.get('character_name') 
 
-async def character_info_view(request):
-    character_name = request.GET.get('character_name') 
+async def character_info_view(request, character_name):
+    # URL에서 받은 character_name 인수 사용
     character_info = await get_character_info(character_name)
 
     if character_info:
