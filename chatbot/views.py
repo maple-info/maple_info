@@ -3,14 +3,14 @@ from django.shortcuts import render
 from .forms import ChatForm
 from .models import ChatMessage
 from openai import OpenAI
+from langchain.chains import RetrievalQA
+from langchain.llms import OpenAI as LangChainOpenAI
+from langchain.vectorstores import Pinecone
+from langchain.embeddings.openai import OpenAIEmbeddings
+import pinecone
 
 # OpenAI 클라이언트 초기화
 client = OpenAI(api_key=settings.OPENAI_API_KEY)
-
-# 파인튜닝된 모델 이름 가져오기
-job_id = "ftjob-wQuRs8aIa3dSGFAzsEf5mpTe"
-job = client.fine_tuning.jobs.retrieve(job_id)
-fine_tuned_model = job.fine_tuned_model
 
 def chatbot_view(request):
     response_text = ""
@@ -18,11 +18,14 @@ def chatbot_view(request):
         user_message = request.POST.get('message')
         if user_message:
             try:
-                # 새로운 API 호출 방식 사용
+                # RAG를 사용하여 관련 정보 검색
+                retrieved_info = qa_chain.run(user_message)
+
+                # OpenAI API 호출
                 response = client.chat.completions.create(
-                    model=fine_tuned_model,  # 파인튜닝된 모델 이름 사용
+                    model=fine_tuned_model,
                     messages=[
-                        {"role": "system", "content": "You are a helpful assistant knowledgeable about MapleStory."},
+                        {"role": "system", "content": "You are a helpful assistant knowledgeable about MapleStory. Use the following information to answer the question: " + retrieved_info},
                         {"role": "user", "content": user_message}
                     ],
                     max_tokens=150

@@ -202,62 +202,59 @@ def extract_link_skills(link_skill_info):
     return extracted_skills
 
 def extract_hexa_stats(hexamatrix_stat_info):
-    if not isinstance(hexamatrix_stat_info, dict):
-        return {}
+    if not isinstance(hexamatrix_stat_info, dict) or not hexamatrix_stat_info:
+        return None
 
-    # 헥사 스탯 정보를 담을 기본 구조
     hexa_stat_data = {
         "character_hexa_stat_core": [],
         "preset_hexa_stat_core": []
     }
 
-    # character_hexa_stat_core 정보 추출
-    for stat in hexamatrix_stat_info.get("character_hexa_stat_core", []):
-        hexa_stat_data["character_hexa_stat_core"].append({
-            "slot_id": stat.get("slot_id", "정보 없음"),
-            "main_stat_name": stat.get("main_stat_name", "정보 없음"),
-            "sub_stat_name_1": stat.get("sub_stat_name_1", "정보 없음"),
-            "sub_stat_name_2": stat.get("sub_stat_name_2", "정보 없음"),
-            "main_stat_level": stat.get("main_stat_level", 0),
-            "sub_stat_level_1": stat.get("sub_stat_level_1", 0),
-            "sub_stat_level_2": stat.get("sub_stat_level_2", 0),
-            "stat_grade": stat.get("stat_grade", 0)
-        })
+    if hexamatrix_stat_info.get("character_hexa_stat_core"):
+        for stat in hexamatrix_stat_info["character_hexa_stat_core"]:
+            hexa_stat_data["character_hexa_stat_core"].append({
+                "slot_id": stat.get("slot_id", "정보 없음"),
+                "main_stat_name": stat.get("main_stat_name", "정보 없음"),
+                "sub_stat_name_1": stat.get("sub_stat_name_1", "정보 없음"),
+                "sub_stat_name_2": stat.get("sub_stat_name_2", "정보 없음"),
+                "main_stat_level": stat.get("main_stat_level", 0),
+                "sub_stat_level_1": stat.get("sub_stat_level_1", 0),
+                "sub_stat_level_2": stat.get("sub_stat_level_2", 0),
+                "stat_grade": stat.get("stat_grade", 0)
+            })
 
-    # preset_hexa_stat_core 정보 추출
-    for preset_stat in hexamatrix_stat_info.get("preset_hexa_stat_core", []):
-        hexa_stat_data["preset_hexa_stat_core"].append({
-            "slot_id": preset_stat.get("slot_id", "정보 없음"),
-            "main_stat_name": preset_stat.get("main_stat_name", "정보 없음"),
-            "sub_stat_name_1": preset_stat.get("sub_stat_name_1", "정보 없음"),
-            "sub_stat_name_2": preset_stat.get("sub_stat_name_2", "정보 없음"),
-            "main_stat_level": preset_stat.get("main_stat_level", 0),
-            "sub_stat_level_1": preset_stat.get("sub_stat_level_1", 0),
-            "sub_stat_level_2": preset_stat.get("sub_stat_level_2", 0),
-            "stat_grade": preset_stat.get("stat_grade", 0)
-        })
+    if hexamatrix_stat_info.get("preset_hexa_stat_core"):
+        for preset_stat in hexamatrix_stat_info["preset_hexa_stat_core"]:
+            hexa_stat_data["preset_hexa_stat_core"].append({
+                "slot_id": preset_stat.get("slot_id", "정보 없음"),
+                "main_stat_name": preset_stat.get("main_stat_name", "정보 없음"),
+                "sub_stat_name_1": preset_stat.get("sub_stat_name_1", "정보 없음"),
+                "sub_stat_name_2": preset_stat.get("sub_stat_name_2", "정보 없음"),
+                "main_stat_level": preset_stat.get("main_stat_level", 0),
+                "sub_stat_level_1": preset_stat.get("sub_stat_level_1", 0),
+                "sub_stat_level_2": preset_stat.get("sub_stat_level_2", 0),
+                "stat_grade": preset_stat.get("stat_grade", 0)
+            })
 
-    return hexa_stat_data
+    return hexa_stat_data if (hexa_stat_data["character_hexa_stat_core"] or hexa_stat_data["preset_hexa_stat_core"]) else None
 
 def extract_hexa(hexamatrix_info):
-    if not isinstance(hexamatrix_info, dict):
-        return {}
+    if not isinstance(hexamatrix_info, dict) or not hexamatrix_info:
+        return None
 
-    # 헥사 스킬 정보를 담을 기본 구조
     hexa_data = {
         "character_hexa_core_equipment" : []
     }
 
-    # character_hexa_core_equipment 정보 추출
-    for hexa in hexamatrix_info.get("character_hexa_core_equipment", []):
-        hexa_data["character_hexa_core_equipment"].append({
-            "hexa_core_name": hexa.get("hexa_core_name", "정보 없음"),
-            "hexa_core_level": hexa.get("hexa_core_level", "정보 없음"),
-            "hexa_core_type": hexa.get("hexa_core_type", "정보 없음"),
-        })
+    if hexamatrix_info.get("character_hexa_core_equipment"):
+        for hexa in hexamatrix_info["character_hexa_core_equipment"]:
+            hexa_data["character_hexa_core_equipment"].append({
+                "hexa_core_name": hexa.get("hexa_core_name", "정보 없음"),
+                "hexa_core_level": hexa.get("hexa_core_level", "정보 없음"),
+                "hexa_core_type": hexa.get("hexa_core_type", "정보 없음"),
+            })
 
-
-    return hexa_data
+    return hexa_data if hexa_data["character_hexa_core_equipment"] else None
 
 
 def extract_symbols(symbol_equipment_info):
@@ -322,7 +319,6 @@ async def character_info_view(request):
     character_info = await get_character_info(character_name)
 
     if character_info:
-        # 각 데이터를 추출하는 함수들
         final_stats = extract_final_stats(character_info.get('stat_info', {}))
         equipment_data = extract_item_equipment(character_info.get('item_equipment_info', []))
         ability_data = extract_ability_info(character_info.get('ability_info', {}))
@@ -332,7 +328,6 @@ async def character_info_view(request):
         hexa_data = extract_hexa(character_info.get('hexamatrix_info', []))
         symbol_data = extract_symbols(character_info.get('symbol_equipment_info', []))
 
-        # 템플릿으로 전달할 컨텍스트
         context = {
             'character_info': character_info,
             'final_stats': final_stats,
@@ -345,7 +340,6 @@ async def character_info_view(request):
             'symbol_data' : symbol_data,
             'preset_range': range(1, 4)
         }
-
 
         return render(request, 'character_info/info.html', context)
     else:
