@@ -1,7 +1,10 @@
 #background {
-  background-image: url("../image/ai_maple.jpg");
+  background-image: url("../image/back2.jpeg");
   background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-size: cover; /* 반응형에 맞춰 이미지 크기 조절 */
+  background-position: center; /* 이미지를 중앙에 맞춤 */
+  width: 100vw; /* 전체 너비 */
+  height: 100vh; /* 전체 높이 */
 }
 #background::before {
   content: "";
