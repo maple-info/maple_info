@@ -3,17 +3,30 @@ import asyncio
 import aiohttp
 from django.shortcuts import render
 from django.conf import settings
+from django.core.cache import cache
 from asgiref.sync import async_to_sync
+import logging
+from datetime import timedelta
 
+
+
+logger = logging.getLogger(__name__)
 BASE_URL = "https://open.api.nexon.com/maplestory/v1"
 API_KEY = settings.NEXON_API_KEY
+CACHE_DURATION = timedelta(hours=1)  # 캐시 유효 기간
 
 async def get_api_data(session, endpoint, params=None):
     headers = {"x-nxopen-api-key": API_KEY}
     url = f"{BASE_URL}{endpoint}"
-    async with session.get(url, headers=headers, params=params) as response:
-        if response.status == 200:
-            return await response.json()
+    try:
+        async with session.get(url, headers=headers, params=params) as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                logger.error(f"API 요청 실패: {url}, 상태 코드: {response.status}")
+                return None
+    except Exception as e:
+        logger.error(f"API 요청 중 오류 발생: {url}, 오류: {str(e)}")
         return None
 
 async def get_character_info(character_name, date=None):
@@ -50,7 +63,6 @@ async def get_character_info(character_name, date=None):
             "symbol_equipment_info" : symbol_equipment_info,
             "vmatrix_info": vmatrix_info
         }
-
 
     
 def extract_final_stats(stat_info):
@@ -339,7 +351,7 @@ def extract_symbols(symbol_equipment_info):
 
 def character_info_view(request):
     character_name = request.GET.get('character_name') 
-
+    
 async def character_info_view(request):
     character_name = request.GET.get('character_name') 
     character_info = await get_character_info(character_name)
@@ -371,8 +383,7 @@ async def character_info_view(request):
 
         return render(request, 'character_info/info.html', context)
     else:
-        return render(request, 'error.html', {"message": "캐릭터 정보를 찾을 수 없습니다."})
-    
+        return render(request, 'character_info/error.html', {'error': '캐릭터 정보를 찾을 수 없습니다.'})
 
 def chatbot_view(request):
     return render(request, 'character_info/info.html')  # 챗봇 템플릿 경로

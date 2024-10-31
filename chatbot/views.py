@@ -5,7 +5,6 @@ from .models import ChatMessage
 from openai import OpenAI
 from langchain.chains import RetrievalQA
 from langchain.llms import OpenAI as LangChainOpenAI
-from langchain.vectorstores import Pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
 import pinecone
 
