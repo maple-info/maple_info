@@ -55,8 +55,8 @@ main {
   padding: 10px;
   border-radius: 8px;
   text-align: center;
-  width: 250px; 
-  height: 100px;
+  width: 46px; 
+  height: 46px;
 }
 
 /* 반응형 미디어 쿼리 */
@@ -104,4 +104,85 @@ main {
   #col2 > .item {
     padding: 10px;
   }
+}
+
+.equipment-container {
+  position: relative;
+  width: 262px;  /* 전체 크기 조정 */
+  height: 315px;
+  background-color: #ffffff;
+}
+
+.slot {
+  background-color: #b8b7b7;
+  position: absolute;
+  width: 46px;  /* 아이템 크기 */
+  height: 46px;
+  display: flex;
+  justify-content: center;  /* 가로 중앙 정렬 */
+  align-items: center;      /* 세로 중앙 정렬 */
+  border: 0.5px solid transparent; /* 기본 테두리는 투명 */
+}
+
+/* 테두리 색상 클래스 */
+.legendary-border { border: 1px rgb(0, 255, 0); }
+.unique-border { border: 1px rgb(255, 204, 0); }
+.epic-border { border: 1px rgb(204, 102, 255); }
+.rare-border { borderr: 1px rgb(85, 170, 255); }
+.no-potential-border { border: 1px gray; }
+
+/* 각 슬롯의 위치 지정 */
+
+.slot.ring1 { top: 10px; left: 10px; }
+.slot.ring2 { top: 60px; left: 10px; }
+.slot.ring3 { top: 110px; left: 10px; }
+.slot.ring4 { top: 160px; left: 10px; }
+.slot.poket { top: 210px; left: 10px; }
+
+/* 각 슬롯의 위치 지정 */
+.slot.pendant1 { top: 60px; left: 60px; }
+.slot.pendant2 { top: 110px; left: 60px; }
+.slot.weapon { top: 160px; left: 60px; }
+.slot.belt { top: 210px; left: 60px; }
+
+/* 각 슬롯의 위치 지정 */
+.slot.hat { top: 10px; left: 110px; }
+.slot.face { top: 60px; left: 110px; }
+.slot.eyes { top: 110px; left: 110px; }
+.slot.top { top: 160px; left: 110px; }
+.slot.bottom { top: 210px; left: 110px; }
+.slot.shoes { top: 260px; left: 110px; }
+
+/* 각 슬롯의 위치 지정 */
+.slot.earring { top: 110px; left: 160px; }
+.slot.shoulder { top: 160px; left: 160px; }
+.slot.gloves { top: 210px; left: 160px; }
+.slot.android { top: 260px; left: 160px; }
+
+/* 각 슬롯의 위치 지정 */
+.slot.emblem { top: 10px; left: 210px; }
+.slot.medal { top: 60px; left: 210px; }
+.slot.badge { top: 110px; left: 210px; }
+.slot.secondary { top: 160px; left: 210px; }
+.slot.cape { top: 210px; left: 210px; }
+.slot.heart { top: 260px; left: 210px; }
+
+
+/* 툴팁 스타일 */
+.tooltip {
+  position: absolute;
+  width: 290px;
+  height: 434px;
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  z-index: 100;
+}
+
+.hidden {
+  display: none;
 }

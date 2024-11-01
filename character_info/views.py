@@ -4,6 +4,8 @@ import aiohttp
 from django.shortcuts import render
 from django.conf import settings
 from asgiref.sync import async_to_sync
+from django.utils.safestring import mark_safe 
+import json
 
 BASE_URL = "https://open.api.nexon.com/maplestory/v1"
 API_KEY = settings.NEXON_API_KEY
@@ -61,19 +63,56 @@ def extract_final_stats(stat_info):
     
     return final_stats
 
+
+##### 아이템 슬롯명 매핑 테이블
+SLOT_MAPPING = {
+    "반지1": "ring1",
+    "반지2": "ring2",
+    "반지3": "ring3",
+    "반지4": "ring4",
+    "펜던트": "pendant1",
+    "펜던트2": "pendant2",
+    "무기": "weapon",
+    "모자": "hat",
+    "상의": "top",
+    "하의": "bottom",
+    "신발": "shoes",
+    "장갑": "gloves",
+    "망토": "cape",
+    "벨트": "belt",
+    "어깨장식": "shoulder",
+    "얼굴장식": "face",
+    "눈장식": "eyes",
+    "귀고리": "earring",
+    "뱃지": "badge",
+    "훈장": "medal",
+    "보조무기": "secondary",
+    "엠블렘": "emblem",
+    "기계 심장": "heart",
+    "안드로이드": "android",
+    "포켓 아이템": "poket",
+}
 def extract_item_equipment(item_equipment_info):
+    # 유효성 검사
     if not isinstance(item_equipment_info, dict) or 'item_equipment' not in item_equipment_info:
         return {}
     
+    # 기본 구조 생성
     equipment_data = {
         "preset_no": item_equipment_info.get("preset_no", "정보 없음"),
-        "item_equipment": []
+        "item_equipment": {}  # 슬롯별로 저장할 딕셔너리로 변경
     }
 
+    # 각 장비 아이템을 슬롯별로 분류하여 저장
     for item in item_equipment_info.get('item_equipment', []):
-        equipment_item = {
+        # 한글 슬롯 이름을 가져오고 매핑 테이블을 통해 영어 이름으로 변환
+        korean_slot = item.get("item_equipment_slot", "정보 없음")
+        slot = SLOT_MAPPING.get(korean_slot, korean_slot)  # 매핑이 없을 경우 한글 이름 그대로 사용
+
+        # 슬롯 이름을 키로 하여 데이터 저장
+        equipment_data["item_equipment"][slot] = {
+            "slot": slot,  # 슬롯 이름 저장
             "part": item.get("item_equipment_part", "정보 없음"),
-            "slot": item.get("item_equipment_slot", "정보 없음"),
             "name": item.get("item_name", "정보 없음"),
             "icon": item.get("item_icon", "정보 없음"),
             "description": item.get("item_description", "정보 없음"),
@@ -108,10 +147,8 @@ def extract_item_equipment(item_equipment_info):
             "item_etc_option": item.get("item_etc_option", {}),
             "item_starforce_option": item.get("item_starforce_option", {})
         }
-        equipment_data["item_equipment"].append(equipment_item)
 
     return equipment_data
-
 
 def extract_ability_info(ability_info):
     if not isinstance(ability_info, dict):
@@ -354,3 +391,22 @@ async def character_info_view(request, character_name):
 
 def chatbot_view(request):
     return render(request, 'character_info/info.html')  # 챗봇 템플릿 경로
+
+
+##여기는 장비템위에 마우스 갖다대면 띄우는 툴팁을 위해 장비 정보를 안전하게 json파일로 보내기 위한 함수
+def character_equipment_view(request):
+    item_equipment_info = {
+        "preset_no": 1,
+        "item_equipment": [
+            {"item_equipment_slot": "반지1", "item_name": "파워링", "item_icon": "path/to/ring1_icon.png"},
+            {"item_equipment_slot": "반지2", "item_name": "매직링", "item_icon": "path/to/ring2_icon.png"},
+            {"item_equipment_slot": "무기", "item_name": "불멸의 검", "item_icon": "path/to/weapon_icon.png"},
+        ]
+    }
+
+    equipment_data = extract_item_equipment(item_equipment_info)
+    
+    # JSON으로 변환하여 템플릿에 전달
+    equipment_data_json = mark_safe(json.dumps(equipment_data["item_equipment"]))  # JSON으로 변환하고 안전하게 마크
+    
+    return render(request, "character_equipment.html", {"equipment_data": equipment_data, "equipment_data_json": equipment_data_json})
