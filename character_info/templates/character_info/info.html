@@ -14,7 +14,7 @@
         <h1>{{ character_info.basic_info.character_name }} 정보</h1>
     </header>
     <main>
-        <div class="container">
+        <div class="container" style="margin: 0 auto; max-width: 1000px;">
             <div class="col" id="col1">
                 <!-- 기본 정보 -->
                 <div class="row">
@@ -176,7 +176,7 @@
                                     {% endfor %}
                                 </ul> -->
                             
-                                <h5>잠재능력 ({{ item.potential_option_grade }}):</h5> 
+                                <h5>잠재({{ item.potential_option_grade }}):</h5> 
                                <div>
                                     {% for option in item.potential_options %}
                                         {% if option %}
@@ -185,7 +185,7 @@
                                     {% endfor %}
                                </div> 
                             
-                                <h5>에디셔널 잠재능력 ({{ item.additional_potential_option_grade }}):</h5>
+                                <h5>에디({{ item.additional_potential_option_grade }}):</h5>
                                 <div>
                                     {% for option in item.additional_potential_options %}
                                         {% if option %}
