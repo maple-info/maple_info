@@ -1,16 +1,31 @@
-# character_info/views.py
 import asyncio
 import aiohttp
 from django.shortcuts import render
 from django.conf import settings
+from django.core.cache import cache
 from asgiref.sync import async_to_sync
+import logging
+from datetime import timedelta
+from django.utils.safestring import mark_safe 
+import json
 
+logger = logging.getLogger(__name__)
 BASE_URL = "https://open.api.nexon.com/maplestory/v1"
 API_KEY = settings.NEXON_API_KEY
+CACHE_DURATION = timedelta(hours=1)  # 캐시 유효 기간
 
 async def get_api_data(session, endpoint, params=None):
     headers = {"x-nxopen-api-key": API_KEY}
     url = f"{BASE_URL}{endpoint}"
+    try:
+        async with session.get(url, headers=headers, params=params) as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                logger.error(f"API 요청 실패: {url}, 상태 코드: {response.status}")
+                return None
+    except Exception as e:
+        logger.error(f"API 요청 중 오류 발생: {url}, 오류: {str(e)}")
     async with session.get(url, headers=headers, params=params) as response:
         if response.status == 200:
             return await response.json()
@@ -36,7 +51,7 @@ async def get_character_info(character_name, date=None):
         hexamatrix_info = await get_api_data(session, "/character/hexamatrix", params)
         hexamatrix_stat_info = await get_api_data(session, "/character/hexamatrix-stat", params)
         symbol_equipment_info = await get_api_data(session, "/character/symbol-equipment", params)
-        
+        vmatrix_info = await get_api_data(session, "/character/vmatrix", params)
         return {
             "basic_info": basic_info,
             "stat_info": stat_info,
@@ -46,7 +61,8 @@ async def get_character_info(character_name, date=None):
             "link_skill_info": link_skill_info,
             "hexamatrix_info": hexamatrix_info,
             "hexamatrix_stat_info" : hexamatrix_stat_info,
-            "symbol_equipment_info" : symbol_equipment_info
+            "symbol_equipment_info" : symbol_equipment_info,
+            "vmatrix_info": vmatrix_info
         }
 
 
@@ -61,19 +77,56 @@ def extract_final_stats(stat_info):
     
     return final_stats
 
+
+##### 아이템 슬롯명 매핑 테이블
+SLOT_MAPPING = {
+    "반지1": "ring1",
+    "반지2": "ring2",
+    "반지3": "ring3",
+    "반지4": "ring4",
+    "펜던트": "pendant1",
+    "펜던트2": "pendant2",
+    "무기": "weapon",
+    "모자": "hat",
+    "상의": "top",
+    "하의": "bottom",
+    "신발": "shoes",
+    "장갑": "gloves",
+    "망토": "cape",
+    "벨트": "belt",
+    "어깨장식": "shoulder",
+    "얼굴장식": "face",
+    "눈장식": "eyes",
+    "귀고리": "earring",
+    "뱃지": "badge",
+    "훈장": "medal",
+    "보조무기": "secondary",
+    "엠블렘": "emblem",
+    "기계 심장": "heart",
+    "안드로이드": "android",
+    "포켓 아이템": "poket",
+}
 def extract_item_equipment(item_equipment_info):
+    # 유효성 검사
     if not isinstance(item_equipment_info, dict) or 'item_equipment' not in item_equipment_info:
         return {}
     
+    # 기본 구조 생성
     equipment_data = {
         "preset_no": item_equipment_info.get("preset_no", "정보 없음"),
-        "item_equipment": []
+        "item_equipment": {}  # 슬롯별로 저장할 딕셔너리로 변경
     }
 
+    # 각 장비 아이템을 슬롯별로 분류하여 저장
     for item in item_equipment_info.get('item_equipment', []):
-        equipment_item = {
+        # 한글 슬롯 이름을 가져오고 매핑 테이블을 통해 영어 이름으로 변환
+        korean_slot = item.get("item_equipment_slot", "정보 없음")
+        slot = SLOT_MAPPING.get(korean_slot, korean_slot)  # 매핑이 없을 경우 한글 이름 그대로 사용
+
+        # 슬롯 이름을 키로 하여 데이터 저장
+        equipment_data["item_equipment"][slot] = {
+            "slot": slot,  # 슬롯 이름 저장
             "part": item.get("item_equipment_part", "정보 없음"),
-            "slot": item.get("item_equipment_slot", "정보 없음"),
             "name": item.get("item_name", "정보 없음"),
             "icon": item.get("item_icon", "정보 없음"),
             "description": item.get("item_description", "정보 없음"),
@@ -108,10 +161,8 @@ def extract_item_equipment(item_equipment_info):
             "item_etc_option": item.get("item_etc_option", {}),
             "item_starforce_option": item.get("item_starforce_option", {})
         }
-        equipment_data["item_equipment"].append(equipment_item)
 
     return equipment_data
-
 
 def extract_ability_info(ability_info):
     if not isinstance(ability_info, dict):
@@ -202,8 +253,8 @@ def extract_link_skills(link_skill_info):
     return extracted_skills
 
 def extract_hexa_stats(hexamatrix_stat_info):
-    if not isinstance(hexamatrix_stat_info, dict):
-        return {}
+    if not isinstance(hexamatrix_stat_info, dict) or not hexamatrix_stat_info:
+        return None
 
     # 헥사 스탯 정보를 담을 기본 구조
     hexa_stat_data = {
@@ -211,53 +262,76 @@ def extract_hexa_stats(hexamatrix_stat_info):
         "preset_hexa_stat_core": []
     }
 
-    # character_hexa_stat_core 정보 추출
-    for stat in hexamatrix_stat_info.get("character_hexa_stat_core", []):
-        hexa_stat_data["character_hexa_stat_core"].append({
-            "slot_id": stat.get("slot_id", "정보 없음"),
-            "main_stat_name": stat.get("main_stat_name", "정보 없음"),
-            "sub_stat_name_1": stat.get("sub_stat_name_1", "정보 없음"),
-            "sub_stat_name_2": stat.get("sub_stat_name_2", "정보 없음"),
-            "main_stat_level": stat.get("main_stat_level", 0),
-            "sub_stat_level_1": stat.get("sub_stat_level_1", 0),
-            "sub_stat_level_2": stat.get("sub_stat_level_2", 0),
-            "stat_grade": stat.get("stat_grade", 0)
-        })
+    if hexamatrix_stat_info.get("character_hexa_stat_core"):
+        for stat in hexamatrix_stat_info["character_hexa_stat_core"]:
+            hexa_stat_data["character_hexa_stat_core"].append({
+                "slot_id": stat.get("slot_id", "정보 없음"),
+                "main_stat_name": stat.get("main_stat_name", "정보 없음"),
+                "sub_stat_name_1": stat.get("sub_stat_name_1", "정보 없음"),
+                "sub_stat_name_2": stat.get("sub_stat_name_2", "정보 없음"),
+                "main_stat_level": stat.get("main_stat_level", 0),
+                "sub_stat_level_1": stat.get("sub_stat_level_1", 0),
+                "sub_stat_level_2": stat.get("sub_stat_level_2", 0),
+                "stat_grade": stat.get("stat_grade", 0)
+            })
 
-    # preset_hexa_stat_core 정보 추출
-    for preset_stat in hexamatrix_stat_info.get("preset_hexa_stat_core", []):
-        hexa_stat_data["preset_hexa_stat_core"].append({
-            "slot_id": preset_stat.get("slot_id", "정보 없음"),
-            "main_stat_name": preset_stat.get("main_stat_name", "정보 없음"),
-            "sub_stat_name_1": preset_stat.get("sub_stat_name_1", "정보 없음"),
-            "sub_stat_name_2": preset_stat.get("sub_stat_name_2", "정보 없음"),
-            "main_stat_level": preset_stat.get("main_stat_level", 0),
-            "sub_stat_level_1": preset_stat.get("sub_stat_level_1", 0),
-            "sub_stat_level_2": preset_stat.get("sub_stat_level_2", 0),
-            "stat_grade": preset_stat.get("stat_grade", 0)
-        })
+    if hexamatrix_stat_info.get("preset_hexa_stat_core"):
+        for preset_stat in hexamatrix_stat_info["preset_hexa_stat_core"]:
+            hexa_stat_data["preset_hexa_stat_core"].append({
+                "slot_id": preset_stat.get("slot_id", "정보 없음"),
+                "main_stat_name": preset_stat.get("main_stat_name", "정보 없음"),
+                "sub_stat_name_1": preset_stat.get("sub_stat_name_1", "정보 없음"),
+                "sub_stat_name_2": preset_stat.get("sub_stat_name_2", "정보 없음"),
+                "main_stat_level": preset_stat.get("main_stat_level", 0),
+                "sub_stat_level_1": preset_stat.get("sub_stat_level_1", 0),
+                "sub_stat_level_2": preset_stat.get("sub_stat_level_2", 0),
+                "stat_grade": preset_stat.get("stat_grade", 0)
+            })
 
-    return hexa_stat_data
+    return hexa_stat_data if (hexa_stat_data["character_hexa_stat_core"] or hexa_stat_data["preset_hexa_stat_core"]) else None
 
 def extract_hexa(hexamatrix_info):
-    if not isinstance(hexamatrix_info, dict):
-        return {}
-
+    if not isinstance(hexamatrix_info, dict) or not hexamatrix_info:
+        return None
+    
     # 헥사 스킬 정보를 담을 기본 구조
     hexa_data = {
         "character_hexa_core_equipment" : []
     }
 
-    # character_hexa_core_equipment 정보 추출
-    for hexa in hexamatrix_info.get("character_hexa_core_equipment", []):
-        hexa_data["character_hexa_core_equipment"].append({
-            "hexa_core_name": hexa.get("hexa_core_name", "정보 없음"),
-            "hexa_core_level": hexa.get("hexa_core_level", "정보 없음"),
-            "hexa_core_type": hexa.get("hexa_core_type", "정보 없음"),
+    if hexamatrix_info.get("character_hexa_core_equipment"):
+        for hexa in hexamatrix_info["character_hexa_core_equipment"]:
+            hexa_data["character_hexa_core_equipment"].append({
+                "hexa_core_name": hexa.get("hexa_core_name", "정보 없음"),
+                "hexa_core_level": hexa.get("hexa_core_level", "정보 없음"),
+                "hexa_core_type": hexa.get("hexa_core_type", "정보 없음"),
+            })
+
+    return hexa_data if hexa_data["character_hexa_core_equipment"] else None
+
+def extract_vmatrix(vmatrix_info):
+    if not isinstance(vmatrix_info, dict):
+        return {}
+    
+    vmatrix_data = {
+        "character_class": vmatrix_info.get("character_class", "정보 없음"),
+        "v_cores": [],
+        "remain_slot_upgrade_point": vmatrix_info.get("character_v_matrix_remain_slot_upgrade_point", 0)
+    }
+
+    for core in vmatrix_info.get("character_v_core_equipment", []):
+        vmatrix_data["v_cores"].append({
+            "slot_id": core.get("slot_id", "정보 없음"),
+            "slot_level": core.get("slot_level", 0),
+            "name": core.get("v_core_name", "정보 없음"),
+            "type": core.get("v_core_type", "정보 없음"),
+            "level": core.get("v_core_level", 0),
+            "skill_1": core.get("v_core_skill_1", "정보 없음"),
+            "skill_2": core.get("v_core_skill_2", "정보 없음"),
+            "skill_3": core.get("v_core_skill_3", "정보 없음")
         })
 
-
-    return hexa_data
+    return vmatrix_data
 
 
 def extract_symbols(symbol_equipment_info):
@@ -331,7 +405,7 @@ async def character_info_view(request, character_name):
         hexa_stats = extract_hexa_stats(character_info.get('hexamatrix_stat_info', []))
         hexa_data = extract_hexa(character_info.get('hexamatrix_info', []))
         symbol_data = extract_symbols(character_info.get('symbol_equipment_info', []))
-
+        vmatrix_data = extract_vmatrix(character_info.get('vmatrix_info', {}))
         # 템플릿으로 전달할 컨텍스트
         context = {
             'character_info': character_info,
@@ -343,14 +417,34 @@ async def character_info_view(request, character_name):
             'hexa_stats': hexa_stats,
             'hexa_data' : hexa_data,
             'symbol_data' : symbol_data,
-            'preset_range': range(1, 4)
+            'preset_range': range(1, 4),
+            'vmatrix_data': vmatrix_data,
         }
 
 
         return render(request, 'character_info/info.html', context)
     else:
-        return render(request, 'error.html', {"message": "캐릭터 정보를 찾을 수 없습니다."})
+        return render(request, 'character_info/error.html', {'error': '캐릭터 정보를 찾을 수 없습니다.'})
     
 
 def chatbot_view(request):
     return render(request, 'character_info/info.html')  # 챗봇 템플릿 경로
+
+
+##여기는 장비템위에 마우스 갖다대면 띄우는 툴팁을 위해 장비 정보를 안전하게 json파일로 보내기 위한 함수
+def character_equipment_view(request):
+    item_equipment_info = {
+        "preset_no": 1,
+        "item_equipment": [
+            {"item_equipment_slot": "반지1", "item_name": "파워링", "item_icon": "path/to/ring1_icon.png"},
+            {"item_equipment_slot": "반지2", "item_name": "매직링", "item_icon": "path/to/ring2_icon.png"},
+            {"item_equipment_slot": "무기", "item_name": "불멸의 검", "item_icon": "path/to/weapon_icon.png"},
+        ]
+    }
+
+    equipment_data = extract_item_equipment(item_equipment_info)
+    
+    # JSON으로 변환하여 템플릿에 전달
+    equipment_data_json = mark_safe(json.dumps(equipment_data["item_equipment"]))  # JSON으로 변환하고 안전하게 마크
+    
+    return render(request, "character_equipment.html", {"equipment_data": equipment_data, "equipment_data_json": equipment_data_json})

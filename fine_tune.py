@@ -1,7 +1,7 @@
 from openai import OpenAI
 from decouple import config 
 
-# API 키 설정 (환경 변수로 설정하는 것이 더 안전합니다)
+# API 키 설정 
 client = OpenAI(api_key = config('OPENAI_API_KEY'))
 
 # jsonl 파일을 업로드
