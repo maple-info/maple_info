@@ -1,0 +1,59 @@
+#background {
+  background-image: url("../image/back2.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover; /* 반응형에 맞춰 이미지 크기 조절 */
+  background-position: center; /* 이미지를 중앙에 맞춤 */
+  width: 100vw; /* 전체 너비 */
+  height: 100vh; /* 전체 높이 */
+}
+#background::before {
+  content: "";
+  opacity: 0.5;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background-color: #000000;
+}
+#container {
+  width: 300px;
+  height: 50px;
+  position: relative;
+  display: flex;
+}
+
+#container form {
+  z-index: 2;
+  border: 3px solid rgb(0, 0, 0);
+  background: rgb(255, 255, 255);
+  border-radius: 4px;
+  padding: 3px 11px;
+  display: flex;
+  align-items: center;
+  width: 150%;
+}
+#container #input {
+  background: none;
+  border: none;
+  padding: 0px;
+  width: 104px;
+  flex: 1 1 0%;
+  color: rgb(0, 0, 0);
+  border: none;
+  outline: none;
+}
+#container button {
+  position: absolute;
+  top: 3px;
+  bottom: 5px;
+  right: 5px;
+  border: none;
+  background: none;
+  color: white;
+}
+#container button img {
+  width: 30px;
+  height: 30px;
+  margin-top: 4px;
+}
