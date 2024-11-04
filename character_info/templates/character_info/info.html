@@ -106,13 +106,16 @@
                             <li>번호: {{ ability.no }}, 등급: {{ ability.grade }}, 값: {{ ability.value }}</li>
                         {% endfor %}
                     </ul>
+                    {% comment %} <ul>
+                        <pre>{{ equipment_data|default_if_none:"데이터 없음" }}</pre>
+                    </ul> {% endcomment %}
                 </div>
 
             </div>
 
             <!-- 장비 -->
             <div class="col" id="col2">
-                <div class="equipment-container">
+                {% comment %} <div class="equipment-container">
                     <!-- 반지1 슬롯 -->
                     {% if equipment_data.item_equipment.ring1 %}
                     <div class="slot ring1" onmouseenter="showTooltip(event, 'ring1')" onmouseleave="hideTooltip()">
@@ -247,32 +250,23 @@
                         <img src="{{ equipment_data.item_equipment.heart.icon }}">
                     </div>
                     {% endif %}
+                    
+                </div> {% endcomment %}
+                {{ equipment_data|json_script:"equipment-data" }}
+
+                <div class="equipment-container">
+                    {% for slot, item in equipment_data.item_equipment.items %}
+                        <div class="slot {{ slot }}" onmouseenter="showTooltip(event, '{{ slot }}')" onmouseleave="hideTooltip()">
+                            <img src="{{ item.icon }}" alt="{{ item.name }}">
+                        </div>
+                    {% endfor %}
                 </div>
-                <div id="tooltip" class="tooltip hidden">
-                    <p id="tooltip-starforce"></p>
-                    <h4 id="tooltip-name"></h4>
-                    <p id="tooltip-part"></p>
-                    <img id="tooltip-icon"></img>
-                    <p id="tooltip-part"></p>
-                    <p id="tooltip-str"></p>
-                    <p id="tooltip-dex"></p>
-                    <p id="tooltip-int"></p>
-                    <p id="tooltip-luk"></p>
-                    <p id="tooltip-hp"></p>
-                    <p id="tooltip-mp"></p>
-                    <p id="tooltip-mp"></p>
-                    <p id="tooltip-mp"></p>
-                    <p id="tooltip-mp"></p>
-                    <p id="tooltip-mp"></p>
-                    <!-- 필요한 추가 정보들 -->
-                    <h5>잠재 옵션:</h5>
-                    <ul id="tooltip-potential-options"></ul>
-                    <h5>추가 잠재 옵션:</h5>
-                    <ul id="tooltip-additional-potential-options"></ul>
-                </div>  
+
+                <div class="tooltip" id="tooltip" style="display: none;"></div>
             </div>
         </div>
     </main>
+
 
 <script src="/static/css/info.js"></script>
 </body> 

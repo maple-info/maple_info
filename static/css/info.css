@@ -167,22 +167,72 @@ main {
 .slot.cape { top: 210px; left: 210px; }
 .slot.heart { top: 260px; left: 210px; }
 
-
-/* 툴팁 스타일 */
+/* 툴팁 기본 스타일 */
 .tooltip {
+  display: none;
   position: absolute;
-  width: 290px;
-  height: 434px;
-  background-color: #000;
-  color: #fff;
-  border: 1px solid #333;
-  border-radius: 8px;
+  max-width: 250px;
+  background-color: #1c1c1c; /* 어두운 배경 */
+  color: #FFF; /* 기본 글자색 */
   padding: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
   font-size: 14px;
-  z-index: 100;
+  line-height: 1.4;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  white-space: normal;
 }
 
-.hidden {
-  display: none;
+/* 장비 이름 및 등급 */
+.tooltip .item-name {
+  font-weight: bold;
+  font-size: 16px;
+  color: #FFD700; /* 금색 */
+  margin-bottom: 4px;
+}
+
+.tooltip .item-level {
+  font-size: 13px;
+  color: #AAA; /* 흐린 회색 */
+  margin-bottom: 8px;
+}
+
+/* 구분선 */
+.tooltip hr {
+  border: 0;
+  border-top: 1px solid #555;
+  margin: 8px 0;
+}
+
+/* 주요 속성 */
+.tooltip .attributes {
+  color: #FFF;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.tooltip .attributes strong {
+  color: #FFD700; /* 속성 이름 색상 */
+}
+
+/* 잠재옵션, 에디셔널 잠재옵션 섹션 타이틀 */
+.tooltip .section-title {
+  font-weight: bold;
+  color: #FFD700;
+  margin-top: 8px;
+}
+
+.tooltip .potential-options,
+.tooltip .additional-potential-options {
+  margin-left: 10px;
+}
+
+.tooltip .potential-options div,
+.tooltip .additional-potential-options div {
+  color: #98FB98; /* 잠재옵션 텍스트 색상 (연두색) */
+  font-size: 13px;
+}
+
+.tooltip .additional-potential-options div {
+  color: #ADD8E6; /* 에디셔널 잠재옵션 텍스트 색상 (밝은 파란색) */
 }
