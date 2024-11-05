@@ -1,0 +1,104 @@
+/* 공통 스타일 */
+img {
+  vertical-align: middle;
+}
+
+header {
+  height: 80px;
+  background-color: #ffffff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+}
+
+header h1 {
+  color: black;
+}
+
+main {
+  background-color: #ffffff;
+}
+
+.container {
+  background-color: #ffffff63;
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  padding: 20px;
+}
+
+.col {
+  border: 2px solid black;
+  padding: 2px;
+}
+
+#col1 {
+  min-width: 250px;
+}
+#col1>.row{
+  border-bottom: 0.6px solid rgba(0, 0, 0, 0.2);; 
+  padding-bottom: 8px;
+}
+#col2 > .row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.item{
+  border: 2px solid black;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* 반응형 미디어 쿼리 */
+
+/* 태블릿 화면 (너비 768px 이하) */
+@media (max-width: 768px) {
+  main {
+    margin: 20px;
+  }
+  
+  .container {
+    flex-direction: column; /* 컬럼 방향으로 변경 */
+    gap: 20px;
+  }
+
+  #col2 > .row {
+    grid-template-columns: repeat(2, 1fr); /* 2열로 나열 */
+  }
+}
+
+/* 모바일 화면 (너비 480px 이하) */
+@media (max-width: 480px) {
+  header {
+    font-size: 1.2em;
+    padding: 10px;
+  }
+
+  main {
+    margin: 10px;
+  }
+
+  #col1 {
+    max-width: 100%; /* 전체 너비 사용 */
+  }
+
+  .container {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  #col2 > .row {
+    grid-template-columns: 1fr; /* 1열로 나열 */
+  }
+
+  #col2 > .item {
+    padding: 10px;
+  }
+}
