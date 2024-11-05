@@ -2,17 +2,35 @@
 img {
   vertical-align: middle;
 }
-
-header {
-  height: 80px;
-  background-color: #ffffff;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5em;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
 }
 
+button {
+  background-color: #4CAF; /* 배경 색깔 */
+  color: white; /* 글자 색깔 */
+  padding: 10px 20px; /* 버튼 패딩 */
+  font-size: 16px; /* 글자 크기 */
+  border: none; /* 테두리 제거 */
+  border-radius: 5px; /* 둥근 모서리 */
+  cursor: pointer; /* 마우스 커서 */
+  transition: background-color 0.3s ease; /* 호버 효과 애니메이션 */
+}
+
+/* 버튼 호버 스타일 */
+button:hover {
+  background-color: #fafafa; /* 호버 시 색 변경 */
+  color: black; 
+}
+
+/* 버튼 활성화 상태 */
+button:active {
+  background-color: #ffffff; /* 클릭 시 색 변경 */
+  color: black; 
+}
 header h1 {
   color: black;
 }
@@ -20,7 +38,41 @@ header h1 {
 main {
   background-color: #ffffff;
 }
+.info-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  /* border: 1px solid #ccc; */
+  border-radius: 8px;
+  max-width: 300px;
+  margin: 0 auto;
+  text-align: center;
+}
 
+/* 이미지 스타일 */
+.info-box img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+/* 텍스트 스타일 */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+/* 제목 스타일 */
+.info-box h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
 .container {
   background-color: #ffffff63;
   display: flex;
@@ -36,6 +88,7 @@ main {
 
 #col1 {
   min-width: 250px;
+  max-width: 300px
 }
 #col1>.row{
   border-bottom: 0.6px solid rgba(0, 0, 0, 0.2);; 
@@ -104,6 +157,10 @@ main {
   #col2 > .item {
     padding: 10px;
   }
+}
+
+#col3{
+  width: 100%
 }
 
 .equipment-container {
@@ -235,4 +292,83 @@ main {
 
 .tooltip .additional-potential-options div {
   color: #ADD8E6; /* 에디셔널 잠재옵션 텍스트 색상 (밝은 파란색) */
+}
+/* 세트효과 css */
+
+#set-effect {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 수평 중앙 정렬 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  padding: 10px;
+  /* border: 1px solid #ccc; */
+  border-radius: 8px;
+  max-width: 300px;
+  margin: 0 auto; /* 전체 박스 중앙 정렬 */
+}
+
+/* 제목 스타일 */
+#set-effect h4 {
+  margin-bottom: 15px;
+}
+
+/* 세트 이름 스타일 */
+#set-effect p {
+  margin: 5px 0;
+}
+
+/* 어빌리티 css */
+    /* 등급에 따른 색상 */
+    .grade-레전드리 {
+      background-color: rgb(164, 199, 0); /* 금색 */
+      color: rgb(255, 255, 255);
+  }
+
+  .grade-유니크 {
+      background-color: rgb(232, 156, 9); /* 은색 */
+      color: rgb(255, 255, 255);
+  }
+
+  .grade-레어 {
+      background-color: rgb(54, 184, 208); /* 보라색 */
+      color: white;
+  }
+
+  .grade-에픽 {
+      background-color: rgb(127, 102, 211); /* 옅은 파란색 */
+      color: rgb(255, 255, 255);
+  }
+  .ability-box {
+    padding: 5px; /* 패딩 줄이기 */
+    margin-bottom: 5px;
+    border-radius: 5px;
+    font-size: 15px; /* 글자 크기 줄이기 */
+    text-align: center; /* 글씨 가운데 정렬 */
+}
+
+/* 심볼 css */
+.symbol-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3열 */
+  gap: 10px; /* 아이템 간의 간격 */
+  text-align: center;
+}
+
+/* 심볼 아이템 스타일 */
+.symbol-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.symbol-item img {
+  width: 30px; /* 아이콘 크기 조정 */
+  height: 30px;
+  object-fit: cover;
+  margin-bottom: 5px;
+}
+
+#symbol h5{
+  text-align: center;
+  margin: 20px 0 10px;
 }

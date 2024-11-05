@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -8,56 +9,37 @@
 </head>
 <form action="{% url 'chatbot' %}" method="get">
     <button type="submit">챗봇으로 상담하기</button>
-</form>
+</form> 
+
 <body>
-    <header>
-        <h1>{{ character_info.basic_info.character_name }} 정보</h1>
-    </header>
+
     <main>
-        <div class="container" style="margin: 0 auto; max-width: 1000px;">
+        <div class="container" style="margin: 0 auto; max-width: 1200px;">
             <div class="col" id="col1">
                 <!-- 기본 정보 -->
                 <div class="row">
-                    <h2>기본 정보</h2>
-                    <table>
-                        <tr>
-                            <td>레벨:</td>
-                            <td>{{ character_info.basic_info.character_level|default:"정보 없음" }}</td>
-                        </tr>
-                        <tr>
-                            <td>직업:</td>
-                            <td>{{ character_info.basic_info.character_class|default:"정보 없음" }}</td>
-                        </tr>
-                        <tr>
-                            <td>서버:</td>
-                            <td>{{ character_info.basic_info.world_name|default:"정보 없음" }}</td>
-                        </tr>
-                    </table>
+                    <div class="info-box">
+                        <h2>기본 정보</h2>
+                        <img src="{{ character_info.basic_info.character_image|default:'정보 없음' }}" alt="Character Image">
+                        <div class="info-row">
+                            <strong>닉네임:</strong>
+                            <span>{{ character_info.basic_info.character_name }}</span>
+                        </div>
+                        <div class="info-row">
+                            <strong>레벨:</strong>
+                            <span> Lv.{{ character_info.basic_info.character_level|default:"정보 없음" }}</span>
+                        </div>
+                        <div class="info-row">
+                            <strong>직업:</strong>
+                            <span>{{ character_info.basic_info.character_class|default:"정보 없음" }}</span>
+                        </div>
+                        <div class="info-row">
+                            <strong>서버:</strong>
+                            <span>{{ character_info.basic_info.world_name|default:"정보 없음" }}</span>
+                        </div>
+                    </div>
                 </div>
-                
-                <!-- 주요 스탯 -->
-                <div class="row">
-                    <h3>주요 스탯</h3>
-                    <table style="width: 100%;">
-                        <tr>
-                            <td style="text-align: left;">STR</td>
-                            <td style="text-align: right;">{{ final_stats.STR|default:"N/A" }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">DEX</td>
-                            <td style="text-align: right;">{{ final_stats.DEX|default:"N/A" }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">INT</td>
-                            <td style="text-align: right;">{{ final_stats.INT|default:"N/A" }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">LUK</td>
-                            <td style="text-align: right;">{{ final_stats.LUK|default:"N/A" }}</td>
-                        </tr>
-                    </table>
-                </div>
-                
+            
                 <!-- 전투 스탯 -->
                 <div class="row">
                     <h3>전투 스탯</h3>
@@ -96,20 +78,39 @@
                         </tr>
                     </table>
                 </div>
+
+                <!-- 주요 스탯 -->
+                <div class="row">
+                    <h3>주요 스탯</h3>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="text-align: left;">STR</td>
+                            <td style="text-align: right;">{{ final_stats.STR|default:"N/A" }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">DEX</td>
+                            <td style="text-align: right;">{{ final_stats.DEX|default:"N/A" }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">INT</td>
+                            <td style="text-align: right;">{{ final_stats.INT|default:"N/A" }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">LUK</td>
+                            <td style="text-align: right;">{{ final_stats.LUK|default:"N/A" }}</td>
+                        </tr>
+                    </table>
+                </div>
+                            
                 <!-- 능력치 정보 -->
                 <div class="row">
                     <h2>어빌리티 정보</h2>
                     <h3>기본 어빌리티</h3>
-                    <ul>
-                        <li>등급: {{ ability_data.grade|default:"정보 없음" }}</li>
+                    <div>
                         {% for ability in ability_data.abilities %}
-                            <li>번호: {{ ability.no }}, 등급: {{ ability.grade }}, 값: {{ ability.value }}</li>
+                            <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
                         {% endfor %}
-                    </ul>
-                    {% comment %} <ul>
-                        <pre>{{ equipment_data|default_if_none:"데이터 없음" }}</pre>
-                    </ul> {% endcomment %}
-                    
+                    </div>            
                 </div>
 
             </div>
@@ -129,6 +130,154 @@
                 </div>
 
                 <div class="tooltip" id="tooltip" style="display: none;"></div>
+                
+                {% comment %} 세트효과 {% endcomment %}
+                <div id="set-effect">
+                    <h4>세트 효과</h4>
+                    {% if set_effect_data.set_effects %}
+                        <div>
+                        {% for set in set_effect_data.set_effects %}
+                            {% if set.total_set_count > 1 %}
+                                <p>
+                                    <span>{{ set.set_name }} ({{ set.total_set_count }} 세트)</span>
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>세트 효과 정보가 없습니다.</p>
+                    {% endif %}
+                </div>
+
+                {% comment %} 심볼 {% endcomment %}
+                
+                <div id='symbol'>
+                    <h5>아케인 심볼</h5>
+                    <!-- 아케인 심볼 -->
+                    {% if symbol_data.arcane_symbols %}
+                        <div class="symbol-container">
+                            {% for symbol in symbol_data.arcane_symbols %}
+                                <div class="symbol-item">
+                                    <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
+                                    <strong>Lv:</strong> {{ symbol.level }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>아케인 심볼이 없습니다.</p>
+                    {% endif %}
+                </div>
+                <!-- 어센틱 심볼 -->
+                <div id='symbol'>
+                    <h5>어센틱 심볼</h5>
+                    {% if symbol_data.authentic_symbols %}
+                        <div class="symbol-container">    
+                            {% for symbol in symbol_data.authentic_symbols %}
+                                <div class="symbol-item">
+                                    <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
+                                    <strong>Lv:</strong> {{ symbol.level }} <br>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>어센틱 심볼이 없습니다.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 스킬 -->
+            <div class="col" id="col3">
+                <div class="row">
+                    <h3>링크 스킬 정보</h3>
+                    {% comment %} {% for preset_hexa_stat_core, skills in link_skill_data.items %}
+                        <h4>{{ preset_hexa_stat_core|title }}</h4>
+                        {% if skills %}
+                            {% for skill in skills %}
+                                <div class="skill">
+                                    <h5>{{ skill.name }} (레벨 {{ skill.level }})</h5>
+                                    <img src="{{ skill.icon }}" alt="{{ skill.name }}">
+                                    <!-- <p>{{ skill.description }}</p> -->
+                                    <!-- <p><strong>효과:</strong> {{ skill.effect }}</p> -->
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>이 프리셋에 링크 스킬 정보가 없습니다.</p>
+                        {% endif %}
+                    {% empty %}
+                        <p>링크 스킬 정보가 없습니다.</p>
+                    {% endfor %} {% endcomment %}
+                </div>
+                <!-- 헥사 매트릭스 스탯 정보 -->
+                <div class="row">
+                    {% comment %} <h2>헥사 스텟 정보</h2>
+                    <ul>
+                        {% for stat in hexa_stats.character_hexa_stat_core %}
+                            <li>
+                                <strong>슬롯 ID:</strong> {{ stat.slot_id }}<br>
+                                <strong>주력 스탯 이름:</strong> {{ stat.main_stat_name }}<br>
+                                <strong>서브 스탯 1:</strong> {{ stat.sub_stat_name_1 }}<br>
+                                <strong>서브 스탯 2:</strong> {{ stat.sub_stat_name_2 }}<br>
+                                <strong>주력 스탯 레벨:</strong> {{ stat.main_stat_level }}<br>
+                                <strong>서브 스탯 1 레벨:</strong> {{ stat.sub_stat_level_1 }}<br>
+                                <strong>서브 스탯 2 레벨:</strong> {{ stat.sub_stat_level_2 }}<br>
+                                <strong>스탯 등급:</strong> {{ stat.stat_grade }}<br>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <h4>프리셋 헥사 스텟 코어</h4>
+                    <ul>
+                        {% for preset_stat in hexa_stats.preset_hexa_stat_core %}
+                            <li>
+                                <strong>슬롯 ID:</strong> {{ preset_stat.slot_id }}<br>
+                                <strong>주력 스탯 이름:</strong> {{ preset_stat.main_stat_name }}<br>
+                                <strong>서브 스탯 1:</strong> {{ preset_stat.sub_stat_name_1 }}<br>
+                                <strong>서브 스탯 2:</strong> {{ preset_stat.sub_stat_name_2 }}<br>
+                                <strong>주력 스탯 레벨:</strong> {{ preset_stat.main_stat_level }}<br>
+                                <strong>서브 스탯 1 레벨:</strong> {{ preset_stat.sub_stat_level_1 }}<br>
+                                <strong>서브 스탯 2 레벨:</strong> {{ preset_stat.sub_stat_level_2 }}<br>
+                                <strong>스탯 등급:</strong> {{ preset_stat.stat_grade }}<br>
+                            </li>
+                        {% endfor %}
+                    </ul> {% endcomment %}
+
+
+                </div>
+                <!-- 헥사 매트릭스 정보 -->
+                <div class="row">
+                    <h3>헥사 매트릭스 정보</h3>
+                    <ul>
+                        {% for stat in hexa_data.character_hexa_core_equipment %}
+                            <li>
+                                <strong>헥사 스킬 이름:</strong> {{ stat.hexa_core_name }}<br>
+                                {% comment %} <strong>헥사 스킬 레벨:</strong> {{ stat.hexa_core_level }}<br>
+                                <strong>헥사 스킬 타입:</strong> {{ stat.hexa_core_type }}<br> {% endcomment %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="section">
+                    <h2>V매트릭스 정보</h2>
+                    {% comment %} {% if vmatrix_data %}
+                    <p>직업: {{ vmatrix_data.character_class }}</p>
+                    <p>남은 슬롯 업그레이드 포인트: {{ vmatrix_data.remain_slot_upgrade_point }}</p>
+                    
+                    <h3>V코어 장비</h3>
+                    {% for core in vmatrix_data.v_cores %}
+                        <div>
+                            <p>슬롯 ID: {{ core.slot_id }}</p>
+                            <p>슬롯 레벨: {{ core.slot_level }}</p>
+                            <p>코어 이름: {{ core.name }}</p>
+                            <p>코어 타입: {{ core.type }}</p>
+                            <p>코어 레벨: {{ core.level }}</p>
+                            <p>스킬 1: {{ core.skill_1 }}</p>
+                            <p>스킬 2: {{ core.skill_2 }}</p>
+                            <p>스킬 3: {{ core.skill_3 }}</p>
+                        </div>
+                        <hr>
+                    {% endfor %}
+                {% endif %} {% endcomment %}
+                </div>
+            
             </div>
         </div>
     </main>

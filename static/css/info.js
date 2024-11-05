@@ -45,7 +45,10 @@ function showTooltip(event, slot) {
     }
 }
 
-// 툴팁을 숨기는 함수
-function hideTooltip() {
-    tooltip.style.display = 'none';
+function showTab(tabId) {
+    document.getElementById('arcane').style.display = 'none';
+    document.getElementById('authentic').style.display = 'none';
+    document.getElementById(tabId).style.display = 'grid';
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
 }
