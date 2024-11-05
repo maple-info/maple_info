@@ -47,6 +47,7 @@ def search_all_indices(query, indices, k=5):
         results.extend([(metadata[i], D[0][j]) for j, i in enumerate(I[0])])
     return sorted(results, key=lambda x: x[1])[:k]
 
+
 def chatbot_view(request):
     if request.method == 'POST':
         user_message = request.POST.get('message')
@@ -58,18 +59,22 @@ def chatbot_view(request):
 
                 # OpenAI API 호출 (파인튜닝 모델 사용)
                 response = client.chat.completions.create(
-                    model="아직 튜닝 좀",  # 파인튜닝된 모델 ID
+                    model="ft:gpt-3.5-turbo-0125:personal::APok7gr7",  # 파인튜닝된 모델 ID
                     messages=[
                         {"role": "system", "content": "You are a helpful assistant that answers questions about MapleStory game mechanics and statistics."},
+                        {"role": "system", "content": "모든 응답은 한국어로 작성해 주세요."},
                         {"role": "user", "content": f"Context: {context}\n\nQuestion: {user_message}"}
                     ],
-                    max_tokens=150
+                    max_tokens=300
                 )
                 response_text = response.choices[0].message.content.strip()
-                return JsonResponse({'response': response_text})
+
+                # JsonResponse에서 ensure_ascii=False로 설정
+                return JsonResponse({'response': response_text}, json_dumps_params={'ensure_ascii': False})
             except Exception as e:
+                print(f"Error: {str(e)}")  # 로그에 오류 메시지 출력
                 return JsonResponse({'error': f"챗봇 응답을 가져오는 중 오류가 발생했습니다: {str(e)}"}, status=500)
-    
+
     return render(request, 'chatbot.html')
 
 def character_info_view(request):
