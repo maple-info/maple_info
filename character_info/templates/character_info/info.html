@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -8,56 +9,37 @@
 </head>
 <form action="{% url 'chatbot' %}" method="get">
     <button type="submit">챗봇으로 상담하기</button>
-</form>
+</form> 
+
 <body>
-    <header>
-        <h1>{{ character_info.basic_info.character_name }} 정보</h1>
-    </header>
+
     <main>
-        <div class="container" style="margin: 0 auto; max-width: 1000px;">
+        <div class="container" style="margin: 0 auto; max-width: 1200px;">
             <div class="col" id="col1">
                 <!-- 기본 정보 -->
                 <div class="row">
-                    <h2>기본 정보</h2>
-                    <table>
-                        <tr>
-                            <td>레벨:</td>
-                            <td>{{ character_info.basic_info.character_level|default:"정보 없음" }}</td>
-                        </tr>
-                        <tr>
-                            <td>직업:</td>
-                            <td>{{ character_info.basic_info.character_class|default:"정보 없음" }}</td>
-                        </tr>
-                        <tr>
-                            <td>서버:</td>
-                            <td>{{ character_info.basic_info.world_name|default:"정보 없음" }}</td>
-                        </tr>
-                    </table>
+                    <div class="info-box">
+                        <h2>기본 정보</h2>
+                        <img src="{{ character_info.basic_info.character_image|default:'정보 없음' }}" alt="Character Image">
+                        <div class="info-row">
+                            <strong>닉네임:</strong>
+                            <span>{{ character_info.basic_info.character_name }}</span>
+                        </div>
+                        <div class="info-row">
+                            <strong>레벨:</strong>
+                            <span> Lv.{{ character_info.basic_info.character_level|default:"정보 없음" }}</span>
+                        </div>
+                        <div class="info-row">
+                            <strong>직업:</strong>
+                            <span>{{ character_info.basic_info.character_class|default:"정보 없음" }}</span>
+                        </div>
+                        <div class="info-row">
+                            <strong>서버:</strong>
+                            <span>{{ character_info.basic_info.world_name|default:"정보 없음" }}</span>
+                        </div>
+                    </div>
                 </div>
-                
-                <!-- 주요 스탯 -->
-                <div class="row">
-                    <h3>주요 스탯</h3>
-                    <table style="width: 100%;">
-                        <tr>
-                            <td style="text-align: left;">STR</td>
-                            <td style="text-align: right;">{{ final_stats.STR|default:"N/A" }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">DEX</td>
-                            <td style="text-align: right;">{{ final_stats.DEX|default:"N/A" }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">INT</td>
-                            <td style="text-align: right;">{{ final_stats.INT|default:"N/A" }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">LUK</td>
-                            <td style="text-align: right;">{{ final_stats.LUK|default:"N/A" }}</td>
-                        </tr>
-                    </table>
-                </div>
-                
+            
                 <!-- 전투 스탯 -->
                 <div class="row">
                     <h3>전투 스탯</h3>
@@ -96,32 +78,126 @@
                         </tr>
                     </table>
                 </div>
+
+                <!-- 주요 스탯 -->
+                <div class="row">
+                    <h3>주요 스탯</h3>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="text-align: left;">STR</td>
+                            <td style="text-align: right;">{{ final_stats.STR|default:"N/A" }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">DEX</td>
+                            <td style="text-align: right;">{{ final_stats.DEX|default:"N/A" }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">INT</td>
+                            <td style="text-align: right;">{{ final_stats.INT|default:"N/A" }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">LUK</td>
+                            <td style="text-align: right;">{{ final_stats.LUK|default:"N/A" }}</td>
+                        </tr>
+                    </table>
+                </div>
+                            
                 <!-- 능력치 정보 -->
                 <div class="row">
                     <h2>어빌리티 정보</h2>
                     <h3>기본 어빌리티</h3>
-                    <ul>
-                        <li>등급: {{ ability_data.grade|default:"정보 없음" }}</li>
+                    <div>
                         {% for ability in ability_data.abilities %}
-                            <li>번호: {{ ability.no }}, 등급: {{ ability.grade }}, 값: {{ ability.value }}</li>
+                            <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
                         {% endfor %}
-                    </ul>
-                    {% comment %} <ul>
-                        <pre>{{ equipment_data|default_if_none:"데이터 없음" }}</pre>
-                    </ul> {% endcomment %}
-                    
+                    </div>            
                 </div>
+
+            </div>
+
+                
+            <!-- 장비 -->
+            <div class="col" id="col2">
+
+                {{ equipment_data|json_script:"equipment-data" }}
+
+                <div class="equipment-container">
+                    {% for slot, item in equipment_data.item_equipment.items %}
+                        <div class="slot {{ slot }}" onmouseenter="showTooltip(event, '{{ slot }}')" onmouseleave="hideTooltip()">
+                            <img src="{{ item.icon }}" alt="{{ item.name }}">
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="tooltip" id="tooltip" style="display: none;"></div>
+                
+                {% comment %} 세트효과 {% endcomment %}
+                <div id="set-effect">
+                    <h4>세트 효과</h4>
+                    {% if set_effect_data.set_effects %}
+                        <div>
+                        {% for set in set_effect_data.set_effects %}
+                            {% if set.total_set_count > 1 %}
+                                <p>
+                                    <span>{{ set.set_name }} ({{ set.total_set_count }} 세트)</span>
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>세트 효과 정보가 없습니다.</p>
+                    {% endif %}
+                </div>
+
+                {% comment %} 심볼 {% endcomment %}
+                
+                <div id='symbol'>
+                    <h5>아케인 심볼</h5>
+                    <!-- 아케인 심볼 -->
+                    {% if symbol_data.arcane_symbols %}
+                        <div class="symbol-container">
+                            {% for symbol in symbol_data.arcane_symbols %}
+                                <div class="symbol-item">
+                                    <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
+                                    <strong>Lv:</strong> {{ symbol.level }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>아케인 심볼이 없습니다.</p>
+                    {% endif %}
+                </div>
+                <!-- 어센틱 심볼 -->
+                <div id='symbol'>
+                    <h5>어센틱 심볼</h5>
+                    {% if symbol_data.authentic_symbols %}
+                        <div class="symbol-container">    
+                            {% for symbol in symbol_data.authentic_symbols %}
+                                <div class="symbol-item">
+                                    <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
+                                    <strong>Lv:</strong> {{ symbol.level }} <br>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>어센틱 심볼이 없습니다.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 스킬 -->
+            <div class="col" id="col3">
                 <div class="row">
                     <h3>링크 스킬 정보</h3>
-                    {% for preset_hexa_stat_core, skills in link_skill_data.items %}
+                    {% comment %} {% for preset_hexa_stat_core, skills in link_skill_data.items %}
                         <h4>{{ preset_hexa_stat_core|title }}</h4>
                         {% if skills %}
                             {% for skill in skills %}
                                 <div class="skill">
                                     <h5>{{ skill.name }} (레벨 {{ skill.level }})</h5>
                                     <img src="{{ skill.icon }}" alt="{{ skill.name }}">
-                                    <p>{{ skill.description }}</p>
-                                    <p><strong>효과:</strong> {{ skill.effect }}</p>
+                                    <!-- <p>{{ skill.description }}</p> -->
+                                    <!-- <p><strong>효과:</strong> {{ skill.effect }}</p> -->
                                 </div>
                             {% endfor %}
                         {% else %}
@@ -129,76 +205,11 @@
                         {% endif %}
                     {% empty %}
                         <p>링크 스킬 정보가 없습니다.</p>
-                    {% endfor %}
+                    {% endfor %} {% endcomment %}
                 </div>
-                <div class="row">
-                    {% if vmatrix_data %}
-                    <h2>V매트릭스 정보</h2>
-                    <p>직업: {{ vmatrix_data.character_class }}</p>
-                    <p>남은 슬롯 업그레이드 포인트: {{ vmatrix_data.remain_slot_upgrade_point }}</p>
-                    
-                    <h3>V코어 장비</h3>
-                    {% for core in vmatrix_data.v_cores %}
-                        <div>
-                            <p>슬롯 ID: {{ core.slot_id }}</p>
-                            <p>슬롯 레벨: {{ core.slot_level }}</p>
-                            <p>코어 이름: {{ core.name }}</p>
-                            <p>코어 타입: {{ core.type }}</p>
-                            <p>코어 레벨: {{ core.level }}</p>
-                            <p>스킬 1: {{ core.skill_1 }}</p>
-                            <p>스킬 2: {{ core.skill_2 }}</p>
-                            <p>스킬 3: {{ core.skill_3 }}</p>
-                        </div>
-                        <hr>
-                    {% endfor %}
-                {% endif %}
-                </div>
-                <!-- 심볼 장비 정보 -->
-                <div class="row">
-                    
-                    <!-- 아케인 심볼 -->
-                    <h2>아케인 심볼</h2>
-                    <div>
-                        {% if symbol_data.arcane_symbols %}
-                            {% for symbol in symbol_data.arcane_symbols %}
-                                <div class="symbol-item">
-                                    <strong>이름:</strong> {{ symbol.name }} <br>
-                                    <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
-                                    <strong>레벨:</strong> {{ symbol.level }} <br>
-                                    <strong>포스:</strong> {{ symbol.force }} <br>
-                                    <strong>설명:</strong> {{ symbol.description }} <br>
-                                    <strong>스탯:</strong>
-                                    <ul>
-                                        <li>힘: {{ symbol.stats.str }}</li>
-                                        <li>덱스: {{ symbol.stats.dex }}</li>
-                                        <li>인트: {{ symbol.stats.int }}</li>
-                                        <li>럭: {{ symbol.stats.luk }}</li>
-                                        <li>HP: {{ symbol.stats.hp }}</li>
-                                    </ul>
-                                    <strong>성장 횟수:</strong> {{ symbol.growth_count }} <br>
-                                    <strong>필요한 성장 횟수:</strong> {{ symbol.require_growth_count }} <br>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <p>아케인 심볼이 없습니다.</p>
-                        {% endif %}
-                    </div>
-                    <!-- 어센틱 심볼 -->
-                    <h2>어센틱 심볼</h2>
-                    <div>
-                        {% if symbol_data.authentic_symbols %}
-                            {% for symbol in symbol_data.authentic_symbols %}
-                                <div class="symbol-item">
-                                    <strong>이름:</strong> {{ symbol.name }} <br>
-                                    <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
-                                    <strong>레벨:</strong> {{ symbol.level }} <br>
-                                    <strong>포스:</strong> {{ symbol.force }} <br>
-                                    <strong>설명:</strong> {{ symbol.description }} <br>
-                                    <strong>스탯:</strong>
-            
                 <!-- 헥사 매트릭스 스탯 정보 -->
                 <div class="row">
-                    <h2>헥사 스텟 정보</h2>
+                    {% comment %} <h2>헥사 스텟 정보</h2>
                     <ul>
                         {% for stat in hexa_stats.character_hexa_stat_core %}
                             <li>
@@ -227,11 +238,9 @@
                                 <strong>스탯 등급:</strong> {{ preset_stat.stat_grade }}<br>
                             </li>
                         {% endfor %}
-                    </ul>
-            
-            
-            
-            
+                    </ul> {% endcomment %}
+
+
                 </div>
                 <!-- 헥사 매트릭스 정보 -->
                 <div class="row">
@@ -240,166 +249,35 @@
                         {% for stat in hexa_data.character_hexa_core_equipment %}
                             <li>
                                 <strong>헥사 스킬 이름:</strong> {{ stat.hexa_core_name }}<br>
-                                <strong>헥사 스킬 레벨:</strong> {{ stat.hexa_core_level }}<br>
-                                <strong>헥사 스킬 타입:</strong> {{ stat.hexa_core_type }}<br>
-            
+                                {% comment %} <strong>헥사 스킬 레벨:</strong> {{ stat.hexa_core_level }}<br>
+                                <strong>헥사 스킬 타입:</strong> {{ stat.hexa_core_type }}<br> {% endcomment %}
                             </li>
                         {% endfor %}
                     </ul>
                 </div>
-            </div>
-
-                
-            <!-- 장비 -->
-            <div class="col" id="col2">
-                {% comment %} <div class="equipment-container">
-                    <!-- 반지1 슬롯 -->
-                    {% if equipment_data.item_equipment.ring1 %}
-                    <div class="slot ring1" onmouseenter="showTooltip(event, 'ring1')" onmouseleave="hideTooltip()">
-                        <img src="{{ equipment_data.item_equipment.ring1.icon }}">
-                    </div>
-                    {% endif %}
-                
-                    <!-- 반지2 슬롯 -->
-                    {% if equipment_data.item_equipment.ring2 %}
-                    <div class="slot ring2">
-                        <img src="{{ equipment_data.item_equipment.ring2.icon }}">
-                    </div>
-                    {% endif %}
-                
-                    <!-- 무기 슬롯 -->
-                    {% if equipment_data.item_equipment.ring3 %}
-                    <div class="slot ring3">
-                        <img src="{{ equipment_data.item_equipment.ring3.icon }}">
-                    </div>
-                    {% endif %}
+                <div class="section">
+                    <h2>V매트릭스 정보</h2>
+                    {% comment %} {% if vmatrix_data %}
+                    <p>직업: {{ vmatrix_data.character_class }}</p>
+                    <p>남은 슬롯 업그레이드 포인트: {{ vmatrix_data.remain_slot_upgrade_point }}</p>
                     
-                    {% if equipment_data.item_equipment.ring4 %}
-                    <div class="slot ring4">
-                        <img src="{{ equipment_data.item_equipment.ring4.icon }}">
-                    </div>
-                    {% endif %}
-
-                    {% if equipment_data.item_equipment.poket %}
-                    <div class="slot poket">
-                        <img src="{{ equipment_data.item_equipment.poket.icon }}">
-                    </div>
-                    {% endif %}
-
-                    {% if equipment_data.item_equipment.pendant1 %}
-                    <div class="slot pendant1">
-                        <img src="{{ equipment_data.item_equipment.pendant1.icon }}">
-                    </div>
-                    {% endif %}
-                    <!-- sssssssssssssssssssssssss -->
-                    {% if equipment_data.item_equipment.pendant2 %}
-                    <div class="slot pendant2">
-                        <img src="{{ equipment_data.item_equipment.pendant2.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.weapon %}
-                    <div class="slot weapon">
-                        <img src="{{ equipment_data.item_equipment.weapon.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.belt %}
-                    <div class="slot belt">
-                        <img src="{{ equipment_data.item_equipment.belt.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.hat %}
-                    <div class="slot hat">
-                        <img src="{{ equipment_data.item_equipment.hat.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.face %}
-                    <div class="slot face">
-                        <img src="{{ equipment_data.item_equipment.face.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.eyes %}
-                    <div class="slot eyes">
-                        <img src="{{ equipment_data.item_equipment.eyes.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.top %}
-                    <div class="slot top">
-                        <img src="{{ equipment_data.item_equipment.top.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.bottom %}
-                    <div class="slot bottom">
-                        <img src="{{ equipment_data.item_equipment.bottom.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.shoes %}
-                    <div class="slot shoes">
-                        <img src="{{ equipment_data.item_equipment.shoes.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.earring %}
-                    <div class="slot earring">
-                        <img src="{{ equipment_data.item_equipment.earring.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.shoulder %}
-                    <div class="slot shoulder">
-                        <img src="{{ equipment_data.item_equipment.shoulder.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.gloves %}
-                    <div class="slot gloves">
-                        <img src="{{ equipment_data.item_equipment.gloves.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.android %}
-                    <div class="slot android">
-                        <img src="{{ equipment_data.item_equipment.android.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.emblem %}
-                    <div class="slot emblem">
-                        <img src="{{ equipment_data.item_equipment.emblem.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.badge %}
-                    <div class="slot badge">
-                        <img src="{{ equipment_data.item_equipment.badge.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.medal %}
-                    <div class="slot medal">
-                        <img src="{{ equipment_data.item_equipment.medal.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.secondary %}
-                    <div class="slot secondary">
-                        <img src="{{ equipment_data.item_equipment.secondary.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.cape %}
-                    <div class="slot cape">
-                        <img src="{{ equipment_data.item_equipment.cape.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.heart %}
-                    <div class="slot heart">
-                        <img src="{{ equipment_data.item_equipment.heart.icon }}">
-                    </div>
-                    {% endif %}
-                    
-                </div> {% endcomment %}
-                {{ equipment_data|json_script:"equipment-data" }}
-
-                <div class="equipment-container">
-                    {% for slot, item in equipment_data.item_equipment.items %}
-                        <div class="slot {{ slot }}" onmouseenter="showTooltip(event, '{{ slot }}')" onmouseleave="hideTooltip()">
-                            <img src="{{ item.icon }}" alt="{{ item.name }}">
+                    <h3>V코어 장비</h3>
+                    {% for core in vmatrix_data.v_cores %}
+                        <div>
+                            <p>슬롯 ID: {{ core.slot_id }}</p>
+                            <p>슬롯 레벨: {{ core.slot_level }}</p>
+                            <p>코어 이름: {{ core.name }}</p>
+                            <p>코어 타입: {{ core.type }}</p>
+                            <p>코어 레벨: {{ core.level }}</p>
+                            <p>스킬 1: {{ core.skill_1 }}</p>
+                            <p>스킬 2: {{ core.skill_2 }}</p>
+                            <p>스킬 3: {{ core.skill_3 }}</p>
                         </div>
+                        <hr>
                     {% endfor %}
+                {% endif %} {% endcomment %}
                 </div>
-
-                <div class="tooltip" id="tooltip" style="display: none;"></div>
+            
             </div>
         </div>
     </main>
