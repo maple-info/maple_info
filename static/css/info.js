@@ -40,15 +40,41 @@ function showTooltip(event, slot) {
         tooltip.style.display = 'block';
         tooltip.style.left = `${event.pageX + 10}px`;
         tooltip.style.top = `${event.pageY + 10}px`;
+        
+        // 마우스가 요소에서 나가면 툴팁 숨기기
+        event.target.addEventListener('mouseleave', hideTooltip);
     } else {
         tooltip.innerHTML = "장비 정보 없음";
     }
 }
 
-function showTab(tabId) {
-    document.getElementById('arcane').style.display = 'none';
-    document.getElementById('authentic').style.display = 'none';
-    document.getElementById(tabId).style.display = 'grid';
-    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-    document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+// 툴팁을 숨기는 함수
+function hideTooltip() {
+    tooltip.style.display = 'none';
+    tooltip.innerHTML = ""; // 내용 초기화
 }
+
+//심볼 툴팁
+
+
+// symbol-item 요소에 마우스 이벤트 추가
+document.querySelectorAll('.symbol-item').forEach(item => {
+    item.addEventListener('mouseenter', event => {
+        const symbolName = event.currentTarget.getAttribute('data-name');
+        tooltip.innerHTML = symbolName; // 툴팁 내용 설정
+        tooltip.style.display = 'block'; // 툴팁 표시
+    });
+
+    item.addEventListener('mousemove', event => {
+        // 마우스 위치에 따라 툴팁 위치 설정
+        tooltip.style.left = `${event.pageX + 10}px`;
+        tooltip.style.top = `${event.pageY + 10}px`;
+    });
+
+    item.addEventListener('mouseleave', () => {
+        tooltip.style.display = 'none'; // 마우스가 벗어날 때 툴팁 숨기기
+    });
+});
+
+
+//링크

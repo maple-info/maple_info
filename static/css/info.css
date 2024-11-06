@@ -163,6 +163,7 @@ main {
   width: 100%
 }
 
+/* 장비 css */
 .equipment-container {
   position: relative;
   width: 262px;  /* 전체 크기 조정 */
@@ -171,23 +172,36 @@ main {
 }
 
 .slot {
-  background-color: #b8b7b7;
+  background-color: rgba(194, 187, 187, 0.767);
   position: absolute;
   width: 46px;  /* 아이템 크기 */
   height: 46px;
   display: flex;
   justify-content: center;  /* 가로 중앙 정렬 */
   align-items: center;      /* 세로 중앙 정렬 */
-  border: 0.5px solid transparent; /* 기본 테두리는 투명 */
+  border: 1px solid transparent; /* 기본 테두리는 투명 */
+  
 }
 
-/* 테두리 색상 클래스 */
-.legendary-border { border: 1px rgb(0, 255, 0); }
-.unique-border { border: 1px rgb(255, 204, 0); }
-.epic-border { border: 1px rgb(204, 102, 255); }
-.rare-border { borderr: 1px rgb(85, 170, 255); }
-.no-potential-border { border: 1px gray; }
+.slot.레전드리 {
+  border: 1.3px solid rgb(0, 255, 0); /* 레전드리 등급 테두리 색 */
+  background-color: rgb(0, 255, 0,0.1);
+}
 
+.slot.유니크 {
+  border: 1.3px solid rgb(255, 204, 0); /* 유니크 등급 테두리 색 */
+  background-color: rgb(255, 204, 0,0.1); /* 유니크 등급 테두리 색 */
+}
+
+.slot.에픽 {
+  border: 1.3px solid rgb(204, 102, 255); /* 에픽 등급 테두리 색 */
+  background-color: rgb(204, 102, 255,0.1); /* 에픽 등급 테두리 색 */
+}
+
+.slot.레어 {
+  border: 1.3px solid rgb(85, 170, 255); /* 레어 등급 테두리 색 */
+  background-color: rgb(85, 170, 255,0.1); /* 레어 등급 테두리 색 */
+}
 /* 각 슬롯의 위치 지정 */
 
 .slot.ring1 { top: 10px; left: 10px; }
@@ -244,7 +258,7 @@ main {
 .tooltip .item-name {
   font-weight: bold;
   font-size: 16px;
-  color: #FFD700; /* 금색 */
+  color: #ffffff; /* 금색 */
   margin-bottom: 4px;
 }
 
@@ -269,13 +283,13 @@ main {
 }
 
 .tooltip .attributes strong {
-  color: #FFD700; /* 속성 이름 색상 */
+  color: #ffffff; /* 속성 이름 색상 */
 }
 
 /* 잠재옵션, 에디셔널 잠재옵션 섹션 타이틀 */
 .tooltip .section-title {
   font-weight: bold;
-  color: #FFD700;
+  color: #ffffff;
   margin-top: 8px;
 }
 
@@ -286,12 +300,12 @@ main {
 
 .tooltip .potential-options div,
 .tooltip .additional-potential-options div {
-  color: #98FB98; /* 잠재옵션 텍스트 색상 (연두색) */
+  color: #ffffff; /* 잠재옵션 텍스트 색상 (연두색) */
   font-size: 13px;
 }
 
 .tooltip .additional-potential-options div {
-  color: #ADD8E6; /* 에디셔널 잠재옵션 텍스트 색상 (밝은 파란색) */
+  color: #ffffff; /* 에디셔널 잠재옵션 텍스트 색상 (밝은 파란색) */
 }
 /* 세트효과 css */
 
@@ -320,44 +334,68 @@ main {
 /* 어빌리티 css */
     /* 등급에 따른 색상 */
     .grade-레전드리 {
-      background-color: rgb(164, 199, 0); /* 금색 */
+      background-color: rgb(164, 199, 0); 
       color: rgb(255, 255, 255);
   }
 
   .grade-유니크 {
-      background-color: rgb(232, 156, 9); /* 은색 */
+      background-color: rgb(232, 156, 9); 
       color: rgb(255, 255, 255);
   }
 
   .grade-레어 {
-      background-color: rgb(54, 184, 208); /* 보라색 */
+      background-color: rgb(54, 184, 208); 
       color: white;
   }
 
   .grade-에픽 {
-      background-color: rgb(127, 102, 211); /* 옅은 파란색 */
+      background-color: rgb(127, 102, 211); 
       color: rgb(255, 255, 255);
   }
   .ability-box {
     padding: 5px; /* 패딩 줄이기 */
     margin-bottom: 5px;
     border-radius: 5px;
-    font-size: 15px; /* 글자 크기 줄이기 */
+    font-size: 13px; /* 글자 크기 줄이기 */
     text-align: center; /* 글씨 가운데 정렬 */
+    max-height: 27px;
 }
 
 /* 심볼 css */
+#arcane-symbol {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 수평 중앙 정렬 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  padding: 1px;
+  /* border: 1px solid #ccc; */
+  border-radius: 8px;
+  max-width: 300px;
+  margin: 0 auto; /* 전체 박스 중앙 정렬 */
+}
+#authentic-symbol {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 수평 중앙 정렬 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  padding: 10px;
+  /* border: 1px solid #ccc; */
+  border-radius: 8px;
+  max-width: 300px;
+  margin: 0 auto; /* 전체 박스 중앙 정렬 */
+}
 .symbol-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 3열 */
   gap: 10px; /* 아이템 간의 간격 */
   text-align: center;
+  padding: 5px;
 }
 
 /* 심볼 아이템 스타일 */
 .symbol-item {
   border: 1px solid #ccc;
-  padding: 10px;
+  padding: 5px;
   border-radius: 8px;
 }
 
@@ -371,4 +409,25 @@ main {
 #symbol h5{
   text-align: center;
   margin: 20px 0 10px;
+}
+
+/* 링크 스킬 css */
+.skill-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: auto;
+  gap: 10px;
+}
+.skill-text {
+  font-size: 14px; /* 텍스트 글씨 크기 */
+  display: block;
+  margin-top: 5px;
+  text-align: center;
+}
+.skill {
+  text-align: center;
+}
+.skill img {
+  width: 35px; /* 이미지 크기 조정 */
+  height: 35px;
 }
