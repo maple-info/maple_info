@@ -125,6 +125,7 @@ def extract_item_equipment(item_equipment_info):
 
         # 슬롯 이름을 키로 하여 데이터 저장
         equipment_data["item_equipment"][slot] = {
+            "en_slot":item.get("item_equipment_slot", "정보 없음"),
             "slot": slot,  # 슬롯 이름 저장
             "part": item.get("item_equipment_part", "정보 없음"),
             "name": item.get("item_name", "정보 없음"),

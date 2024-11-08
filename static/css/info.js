@@ -11,28 +11,42 @@ function showTooltip(event, slot) {
     if (item) {
         // 툴팁 내용 설정
         tooltip.innerHTML = `
-            <div class="item-name">${item.name} (${item.potential_option_grade})</div>
-            <div class="item-level">레벨 ${item.base_option.base_equipment_level || "정보 없음"}</div>
-            <hr>
-            <div class="attributes">
-                <strong>STR</strong>: ${item.total_option.str} (${item.base_option.str || 0} + ${item.add_option.str || 0})<br>
-                <strong>DEX</strong>: ${item.total_option.dex} (${item.base_option.dex || 0} + ${item.add_option.dex || 0})<br>
-                <strong>INT</strong>: ${item.total_option.int} (${item.base_option.int || 0} + ${item.add_option.int || 0})<br>
-                <strong>LUK</strong>: ${item.total_option.luk} (${item.base_option.luk || 0} + ${item.add_option.luk || 0})<br>
-                <strong>HP</strong>: ${item.total_option.max_hp} (${item.base_option.max_hp || 0} + ${item.add_option.max_hp || 0})<br>
-                <strong>MP</strong>: ${item.total_option.max_mp} (${item.base_option.max_mp || 0} + ${item.add_option.max_mp || 0})<br>
-                <strong>공격력</strong>: ${item.total_option.attack_power} (${item.base_option.attack_power || 0} + ${item.add_option.attack_power || 0})<br>
-                <strong>방어력</strong>: ${item.total_option.armor} (${item.base_option.armor || 0} + ${item.add_option.armor || 0})
-            </div>
-            <hr>
-            <div class="section-title">잠재옵션</div>
-            <div class="potential-options">
-                ${item.potential_options.filter(Boolean).map(option => `<div>${option}</div>`).join('')}
-            </div>
-            <hr>
-            <div class="section-title">에디셔널 잠재옵션</div>
-            <div class="additional-potential-options">
-                ${item.additional_potential_options.filter(Boolean).map(option => `<div>${option}</div>`).join('')}
+            <div class='item-equipmet-container'>
+                <div class="item-starforce">
+                ⭐x${item.starforce}
+                    </div>
+                <div class="item-name">${item.name} (${item.scroll_upgrade})</div>
+                <div class="item-grade">(${item.potential_option_grade})</div>
+                <hr>
+                <div class="item-icon">
+                    <img src="${item.icon}" alt="${item.name}" />
+                </div>
+                <hr>
+                <div class="item-slot">장비분류: ${item.en_slot}</div>
+                <div class="attributes">
+                    <strong>STR</strong>: ${item.total_option.str} (${item.base_option.str || 0} + ${item.add_option.str || 0})<br>
+                    <strong>DEX</strong>: ${item.total_option.dex} (${item.base_option.dex || 0} + ${item.add_option.dex || 0})<br>
+                    <strong>INT</strong>: ${item.total_option.int} (${item.base_option.int || 0} + ${item.add_option.int || 0})<br>
+                    <strong>LUK</strong>: ${item.total_option.luk} (${item.base_option.luk || 0} + ${item.add_option.luk || 0})<br>
+                    <strong>HP</strong>: ${item.total_option.max_hp} (${item.base_option.max_hp || 0} + ${item.add_option.max_hp || 0})<br>
+                    <strong>MP</strong>: ${item.total_option.max_mp} (${item.base_option.max_mp || 0} + ${item.add_option.max_mp || 0})<br>
+                    <strong>공격력</strong>: ${item.total_option.attack_power} (${item.base_option.attack_power || 0} + ${item.add_option.attack_power || 0})<br>
+                    <strong>방어력</strong>: ${item.total_option.armor} (${item.base_option.armor || 0} + ${item.add_option.armor || 0})
+                </div>
+                <hr>
+                <p class="section-title potential-grade-${item.potential_option_grade}">잠재옵션</p>
+                <div class="potential-options">
+                    <p>
+                        ${item.potential_options.filter(Boolean).map(option => `<div>${option}</div>`).join('')}
+                    </p>
+                </div>
+                <hr>
+                <p class="section-title potential-grade-${item.additional_potential_option_grade}">에디셔널 잠재옵션</p>
+                <div class="additional-potential-options">
+                    <p>
+                        ${item.additional_potential_options.filter(Boolean).map(option => `<div>${option}</div>`).join('')}
+                    </p>
+                </div>
             </div>
         `;
 
@@ -46,6 +60,7 @@ function showTooltip(event, slot) {
     } else {
         tooltip.innerHTML = "장비 정보 없음";
     }
+
 }
 
 // 툴팁을 숨기는 함수
