@@ -17,112 +17,112 @@
         <div class="container" style="margin: 0 auto; max-width: 1200px;">
             <div class="col" id="col1">
                 <!-- 기본 정보 -->
-                <div class="row">
-                    <div class="info-box">
-                        <h2>기본 정보</h2>
-                        <img src="{{ character_info.basic_info.character_image|default:'정보 없음' }}" alt="Character Image">
-                        <div class="info-row">
-                            <strong>닉네임:</strong>
-                            <span>{{ character_info.basic_info.character_name }}</span>
-                        </div>
-                        <div class="info-row">
-                            <strong>레벨:</strong>
-                            <span> Lv.{{ character_info.basic_info.character_level|default:"정보 없음" }}</span>
-                        </div>
-                        <div class="info-row">
-                            <strong>직업:</strong>
-                            <span>{{ character_info.basic_info.character_class|default:"정보 없음" }}</span>
-                        </div>
-                        <div class="info-row">
-                            <strong>서버:</strong>
-                            <span>{{ character_info.basic_info.world_name|default:"정보 없음" }}</span>
-                        </div>
-                        <div class="info-row">
-                            <strong style="text-align: left;">전투력</strong>
-                            <span style="text-align: right;">{{ final_stats.전투력|default:"N/A" }}</span>
-                        </div>
-                        <div class="info-row">
-                            <strong style="text-align: left;">스공</strong>
-                            <span style="text-align: right;">{{ final_stats.최소_스탯공격력|default:"N/A" }}~{{ final_stats.최대_스탯공격력|default:"N/A" }}</span>
+                <div class='stat-container'>
+                    <div class="row">
+                        <div class="info-box">
+                            <h2>기본 정보</h2>
+                            <img src="{{ character_info.basic_info.character_image|default:'정보 없음' }}" alt="Character Image">
+                            <div class="info-row">
+                                <strong>닉네임:</strong>
+                                <span>{{ character_info.basic_info.character_name }}</span>
+                            </div>
+                            <div class="info-row">
+                                <strong>레벨:</strong>
+                                <span> Lv.{{ character_info.basic_info.character_level|default:"정보 없음" }}</span>
+                            </div>
+                            <div class="info-row">
+                                <strong>직업:</strong>
+                                <span>{{ character_info.basic_info.character_class|default:"정보 없음" }}</span>
+                            </div>
+                            <div class="info-row">
+                                <strong>서버:</strong>
+                                <span>{{ character_info.basic_info.world_name|default:"정보 없음" }}</span>
+                            </div>
+                            <div class="info-row">
+                                <strong style="text-align: left;">전투력</strong>
+                                <span style="text-align: right;">{{ final_stats.전투력|default:"N/A" }}</span>
+                            </div>
+                            <div class="info-row">
+                                <strong style="text-align: left;">스공</strong>
+                                <span style="text-align: right;">{{ final_stats.최소_스탯공격력|default:"N/A" }}~{{ final_stats.최대_스탯공격력|default:"N/A" }}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            
-                <!-- 전투 스탯 -->
-                <div class="row">
-                    <h3>전투 스탯</h3>
-                    <table style="width: 100%;">
-                        {% comment %} <tr>
-                            <td style="text-align: left;">전투력</td>
-                            <td style="text-align: right;">{{ final_stats.전투력|default:"N/A" }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">최소 공격력</td>
-                            <td style="text-align: right;">{{ final_stats.최소_스탯공격력|default:"N/A" }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">최대 공격력</td>
-                            <td style="text-align: right;">{{ final_stats.최대_스탯공격력|default:"N/A" }}</td>
-                        </tr> {% endcomment %}
-                        <tr>
-                            <td style="text-align: left;">데미지</td>
-                            <td style="text-align: right;">{{ final_stats.데미지|default:"N/A" }}%</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">보스 몬스터 데미지</td>
-                            <td style="text-align: right;">{{ final_stats.보스_몬스터_데미지|default:"N/A" }}%</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">방어율 무시</td>
-                            <td style="text-align: right;">{{ final_stats.방어율_무시|default:"N/A" }}%</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">크리티컬 확률</td>
-                            <td style="text-align: right;">{{ final_stats.크리티컬_확률|default:"N/A" }}%</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">크리티컬 데미지</td>
-                            <td style="text-align: right;">{{ final_stats.크리티컬_데미지|default:"N/A" }}%</td>
-                        </tr>
-                    </table>
-                </div>
+                    <!-- 전투 스탯 -->
+                    <div class="row">
+                        <h3>전투 스탯</h3>
+                        <table style="width: 100%;">
+                            {% comment %} <tr>
+                                <td style="text-align: left;">전투력</td>
+                                <td style="text-align: right;">{{ final_stats.전투력|default:"N/A" }}</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">최소 공격력</td>
+                                <td style="text-align: right;">{{ final_stats.최소_스탯공격력|default:"N/A" }}</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">최대 공격력</td>
+                                <td style="text-align: right;">{{ final_stats.최대_스탯공격력|default:"N/A" }}</td>
+                            </tr> {% endcomment %}
+                            <tr>
+                                <td style="text-align: left;">데미지</td>
+                                <td style="text-align: right;">{{ final_stats.데미지|default:"N/A" }}%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">보스 몬스터 데미지</td>
+                                <td style="text-align: right;">{{ final_stats.보스_몬스터_데미지|default:"N/A" }}%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">방어율 무시</td>
+                                <td style="text-align: right;">{{ final_stats.방어율_무시|default:"N/A" }}%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">크리티컬 확률</td>
+                                <td style="text-align: right;">{{ final_stats.크리티컬_확률|default:"N/A" }}%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">크리티컬 데미지</td>
+                                <td style="text-align: right;">{{ final_stats.크리티컬_데미지|default:"N/A" }}%</td>
+                            </tr>
+                        </table>
+                    </div>
 
-                <!-- 주요 스탯 -->
-                <div class="row">
-                    <h3>주요 스탯</h3>
-                    <table style="width: 100%;">
-                        <tr>
-                            <td style="text-align: left;">STR</td>
-                            <td style="text-align: right;">{{ final_stats.STR|default:"N/A" }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">DEX</td>
-                            <td style="text-align: right;">{{ final_stats.DEX|default:"N/A" }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">INT</td>
-                            <td style="text-align: right;">{{ final_stats.INT|default:"N/A" }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">LUK</td>
-                            <td style="text-align: right;">{{ final_stats.LUK|default:"N/A" }}</td>
-                        </tr>
-                    </table>
-                </div>
-                            
-                <!-- 능력치 정보 -->
-                <div class="row">
-                    <h2>어빌리티 정보</h2>
-                    <h3>기본 어빌리티</h3>
-                    <div>
-                        {% for ability in ability_data.abilities %}
-                            <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
-                        {% endfor %}
-                    </div>            
+                    <!-- 주요 스탯 -->
+                    <div class="row">
+                        <h3>주요 스탯</h3>
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="text-align: left;">STR</td>
+                                <td style="text-align: right;">{{ final_stats.STR|default:"N/A" }}</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">DEX</td>
+                                <td style="text-align: right;">{{ final_stats.DEX|default:"N/A" }}</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">INT</td>
+                                <td style="text-align: right;">{{ final_stats.INT|default:"N/A" }}</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">LUK</td>
+                                <td style="text-align: right;">{{ final_stats.LUK|default:"N/A" }}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- 능력치 정보 -->
+                    <div class="row">
+                        <h2>어빌리티 정보</h2>
+                        <h3>기본 어빌리티</h3>
+                        <div>
+                            {% for ability in ability_data.abilities %}
+                                <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
+                            {% endfor %}
+                        </div>            
+                    </div>
                 </div>
 
             </div>
-
                 
             <!-- 장비 -->
             <div class="col" id="col2">
@@ -199,7 +199,7 @@
             <!--링크 스킬 -->
             <div class="col" id="col3">
                 <div class="row">
-                    <h2>V매트릭스 정보</h2>
+                    <h2>V매트릭스 정보,,</h2>
                     {% comment %} {% if vmatrix_data %}
                     <p>직업: {{ vmatrix_data.character_class }}</p>
                     <p>남은 슬롯 업그레이드 포인트: {{ vmatrix_data.remain_slot_upgrade_point }}</p>

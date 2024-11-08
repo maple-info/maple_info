@@ -90,8 +90,13 @@ main {
   min-width: 250px;
   max-width: 300px
 }
+/* .stat-container{
+  border: 2px solid rgb(95, 94, 94);
+  border-radius: 10px;
+  padding: 10px;
+} */
 #col1>.row{
-  border-bottom: 0.6px solid rgba(0, 0, 0, 0.2);; 
+  border-bottom: 0.6px solid rgba(0, 0, 0, 0.2);
   padding-bottom: 8px;
 }
 #col2 > .row {
@@ -117,14 +122,19 @@ main {
 /* 태블릿 화면 (너비 768px 이하) */
 @media (max-width: 768px) {
   main {
-    margin: 20px;
+    margin: 10px;
   }
-  
   .container {
     flex-direction: column; /* 컬럼 방향으로 변경 */
     gap: 20px;
   }
-
+  #col1 {
+    max-width: 100%; /* 전체 너비 사용 */
+  }
+  #col2{
+    display: grid;
+    place-items: center; /* 수평 및 수직 가운데 */
+  }
   #col2 > .row {
     grid-template-columns: repeat(2, 1fr); /* 2열로 나열 */
   }
@@ -242,31 +252,46 @@ main {
 .tooltip {
   display: none;
   position: absolute;
-  max-width: 250px;
+  width: 250px;
   background-color: #1c1c1c; /* 어두운 배경 */
-  color: #FFF; /* 기본 글자색 */
+  color: #ffffff; /* 기본 글자색 */
   padding: 10px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.4;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   white-space: normal;
 }
-
-/* 장비 이름 및 등급 */
-.tooltip .item-name {
-  font-weight: bold;
-  font-size: 16px;
-  color: #ffffff; /* 금색 */
-  margin-bottom: 4px;
+.item-starforce {
+  line-height: 1.5; /* 줄바꿈 간격 설정 */
+  font-size: 15px; /* 별 크기 설정 */
+  color: gold;     /* 별 색상 */
+  display: flex;
+  justify-content: center; /* 가운데 정렬 */
+}
+.tooltip .item-name{
+  display: flex;
+  justify-content: center;  /* 가로 중앙 정렬 */
+}
+.tooltip .item-grade{
+  display: flex;
+  justify-content: center;  /* 가로 중앙 정렬 */
+}
+.item-icon {
+  display: flex;
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center;    /* 수직 가운데 정렬 */
+  width: 100%;            /* 부모 컨테이너 너비만큼 차지 */
+  height: 55px;          /* 원하는 높이 지정 */
 }
 
-.tooltip .item-level {
-  font-size: 13px;
-  color: #AAA; /* 흐린 회색 */
-  margin-bottom: 8px;
+.item-icon img {
+  width: 50px;        /* 이미지 크기를 부모 영역에 맞춤 */
+  height: 50px;       /* 이미지 높이를 부모 영역에 맞춤 */
+  object-fit: contain;   /* 이미지 비율 유지 */
 }
+
 
 /* 구분선 */
 .tooltip hr {
@@ -275,37 +300,22 @@ main {
   margin: 8px 0;
 }
 
-/* 주요 속성 */
-.tooltip .attributes {
-  color: #FFF;
-  font-size: 13px;
-  margin-bottom: 8px;
+/* 툴팁 잠재 css */
+
+.item-equipmet-container .potential-grade-레전드리 {
+  color: rgb(204, 241, 20);
 }
 
-.tooltip .attributes strong {
-  color: #ffffff; /* 속성 이름 색상 */
+.item-equipmet-container .potential-grade-에픽 {
+  color: rgb(153, 91, 197);
 }
 
-/* 잠재옵션, 에디셔널 잠재옵션 섹션 타이틀 */
-.tooltip .section-title {
-  font-weight: bold;
-  color: #ffffff;
-  margin-top: 8px;
+.item-equipmet-container .potential-grade-유니크 {
+  color: rgb(255, 204, 0);
 }
 
-.tooltip .potential-options,
-.tooltip .additional-potential-options {
-  margin-left: 10px;
-}
-
-.tooltip .potential-options div,
-.tooltip .additional-potential-options div {
-  color: #ffffff; /* 잠재옵션 텍스트 색상 (연두색) */
-  font-size: 13px;
-}
-
-.tooltip .additional-potential-options div {
-  color: #ffffff; /* 에디셔널 잠재옵션 텍스트 색상 (밝은 파란색) */
+.item-equipmet-container .potential-grade-레어 {
+  color: rgb(102, 225, 225);
 }
 /* 세트효과 css */
 
