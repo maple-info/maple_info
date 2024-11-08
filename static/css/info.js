@@ -4,6 +4,36 @@ const equipmentData = JSON.parse(document.getElementById('equipment-data').textC
 // 툴팁 요소 선택
 const tooltip = document.getElementById('tooltip');
 
+const keyToKorean = {
+    str: "STR",
+    dex: "DEX",
+    int: "INT",
+    luk: "LUK",
+    max_hp: "HP",
+    max_mp: "MP",
+    attack_power: "공격력",
+    magic_power: "마력",
+    armor: "방어력",
+    speed: "이동속도",
+    jump: "점프력",
+    boss_damage: "보스 공격 시 데미지",
+    ignore_monster_armor: "방어율 무시",
+    all_stat: "올스탯",
+    damage: "데미지",
+    equipment_level_decrease: "착용 레벨 감소",
+    max_hp_rate: "최대 HP",
+    max_mp_rate: "최대 MP",
+    // 필요한 다른 키들도 추가
+};
+const percentageKeys = [
+    "boss_damage",
+    "ignore_monster_armor",
+    "all_stat",
+    "damage",
+    "equipment_level_decrease",
+    "max_hp_rate",
+    "max_mp_rate",
+];
 // 툴팁을 보여주는 함수
 function showTooltip(event, slot) {
     const item = equipmentData.item_equipment[slot];
@@ -24,14 +54,44 @@ function showTooltip(event, slot) {
                 <hr>
                 <div class="item-slot">장비분류: ${item.en_slot}</div>
                 <div class="attributes">
-                    <strong>STR</strong>: ${item.total_option.str} (${item.base_option.str || 0} + ${item.add_option.str || 0})<br>
-                    <strong>DEX</strong>: ${item.total_option.dex} (${item.base_option.dex || 0} + ${item.add_option.dex || 0})<br>
-                    <strong>INT</strong>: ${item.total_option.int} (${item.base_option.int || 0} + ${item.add_option.int || 0})<br>
-                    <strong>LUK</strong>: ${item.total_option.luk} (${item.base_option.luk || 0} + ${item.add_option.luk || 0})<br>
-                    <strong>HP</strong>: ${item.total_option.max_hp} (${item.base_option.max_hp || 0} + ${item.add_option.max_hp || 0})<br>
-                    <strong>MP</strong>: ${item.total_option.max_mp} (${item.base_option.max_mp || 0} + ${item.add_option.max_mp || 0})<br>
-                    <strong>공격력</strong>: ${item.total_option.attack_power} (${item.base_option.attack_power || 0} + ${item.add_option.attack_power || 0})<br>
-                    <strong>방어력</strong>: ${item.total_option.armor} (${item.base_option.armor || 0} + ${item.add_option.armor || 0})
+                ${Object.entries(item.total_option || {})
+                .filter(([key, value]) => value > 0) // 총합 값이 0보다 큰 경우만 출력
+                .map(([key, value]) => {
+                    const koreanKey = keyToKorean[key] || key; // 매핑된 한글 키 또는 기본 키 사용
+            
+                    // 덧셈 값 처리: 각 항목에 스타일 추가
+                    const parts = [
+                        { value: item.base_option[key] || 0, color: "" }, // 기본값, 색상 없음
+                        { value: item.add_option[key] || 0, color: "#CCFF00" }, // add_option
+                        { value: item.item_etc_option[key] || 0, color: "#AAAAFF" }, // item_etc_option
+                        { value: item.item_starforce_option[key] || 0, color: "#FFCC00" }, // item_starforce_option
+                    ]
+                        .filter(part => part.value > 0) // 0인 값 제외
+                        .map(part => `<span style="color: ${part.color}">${percentageKeys.includes(key) ? `${part.value}%` : part.value}</span>`);
+            
+                    // 덧셈 항목 문자열 생성
+                    const partsString = parts.length > 0 ? ` (${parts.join(" + ")})` : "";
+            
+                    // 추가 옵션이 있는지 확인 (base_option 이외에 다른 값이 있는지)
+                    const hasAdditionalOptions = [
+                        item.add_option[key],
+                        item.item_etc_option[key],
+                        item.item_starforce_option[key],
+                    ].some(optionValue => optionValue > 0); // 추가 옵션이 하나라도 있으면 true
+            
+                    // 비율 처리
+                    const valueWithUnit = percentageKeys.includes(key) ? `${value}%` : value;
+            
+                    // <strong>과 총합 값 스타일 설정
+                    const additionalStyle = hasAdditionalOptions ? 'style="color: #66FFFF"' : "";
+            
+                    return `
+                        <div>
+                            <strong ${additionalStyle}>${koreanKey}</strong>: +
+                            <span ${additionalStyle}>${valueWithUnit}</span>${partsString}
+                        </div>
+                    `;
+                }).join('')}
                 </div>
                 <hr>
                 <p class="section-title potential-grade-${item.potential_option_grade}">잠재옵션</p>

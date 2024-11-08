@@ -254,10 +254,10 @@ main {
   position: absolute;
   width: 250px;
   background-color: #1c1c1c; /* 어두운 배경 */
-  color: #FFF; /* 기본 글자색 */
+  color: #ffffff; /* 기본 글자색 */
   padding: 10px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.4;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
@@ -292,21 +292,12 @@ main {
   object-fit: contain;   /* 이미지 비율 유지 */
 }
 
-.section-title.레전드리{
-  color: rgb(0, 255, 0)
-}
+
 /* 구분선 */
 .tooltip hr {
   border: 0;
   border-top: 1px solid #555;
   margin: 8px 0;
-}
-
-/* 잠재옵션, 에디셔널 잠재옵션 섹션 타이틀 */
-.tooltip .section-title {
-  font-weight: bold;
-  color: #ffffff;
-  /* margin-top: 8px; */
 }
 
 /* 툴팁 잠재 css */
