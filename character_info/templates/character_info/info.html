@@ -195,6 +195,14 @@
                                     <strong>포스:</strong> {{ symbol.force }} <br>
                                     <strong>설명:</strong> {{ symbol.description }} <br>
                                     <strong>스탯:</strong>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>어센틱 심볼이 없습니다.</p>
+                        {% endif %}
+                    </div>
+
+
             
                 <!-- 헥사 매트릭스 스탯 정보 -->
                 <div class="row">
