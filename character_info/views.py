@@ -165,23 +165,42 @@ def extract_item_equipment(item_equipment_info):
 
     return equipment_data
 
-def extract_ability_info(ability_info):
-    if not isinstance(ability_info, dict):
+def extract_ability_presets(ability_data):
+    """
+    어빌리티 프리셋 정보를 추출하여 프리셋별로 정리
+    """
+    if not isinstance(ability_data, dict):
         return {}
 
-    ability_data = {
-        "grade": ability_info.get("ability_grade", "정보 없음"),
-        "abilities": []
-    }
-    
-    for ability in ability_info.get("ability_info", []):
-        ability_data["abilities"].append({
-            "no": ability.get("ability_no", "정보 없음"),
-            "grade": ability.get("ability_grade", "정보 없음"),
-            "value": ability.get("ability_value", "정보 없음"),
-        })
-    
-    return ability_data
+    extracted_presets = {}
+
+    # 프리셋 데이터를 반복
+    for preset_key, preset_value in ability_data.items():
+        # 프리셋 키가 'ability_preset_'으로 시작하는 경우만 처리
+        if preset_key.startswith('ability_preset_'):
+            # 프리셋 번호 추출
+            preset_number = preset_key.split('_')[-1]
+
+            # 각 프리셋의 데이터 추출
+            preset_data = {
+                "description": preset_value.get("description", "정보 없음"),
+                "grade": preset_value.get("ability_preset_grade", "정보 없음"),
+                "abilities": []
+            }
+
+            # 어빌리티 상세 정보를 abilities 리스트에 추가
+            for ability in preset_value.get("ability_info", []):
+                ability_data = {
+                    "no": ability.get("ability_no", "정보 없음"),
+                    "grade": ability.get("ability_grade", "정보 없음"),
+                    "value": ability.get("ability_value", "정보 없음")
+                }
+                preset_data["abilities"].append(ability_data)
+
+            # 프리셋 데이터를 저장
+            extracted_presets[f"preset_{preset_number}"] = preset_data
+
+    return extracted_presets
 
 def extract_set_effect(set_effect_info):
     # set_effect_info가 딕셔너리인지 확인하고 'set_effect' 필드를 가져옴
@@ -400,7 +419,7 @@ async def character_info_view(request, character_name):
         # 각 데이터를 추출하는 함수들
         final_stats = extract_final_stats(character_info.get('stat_info', {}))
         equipment_data = extract_item_equipment(character_info.get('item_equipment_info', []))
-        ability_data = extract_ability_info(character_info.get('ability_info', {}))
+        ability_data = extract_ability_presets(character_info.get('ability_info', {}))
         set_effect_data = extract_set_effect(character_info.get('set_effect_info', []))
         link_skill_data = extract_link_skills(character_info.get('link_skill_info', []))
         hexa_stats = extract_hexa_stats(character_info.get('hexamatrix_stat_info', []))
@@ -432,20 +451,3 @@ def chatbot_view(request):
     return render(request, 'character_info/info.html')  # 챗봇 템플릿 경로
 
 
-##여기는 장비템위에 마우스 갖다대면 띄우는 툴팁을 위해 장비 정보를 안전하게 json파일로 보내기 위한 함수
-def character_equipment_view(request):
-    item_equipment_info = {
-        "preset_no": 1,
-        "item_equipment": [
-            {"item_equipment_slot": "반지1", "item_name": "파워링", "item_icon": "path/to/ring1_icon.png"},
-            {"item_equipment_slot": "반지2", "item_name": "매직링", "item_icon": "path/to/ring2_icon.png"},
-            {"item_equipment_slot": "무기", "item_name": "불멸의 검", "item_icon": "path/to/weapon_icon.png"},
-        ]
-    }
-
-    equipment_data = extract_item_equipment(item_equipment_info)
-    
-    # JSON으로 변환하여 템플릿에 전달
-    equipment_data_json = mark_safe(json.dumps(equipment_data["item_equipment"]))  # JSON으로 변환하고 안전하게 마크
-    
-    return render(request, "character_equipment.html", {"equipment_data": equipment_data, "equipment_data_json": equipment_data_json})

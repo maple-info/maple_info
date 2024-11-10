@@ -111,17 +111,67 @@
                     </div>
 
                     <!-- 능력치 정보 -->
+                    
                     <div class="row">
-                        <h2>어빌리티 정보</h2>
-                        <h3>기본 어빌리티</h3>
-                        <div>
-                            {% for ability in ability_data.abilities %}
-                                <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
+                        <div class="ability-tab-content active" id="ability-tab1">
+                            <div class="row">
+                                {% for preset_key, preset in ability_data.items %}
+                                    {% if preset_key == "preset_1" %}
+                                    <div class="preset-container">
+                                        <div>
+                                            {% for ability in preset.abilities %}
+                                                <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
+                                            {% empty %}
+                                            <li>어빌리티 정보가 없습니다.</li>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="ability-tab-content" id="ability-tab2">
+                            <div class="row">
+                                {% for preset_key, preset in ability_data.items %}
+                                    {% if preset_key == "preset_2" %}
+                                    <div class="preset-container">
+                                        <div>
+                                            {% for ability in preset.abilities %}
+                                                <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
+                                            {% empty %}
+                                            <li>어빌리티 정보가 없습니다.</li>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="ability-tab-content" id="ability-tab3">
+                            {% for preset_key, preset in ability_data.items %}
+                                {% if preset_key == "preset_3" %}
+                                <div class="preset-container">
+                                    <div>
+                                        {% for ability in preset.abilities %}
+                                            <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
+                                        {% empty %}
+                                        <li>어빌리티 정보가 없습니다.</li>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
                             {% endfor %}
-                        </div>            
+                        </div>
+                        <div class="ability-tab-buttons">
+                            <h5 class="ability-tab-title">프리셋</h5>
+                            <div class="ability-tab-actions">
+                                <button class="ability-tab-button active" data-ability-tab="ability-tab1">1</button>
+                                <button class="ability-tab-button" data-ability-tab="ability-tab2">2</button>
+                                <button class="ability-tab-button" data-ability-tab="ability-tab3">3</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
             </div>
                 
             <!-- 장비 -->
@@ -196,8 +246,10 @@
                 </div>
             </div>
 
-            <!--링크 스킬 -->
+            <!--3컬럼 -->
             <div class="col" id="col3">
+
+                <!-- v매트릭스 -->
                 <div class="row">
                     <h2>V매트릭스 정보,,</h2>
                     {% comment %} {% if vmatrix_data %}
@@ -234,27 +286,81 @@
                         {% endfor %}
                     </ul>
                 </div>
-
+                <!-- 링크 -->
                 <div class="row">
-                    <h4>링크 스킬 정보.</h4>
-                    {% for preset_link, skills in link_skill_data.items %}
-                        <h4>{{ preset_link|title }}</h4>
-                        {% if skills %}
-                            <div class="skill-grid">
-                                {% for skill in skills %}
-                                    <div class="skill">
-                                        <img src="{{ skill.icon }}" alt="{{ skill.name }}">
-                                        <span class="skill-text">{{ skill.name }} (레벨 {{ skill.level }})</span>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <p>이 프리셋에 링크 스킬 정보가 없습니다.</p>
-                        {% endif %}
-                    {% empty %}
-                        <p>링크 스킬 정보가 없습니다.</p>
-                    {% endfor %}
+                    <div class="link-tab-buttons">
+                        <h5 class="link-tab-title">링크 스킬</h5>
+                        <div class="link-tab-actions">
+                            <button class="link-tab-button active" data-link-tab="link-tab1">프리셋 1</button>
+                            <button class="link-tab-button" data-link-tab="link-tab2">프리셋 2</button>
+                            <button class="link-tab-button" data-link-tab="link-tab3">프리셋 3</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 탭 내용 -->
+                    <div class="link-tab-content active" id="link-tab1">
+                        <div class="row">
+                            {% for preset_link, skills in link_skill_data.items %}
+                                {% if preset_link == "preset_1" %}
+                                    {% if skills %}
+                                        <div class="skill-grid">
+                                            {% for skill in skills %}
+                                                <div class="skill">
+                                                    <img src="{{ skill.icon }}" alt="{{ skill.name }}">
+                                                    <span class="skill-text">{{ skill.name }} (레벨 {{ skill.level }})</span>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <p>이 프리셋에 링크 스킬 정보가 없습니다.</p>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="link-tab-content" id="link-tab2">
+                        <div class="row">
+                            {% for preset_link, skills in link_skill_data.items %}
+                                {% if preset_link == "preset_2" %}
+                                    {% if skills %}
+                                        <div class="skill-grid">
+                                            {% for skill in skills %}
+                                                <div class="skill">
+                                                    <img src="{{ skill.icon }}" alt="{{ skill.name }}">
+                                                    <span class="skill-text">{{ skill.name }} (레벨 {{ skill.level }})</span>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <p>이 프리셋에 링크 스킬 정보가 없습니다.</p>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="link-tab-content" id="link-tab3">
+                        <div class="row">
+                            {% for preset_link, skills in link_skill_data.items %}
+                                {% if preset_link == "preset_3" %}
+                                    {% if skills %}
+                                        <div class="skill-grid">
+                                            {% for skill in skills %}
+                                                <div class="skill">
+                                                    <img src="{{ skill.icon }}" alt="{{ skill.name }}">
+                                                    <span class="skill-text">{{ skill.name }} (레벨 {{ skill.level }})</span>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <p>이 프리셋에 링크 스킬 정보가 없습니다.</p>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
+
+             
                 <!-- 헥사 매트릭스 스탯 정보 -->
                 <div class="row">
                     {% comment %} <h2>헥사 스텟 정보</h2>

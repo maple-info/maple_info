@@ -362,15 +362,28 @@ main {
       background-color: rgb(127, 102, 211); 
       color: rgb(255, 255, 255);
   }
-  .ability-box {
-    padding: 5px; /* 패딩 줄이기 */
+  /* .ability-box {
+    padding: 5px; 
     margin-bottom: 5px;
     border-radius: 5px;
-    font-size: 13px; /* 글자 크기 줄이기 */
-    text-align: center; /* 글씨 가운데 정렬 */
+    font-size: 13px; 
+    text-align: center; 
     max-height: 27px;
+    white-space: nowrap; 
+    text-overflow: ellipsis; 
+} */
+.ability-box {
+  padding: 5px; 
+  margin-bottom: 5px;
+  border-radius: 5px;
+  font-size: 13px; 
+  text-align: center; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  width: 100%; /* 박스 고정 너비 */
+  box-sizing: border-box; /* 패딩과 테두리 포함하여 크기 계산 */
 }
-
 /* 심볼 css */
 #arcane-symbol {
   display: flex;
@@ -440,4 +453,102 @@ main {
 .skill img {
   width: 35px; /* 이미지 크기 조정 */
   height: 35px;
+}
+
+
+/* 링크 css */
+
+  /* 탭 버튼 스타일 */
+  .link-tab-buttons {
+    display: flex;
+    align-items: center; /* 세로 가운데 정렬 */
+    justify-content: space-between; /* 왼쪽 끝과 오른쪽 끝 정렬 */
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 10px;
+}
+
+/* 왼쪽 제목 스타일 */
+.link-tab-title {
+  margin: 0; /* 기본 마진 제거 */
+  font-size: 15px; /* 원하는 크기로 설정 */
+}
+
+/* 오른쪽 버튼 컨테이너 */
+.link-tab-actions {
+  display: flex;
+}
+.link-tab-button { 
+  padding: 5px 10px; /* 버튼 안의 여백을 줄여서 크기를 작게 만듦 */
+  cursor: pointer;
+  text-align: center;
+  background-color: #464545;
+  border: none;
+  border-bottom: 2px solid transparent;
+  /* transition: all 0.3s; */
+}
+.link-tab-button.active {
+    font-weight: bold;
+    background-color: #6b6b6b;
+}
+/* 탭 내용 스타일 */
+.link-tab-content {
+    display: none;
+    padding: 20px;
+    border-top: none;
+}
+.link-tab-content.active {
+    display: block;
+}
+
+
+
+/* 어빌리티 css */
+
+  /* 탭 버튼 스타일 */
+  .ability-tab-buttons {
+    display: flex;
+    align-items: center; /* 세로 가운데 정렬 */
+    background-color: #2e2e2e; /* 배경색 */
+    padding: 5px 10px;
+    border-radius: 5px; /* 모서리를 둥글게 */
+    color: #fff; /* 텍스트 색상 */
+    height: 30px;
+}
+
+/* 왼쪽 제목 스타일 */
+.ability-tab-title {
+    margin-right: 10px; /* 오른쪽 간격 */
+    font-size: 14px; /* 텍스트 크기 */
+    color: #fff; /* 제목 텍스트 색상 */
+}
+
+/* 오른쪽 버튼 컨테이너 */
+.ability-tab-actions {
+    display: flex;
+    gap: 5px; /* 버튼 사이 간격 */
+    flex-grow: 1; /* 버튼들이 공간을 나눔 */
+}
+.ability-tab-button { 
+  flex: 1; /* 버튼 너비를 동일하게 설정 */
+  padding: 1px 1px; /* 버튼 안의 여백을 줄여서 크기를 작게 만듦 */
+  cursor: pointer;
+  text-align: center;
+  background-color: #464545;
+  border: none;
+  border-bottom: 2px solid transparent;
+  width: 100%; /* 모든 버튼의 고정 너비 */
+
+  /* transition: all 0.3s; */
+}
+.ability-tab-button.active {
+    font-weight: bold;
+    background-color: #6b6b6b;
+}
+/* 탭 내용 스타일 */
+.ability-tab-content {
+    display: none;
+    border-top: none;
+}
+.ability-tab-content.active {
+    display: block;
 }
