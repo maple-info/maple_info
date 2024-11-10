@@ -153,3 +153,45 @@ document.querySelectorAll('.symbol-item').forEach(item => {
 
 
 //링크
+document.addEventListener('DOMContentLoaded', () => {
+    const tabButtons = document.querySelectorAll('.link-tab-button');
+    const tabContents = document.querySelectorAll('.link-tab-content');
+
+    // 각 버튼에 클릭 이벤트 추가
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // 모든 버튼과 탭 내용에서 'active' 클래스 제거
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // 클릭된 버튼에 'active' 클래스 추가
+            button.classList.add('active');
+
+            // 클릭된 버튼에 해당하는 탭 내용 표시
+            const targetTab = button.getAttribute('data-link-tab');
+            document.getElementById(targetTab).classList.add('active');
+        });
+    });
+});
+
+//어빌리티
+document.addEventListener('DOMContentLoaded', () => {
+    const tabButtons = document.querySelectorAll('.ability-tab-button');
+    const tabContents = document.querySelectorAll('.ability-tab-content');
+
+    // 각 버튼에 클릭 이벤트 추가
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // 모든 버튼과 탭 내용에서 'active' 클래스 제거
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // 클릭된 버튼에 'active' 클래스 추가
+            button.classList.add('active');
+
+            // 클릭된 버튼에 해당하는 탭 내용 표시
+            const targetTab = button.getAttribute('data-ability-tab');
+            document.getElementById(targetTab).classList.add('active');
+        });
+    });
+});
