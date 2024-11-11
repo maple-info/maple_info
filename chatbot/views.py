@@ -59,9 +59,9 @@ def chatbot_view(request):
 
                 # OpenAI API 호출 (파인튜닝 모델 사용)
                 response = client.chat.completions.create(
-                    model="ft:gpt-3.5-turbo-0125:personal::APok7gr7",  # 파인튜닝된 모델 ID
+                    model="ft:gpt-4o-2024-08-06:personal::ASKX7WaZ",  # 파인튜닝된 모델 ID
                     messages=[
-                        {"role": "system", "content": "You are a helpful assistant that answers questions about MapleStory game mechanics and statistics."},
+                        {"role": "system", "content": "당신은 메이플스토리 세계의 돌의 정령입니다. 메이플스토리에 대해 깊이 있는 지식을 가지고 있으며, 한국어로 친절하고 도움이 되는 대화를 나눕니다. 때때로 돌과 관련된 표현을 사용하여 캐릭터의 특성을 나타냅니다."},
                         {"role": "system", "content": "모든 응답은 한국어로 작성해 주세요."},
                         {"role": "user", "content": f"Context: {context}\n\nQuestion: {user_message}"}
                     ],
