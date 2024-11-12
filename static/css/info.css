@@ -129,14 +129,12 @@ main {
 }
 
 #col1 {
-  min-width: 250px;
+  min-width: 300px;
   max-width: 300px
 }
-/* .stat-container{
-  border: 2px solid rgb(95, 94, 94);
-  border-radius: 10px;
-  padding: 10px;
-} */
+.stat-container{
+  padding: 0px 4px;
+} 
 #col1>.row{
   border-bottom: 0.6px solid rgba(0, 0, 0, 0.2);
   padding-bottom: 8px;
@@ -593,4 +591,75 @@ main {
 }
 .ability-tab-content.active {
     display: block;
+}
+
+
+/* 하이퍼스탯 css */
+
+  /* 탭 버튼 스타일 */
+  .hyper-tab-buttons {
+    display: flex;
+    align-items: center; /* 세로 가운데 정렬 */
+    background-color: #2e2e2e; /* 배경색 */
+    padding: 5px 10px;
+    border-radius: 5px; /* 모서리를 둥글게 */
+    color: #fff; /* 텍스트 색상 */
+    height: 30px;
+}
+
+/* 왼쪽 제목 스타일 */
+.hyper-tab-title {
+    margin-right: 10px; /* 오른쪽 간격 */
+    font-size: 14px; /* 텍스트 크기 */
+    color: #fff; /* 제목 텍스트 색상 */
+}
+
+/* 오른쪽 버튼 컨테이너 */
+.hyper-tab-actions {
+    display: flex;
+    gap: 5px; /* 버튼 사이 간격 */
+    flex-grow: 1; /* 버튼들이 공간을 나눔 */
+}
+.hyper-tab-button { 
+  flex: 1; /* 버튼 너비를 동일하게 설정 */
+  padding: 1px 1px; /* 버튼 안의 여백을 줄여서 크기를 작게 만듦 */
+  cursor: pointer;
+  text-align: center;
+  background-color: #464545;
+  border: none;
+  border-bottom: 2px solid transparent;
+  width: 100%; /* 모든 버튼의 고정 너비 */
+
+  /* transition: all 0.3s; */
+}
+.hyper-tab-button.active {
+    font-weight: bold;
+    background-color: #6b6b6b;
+}
+/* 탭 내용 스타일 */
+.hyper-tab-content {
+    display: none;
+    border-top: none;
+}
+.hyper-tab-content.active {
+    display: block;
+}
+
+.hyperstat-row {
+  display: flex;
+  justify-content: space-between; /* 양쪽 정렬 */
+  align-items: center; /* 세로 정렬 */
+  padding: 1px 0;
+}
+
+/* 스탯 유형 */
+.hyperstat-type {
+  font-weight: bold; /* 굵은 텍스트 */
+  color: #333; /* 텍스트 색상 */
+}
+
+/* 스탯 레벨 */
+.hyperstat-level {
+  font-size: 14px; /* 글자 크기 */
+  color: #666; /* 텍스트 색상 */
 }

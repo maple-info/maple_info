@@ -205,3 +205,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+//하이퍼스탯
+document.addEventListener('DOMContentLoaded', () => {
+    const tabButtons = document.querySelectorAll('.hyper-tab-button'); // 모든 탭 버튼 선택
+    const tabContents = document.querySelectorAll('.hyper-tab-content'); // 모든 탭 콘텐츠 선택
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // 모든 버튼과 콘텐츠에서 'active' 클래스 제거
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // 클릭된 버튼에 'active' 클래스 추가
+            button.classList.add('active');
+
+            // 해당 버튼에 연결된 콘텐츠 표시
+            const targetTab = button.getAttribute('data-hyper-tab'); // 클릭된 버튼의 데이터 속성 값 가져오기
+            const targetContent = document.getElementById(targetTab); // 해당 id의 콘텐츠 찾기
+            if (targetContent) {
+                targetContent.classList.add('active'); // 콘텐츠 활성화
+            }
+        });
+    });
+});

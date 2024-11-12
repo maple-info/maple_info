@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+d<!DOCTYPE html>
 {% load humanize %}
 
 <html lang="ko">
@@ -15,7 +15,7 @@
 <body>
 
     <main>
-        <div class="container" style="margin: 0 auto; max-width: 1200px;">
+        <div class="container" style="margin: 0 auto; max-width: 1300px;">
             <div class="col" id="col1">
                 <!-- 기본 정보 -->
             
@@ -186,25 +186,94 @@
                             </div>
                         </div>
                     </div>
-
-                    {% comment %} <div>
-                        {% for preset_link, stats in hyper_stat.items %}
-                            {% if stats %}
-                                <div>
-                                    {% for stat in stats %}
-                                        <div>
-                                            <span>{{ statl.type }} (레벨 {{ stat.point }})</span>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                <p>이 프리셋에 링크 스킬 정보가 없습니다.</p>
+                    <!-- 하이퍼스탯 -->
+                    {% comment %} <div class="row">
+                        {% for preset_link, stats in hyper_stat_data.items %}
+                            {% if preset_link == "preset_1" %}
+                                {% if stats %}
+                                    <div>
+                                        {% for stat in stats %}
+                                            <div>
+                                                <span>{{ stat.type }}</span>
+                                                <span>Lv. {{ stat.level}}</td>                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p>이 프리셋에 하이퍼 스텟 정보가 없습니다.</p>
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
-                    {% endfor %}
+                        {% endfor %}
                     </div> {% endcomment %}
+                    <div class='row'>
+                        <p>하이퍼 스탯</p>
+                        <div class="hyper-tab-content active" id="preset-1">
+                            <div class="row">
+                                {% for preset_link, stats in hyper_stat_data.items %}
+                                    {% if preset_link == "preset_1" %}
+                                        {% if stats %}
+                                            {% for stat in stats %}
+                                                <div class="hyperstat-row">
+                                                    <span>{{ stat.type }}</span>
+                                                    <span>Lv. {{ stat.level }}</span>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p>이 프리셋에 하이퍼 스탯 정보가 없습니다.</p>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="hyper-tab-content" id="preset-2">
+                            <div class="row">
+                                {% for preset_link, stats in hyper_stat_data.items %}
+                                    {% if preset_link == "preset_2" %}
+                                        {% if stats %}
+                                            {% for stat in stats %}
+                                                <div class="hyperstat-row">
+                                                    <span>{{ stat.type }}</span>
+                                                    <span>Lv. {{ stat.level }}</span>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p>이 프리셋에 하이퍼 스탯 정보가 없습니다.</p>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="hyper-tab-content" id="preset-3">
+                            <div class="row">
+                                {% for preset_link, stats in hyper_stat_data.items %}
+                                    {% if preset_link == "preset_3" %}
+                                        {% if stats %}
+                                            {% for stat in stats %}
+                                                <div class="hyperstat-row">
+                                                    <span>{{ stat.type }}</span>
+                                                    <span>Lv. {{ stat.level }}</span>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p>이 프리셋에 하이퍼 스탯 정보가 없습니다.</p>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="hyper-tab-buttons">
+                            <h2 class="hyper-tab-title">프리셋</h2>
+                            <div class="hyper-tab-actions">
+                                <button class="hyper-tab-button active" data-hyper-tab="preset-1">1</button>
+                                <button class="hyper-tab-button" data-hyper-tab="preset-2">2</button>
+                                <button class="hyper-tab-button" data-hyper-tab="preset-3">3</button>
+                            </div>
+                        </div>
+                    </div>
                     <!-- 어빌리티 -->
                     <div class="row">
+                        <p>어빌리티</p>
                         <div class="ability-tab-content active" id="ability-tab1">
                             <div class="row">
                                 {% for preset_key, preset in ability_data.items %}
