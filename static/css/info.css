@@ -8,7 +8,6 @@ html, body {
   height: 100%;
   width: 100%;
 }
-
 button {
   background-color: #4CAF; /* 배경 색깔 */
   color: white; /* 글자 색깔 */
@@ -38,16 +37,59 @@ header h1 {
 main {
   background-color: #ffffff;
 }
+/* info박스 */
+.character-info-container {
+  display: flex;
+  align-items: flex-start; /* 가로 정렬: 상단 정렬 */
+}
+
+.character-image {
+  width: 100%; /* 이미지 너비 */
+  height: 100%; /* 이미지 높이 */
+  object-fit: cover; /* 이미지 비율 유지 */
+  border-radius: 10px; /* 이미지에 둥근 모서리 추가 */
+}
+
+.character-details {
+  display: flex;
+  flex-direction: column; /* 세로 정렬 */
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between; /* 제목과 값 간격 자동 조정 */
+  align-items: center; /* 텍스트 수직 정렬 */
+}
+
+/* 스탯박스 css */
+
+.stats-container {
+  width: 100%;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+/* .stat-label {
+  font-weight: bold;
+} */
+
+.stat-value {
+  text-align: right;
+}
+
+.stat-divider {
+  border-bottom: 1px solid #ddd; /* 밑줄 추가 */
+}
 .info-box {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  /* border: 1px solid #ccc; */
-  border-radius: 8px;
-  max-width: 300px;
-  margin: 0 auto;
   text-align: center;
+  padding: 20px;
 }
 
 /* 이미지 스타일 */

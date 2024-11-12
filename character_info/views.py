@@ -52,6 +52,7 @@ async def get_character_info(character_name, date=None):
         hexamatrix_stat_info = await get_api_data(session, "/character/hexamatrix-stat", params)
         symbol_equipment_info = await get_api_data(session, "/character/symbol-equipment", params)
         vmatrix_info = await get_api_data(session, "/character/vmatrix", params)
+        hyper_stat_info = await get_api_data(session, "/character/hyper-stat", params)
         return {
             "basic_info": basic_info,
             "stat_info": stat_info,
@@ -62,7 +63,8 @@ async def get_character_info(character_name, date=None):
             "hexamatrix_info": hexamatrix_info,
             "hexamatrix_stat_info" : hexamatrix_stat_info,
             "symbol_equipment_info" : symbol_equipment_info,
-            "vmatrix_info": vmatrix_info
+            "vmatrix_info": vmatrix_info,
+            "hyper_stat":hyper_stat_info
         }
 
 
@@ -77,6 +79,29 @@ def extract_final_stats(stat_info):
     
     return final_stats
 
+
+
+# def extract_hyper_stat(hyper_stat_info):
+#     if not isinstance(hyper_stat_info, dict):
+#         return {}
+
+#     extracted_stats = {}
+    
+#     for preset_key, stats in hyper_stat_info.items():
+#         if preset_key.startswith('hyper_stat_preset_'):
+#             preset_number = preset_key.split('_')[-1]
+#             extracted_stats[f'preset_{preset_number}'] = []
+            
+#             for stat in stats:
+#                 stat_data = {
+#                     "type": stat.get("stat_type", "정보 없음"),
+#                     "point": stat.get("stat_point", "정보 없음"),
+#                     "level": stat.get("stat_level", 0),
+#                     "increase": stat.get("stat_increase", "정보 없음"),
+#                 }
+#                 extracted_stats[f'preset_{preset_number}'].append(stat_data)
+    
+#     return extracted_stats
 
 ##### 아이템 슬롯명 매핑 테이블
 SLOT_MAPPING = {
