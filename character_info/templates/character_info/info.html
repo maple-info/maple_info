@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+d<!DOCTYPE html>
+{% load humanize %}
 
 <html lang="ko">
 <head>
@@ -14,105 +15,265 @@
 <body>
 
     <main>
-        <div class="container" style="margin: 0 auto; max-width: 1200px;">
+        <div class="container" style="margin: 0 auto; max-width: 1300px;">
             <div class="col" id="col1">
                 <!-- 기본 정보 -->
+            
                 <div class='stat-container'>
                     <div class="row">
                         <div class="info-box">
-                            <h2>기본 정보</h2>
-                            <img src="{{ character_info.basic_info.character_image|default:'정보 없음' }}" alt="Character Image">
-                            <div class="info-row">
-                                <strong>닉네임:</strong>
-                                <span>{{ character_info.basic_info.character_name }}</span>
-                            </div>
-                            <div class="info-row">
-                                <strong>레벨:</strong>
-                                <span> Lv.{{ character_info.basic_info.character_level|default:"정보 없음" }}</span>
-                            </div>
-                            <div class="info-row">
-                                <strong>직업:</strong>
-                                <span>{{ character_info.basic_info.character_class|default:"정보 없음" }}</span>
-                            </div>
-                            <div class="info-row">
-                                <strong>서버:</strong>
-                                <span>{{ character_info.basic_info.world_name|default:"정보 없음" }}</span>
-                            </div>
-                            <div class="info-row">
-                                <strong style="text-align: left;">전투력</strong>
-                                <span style="text-align: right;">{{ final_stats.전투력|default:"N/A" }}</span>
-                            </div>
-                            <div class="info-row">
-                                <strong style="text-align: left;">스공</strong>
-                                <span style="text-align: right;">{{ final_stats.최소_스탯공격력|default:"N/A" }}~{{ final_stats.최대_스탯공격력|default:"N/A" }}</span>
+                            <div class="character-info-container">
+                                <img  class="character-image" src="{{ character_info.basic_info.character_image|default:'정보 없음' }}" alt="Character Image">
+                                <div class="character-details">
+                                    <div class="info-row">
+                                        <span>{{ character_info.basic_info.character_name }}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span> Lv.{{ character_info.basic_info.character_level|default:"정보 없음" }}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span>{{ character_info.basic_info.character_class|default:"정보 없음" }}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span>{{ character_info.basic_info.world_name|default:"정보 없음" }}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <!-- 전투 스탯 -->
                     <div class="row">
-                        <h3>전투 스탯</h3>
-                        <table style="width: 100%;">
-                            {% comment %} <tr>
-                                <td style="text-align: left;">전투력</td>
-                                <td style="text-align: right;">{{ final_stats.전투력|default:"N/A" }}</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">최소 공격력</td>
-                                <td style="text-align: right;">{{ final_stats.최소_스탯공격력|default:"N/A" }}</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">최대 공격력</td>
-                                <td style="text-align: right;">{{ final_stats.최대_스탯공격력|default:"N/A" }}</td>
-                            </tr> {% endcomment %}
-                            <tr>
-                                <td style="text-align: left;">데미지</td>
-                                <td style="text-align: right;">{{ final_stats.데미지|default:"N/A" }}%</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">보스 몬스터 데미지</td>
-                                <td style="text-align: right;">{{ final_stats.보스_몬스터_데미지|default:"N/A" }}%</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">방어율 무시</td>
-                                <td style="text-align: right;">{{ final_stats.방어율_무시|default:"N/A" }}%</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">크리티컬 확률</td>
-                                <td style="text-align: right;">{{ final_stats.크리티컬_확률|default:"N/A" }}%</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">크리티컬 데미지</td>
-                                <td style="text-align: right;">{{ final_stats.크리티컬_데미지|default:"N/A" }}%</td>
-                            </tr>
-                        </table>
+                        <div class="stats-container">
+                            <div class="stat-row">
+                                <span class="stat-label" style='font-weight: bold;'>전투력</span>
+                                <span class="stat-value">{{ final_stats.전투력|default:"N/A"|intcomma }}</span>
+                            </div>
+                            <div class="stat-row stat-divider">
+                                <span class="stat-label" style='font-weight: bold;'>스공</span>
+                                <span class="stat-value">{{ final_stats.최소_스탯공격력|default:"N/A"|intcomma }}~{{ final_stats.최대_스탯공격력|default:"N/A"|intcomma }}</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">데미지</span>
+                                <span class="stat-value">{{ final_stats.데미지|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">최종 데미지</span>
+                                <span class="stat-value">{{ final_stats.최종_데미지|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">보스 몬스터 데미지</span>
+                                <span class="stat-value">{{ final_stats.보스_몬스터_데미지|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row stat-divider">
+                                <span class="stat-label">일반 몬스터 데미지</span>
+                                <span class="stat-value">{{ final_stats.일반_몬스터_데미지|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">공격력</span>
+                                <span class="stat-value">{{ final_stats.공격력|default:"N/A"|intcomma }}</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">마력</span>
+                                <span class="stat-value">{{ final_stats.마력|default:"N/A" }}</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">방어율 무시</span>
+                                <span class="stat-value">{{ final_stats.방어율_무시|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">크리티컬 확률</span>
+                                <span class="stat-value">{{ final_stats.크리티컬_확률|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row stat-divider">
+                                <span class="stat-label">크리티컬 데미지</span>
+                                <span class="stat-value">{{ final_stats.크리티컬_데미지|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">재사용 대기시간 감소</span>
+                                <span class="stat-value">{{ final_stats.재사용_대기시간_감소|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">버프 지속시간</span>
+                                <span class="stat-value">{{ final_stats.버프_지속시간|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">재사용 대기시간 미적용</span>
+                                <span class="stat-value">{{ final_stats.재사용_대기시간_미적용|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">속성 내성 무시</span>
+                                <span class="stat-value">{{ final_stats.속성_내성_무시|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">상태이상 추가 데미지</span>
+                                <span class="stat-value">{{ final_stats.상태이상_추가_데미지|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row stat-divider">
+                                <span class="stat-label">소환수 지속시간 증가</span>
+                                <span class="stat-value">{{ final_stats.소환수_지속시간_증가|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">메소 획득량</span>
+                                <span class="stat-value">{{ final_stats.메소_획득량|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">아이템 드롭률</span>
+                                <span class="stat-value">{{ final_stats.아이템_드롭률|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label stat-divider">추가 경험치 획득</span>
+                                <span class="stat-value">{{ final_stats.추가_경험치_획득|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">스타포스</span>
+                                <span class="stat-value">{{ final_stats.스타포스|default:"N/A" }}</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">아케인포스</span>
+                                <span class="stat-value">{{ final_stats.아케인포스|default:"N/A" }}</span>
+                            </div>
+                            <div class="stat-row stat-divider">
+                                <span class="stat-label">어센틱포스</span>
+                                <span class="stat-value">{{ final_stats.어센틱포스|default:"N/A" }}</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">방어력</span>
+                                <span class="stat-value">{{ final_stats.방어력|default:"N/A"|intcomma }}</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">상태이상 내성</span>
+                                <span class="stat-value">{{ final_stats.상태이상_내성|default:"N/A" }}</span>
+                            </div>
+                            <div class="stat-row stat-divider">
+                                <span class="stat-label">스탠스</span>
+                                <span class="stat-value">{{ final_stats.스탠스|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">이동속도</span>
+                                <span class="stat-value">{{ final_stats.이동속도|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">점프력</span>
+                                <span class="stat-value">{{ final_stats.점프력|default:"N/A" }}%</span>
+                            </div>
+                            <div class="stat-row stat-divider">
+                                <span class="stat-label">공격속도</span>
+                                <span class="stat-value">{{ final_stats.공격_속도|default:"N/A" }}단계</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">STR</span>
+                                <span class="stat-value">{{ final_stats.STR|default:"N/A"|intcomma }}</td>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">DEX</span>
+                                <span class="stat-value">{{ final_stats.DEX|default:"N/A"|intcomma }}</td>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">INT</span>
+                                <span class="stat-value">{{ final_stats.INT|default:"N/A"|intcomma }}</td>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">LUK</span>
+                                <span class="stat-value">{{ final_stats.LUK|default:"N/A"|intcomma }}</td>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">HP</span>
+                                <span class="stat-value">{{ final_stats.HP|default:"N/A"|intcomma }}</td>
+                            </div>
+                            <div class="stat-row stat-divider">
+                                <span class="stat-label">MP</span>
+                                <span class="stat-value">{{ final_stats.MP|default:"N/A"|intcomma }}</td>
+                            </div>
+                        </div>
                     </div>
+                    <!-- 하이퍼스탯 -->
+                    {% comment %} <div class="row">
+                        {% for preset_link, stats in hyper_stat_data.items %}
+                            {% if preset_link == "preset_1" %}
+                                {% if stats %}
+                                    <div>
+                                        {% for stat in stats %}
+                                            <div>
+                                                <span>{{ stat.type }}</span>
+                                                <span>Lv. {{ stat.level}}</td>                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p>이 프리셋에 하이퍼 스텟 정보가 없습니다.</p>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div> {% endcomment %}
+                    <div class='row'>
+                        <p>하이퍼 스탯</p>
+                        <div class="hyper-tab-content active" id="preset-1">
+                            <div class="row">
+                                {% for preset_link, stats in hyper_stat_data.items %}
+                                    {% if preset_link == "preset_1" %}
+                                        {% if stats %}
+                                            {% for stat in stats %}
+                                                <div class="hyperstat-row">
+                                                    <span>{{ stat.type }}</span>
+                                                    <span>Lv. {{ stat.level }}</span>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p>이 프리셋에 하이퍼 스탯 정보가 없습니다.</p>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
 
-                    <!-- 주요 스탯 -->
-                    <div class="row">
-                        <h3>주요 스탯</h3>
-                        <table style="width: 100%;">
-                            <tr>
-                                <td style="text-align: left;">STR</td>
-                                <td style="text-align: right;">{{ final_stats.STR|default:"N/A" }}</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">DEX</td>
-                                <td style="text-align: right;">{{ final_stats.DEX|default:"N/A" }}</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">INT</td>
-                                <td style="text-align: right;">{{ final_stats.INT|default:"N/A" }}</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">LUK</td>
-                                <td style="text-align: right;">{{ final_stats.LUK|default:"N/A" }}</td>
-                            </tr>
-                        </table>
+                        <div class="hyper-tab-content" id="preset-2">
+                            <div class="row">
+                                {% for preset_link, stats in hyper_stat_data.items %}
+                                    {% if preset_link == "preset_2" %}
+                                        {% if stats %}
+                                            {% for stat in stats %}
+                                                <div class="hyperstat-row">
+                                                    <span>{{ stat.type }}</span>
+                                                    <span>Lv. {{ stat.level }}</span>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p>이 프리셋에 하이퍼 스탯 정보가 없습니다.</p>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="hyper-tab-content" id="preset-3">
+                            <div class="row">
+                                {% for preset_link, stats in hyper_stat_data.items %}
+                                    {% if preset_link == "preset_3" %}
+                                        {% if stats %}
+                                            {% for stat in stats %}
+                                                <div class="hyperstat-row">
+                                                    <span>{{ stat.type }}</span>
+                                                    <span>Lv. {{ stat.level }}</span>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p>이 프리셋에 하이퍼 스탯 정보가 없습니다.</p>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="hyper-tab-buttons">
+                            <h2 class="hyper-tab-title">프리셋</h2>
+                            <div class="hyper-tab-actions">
+                                <button class="hyper-tab-button active" data-hyper-tab="preset-1">1</button>
+                                <button class="hyper-tab-button" data-hyper-tab="preset-2">2</button>
+                                <button class="hyper-tab-button" data-hyper-tab="preset-3">3</button>
+                            </div>
+                        </div>
                     </div>
-
-                    <!-- 능력치 정보 -->
-                    
+                    <!-- 어빌리티 -->
                     <div class="row">
+                        <p>어빌리티</p>
                         <div class="ability-tab-content active" id="ability-tab1">
                             <div class="row">
                                 {% for preset_key, preset in ability_data.items %}

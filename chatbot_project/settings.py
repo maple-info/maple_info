@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'character_search',
     'character_info',
     'chatbot',
+    'django.contrib.humanize',
 ]
 
 

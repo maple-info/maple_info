@@ -52,6 +52,7 @@ async def get_character_info(character_name, date=None):
         hexamatrix_stat_info = await get_api_data(session, "/character/hexamatrix-stat", params)
         symbol_equipment_info = await get_api_data(session, "/character/symbol-equipment", params)
         vmatrix_info = await get_api_data(session, "/character/vmatrix", params)
+        hyper_stat_info = await get_api_data(session, "/character/hyper-stat", params)
         return {
             "basic_info": basic_info,
             "stat_info": stat_info,
@@ -62,7 +63,8 @@ async def get_character_info(character_name, date=None):
             "hexamatrix_info": hexamatrix_info,
             "hexamatrix_stat_info" : hexamatrix_stat_info,
             "symbol_equipment_info" : symbol_equipment_info,
-            "vmatrix_info": vmatrix_info
+            "vmatrix_info": vmatrix_info,
+            "hyper_stat_info":hyper_stat_info,
         }
 
 
@@ -76,7 +78,6 @@ def extract_final_stats(stat_info):
         final_stats[stat_name] = stat['stat_value']
     
     return final_stats
-
 
 ##### 아이템 슬롯명 매핑 테이블
 SLOT_MAPPING = {
@@ -248,6 +249,30 @@ def extract_set_effect(set_effect_info):
     return set_effect_data
 
 
+def extract_hyper_stats(hyper_stat_info):
+    if not isinstance(hyper_stat_info, dict):
+        return {}
+
+    extracted_hyper_stats = {}
+
+    for preset_key, stats in hyper_stat_info.items():
+        if preset_key.startswith('hyper_stat_preset_'):
+            preset_number = preset_key.split('_')[-1]
+            # stats가 리스트가 아닌 경우 강제로 리스트로 변환
+            if not isinstance(stats, list):
+                stats = []
+            extracted_hyper_stats[f'preset_{preset_number}'] = []
+
+            for stat in stats:
+                if isinstance(stat, dict):  # stat이 딕셔너리인지 확인
+                    stat_data = {
+                        "type": stat.get("stat_type", "정보 없음"),
+                        "points": stat.get("stat_point", 0),
+                        "level": stat.get("stat_level", 0),
+                        "increase": stat.get("stat_increase", "정보 없음")
+                    }
+                    extracted_hyper_stats[f'preset_{preset_number}'].append(stat_data)
+    return extracted_hyper_stats
 
 def extract_link_skills(link_skill_info):
     if not isinstance(link_skill_info, dict):
@@ -426,6 +451,7 @@ async def character_info_view(request, character_name):
         hexa_data = extract_hexa(character_info.get('hexamatrix_info', []))
         symbol_data = extract_symbols(character_info.get('symbol_equipment_info', []))
         vmatrix_data = extract_vmatrix(character_info.get('vmatrix_info', {}))
+        hyper_stat_data = extract_hyper_stats(character_info.get('hyper_stat_info', []))
         # 템플릿으로 전달할 컨텍스트
         context = {
             'character_info': character_info,
@@ -439,6 +465,7 @@ async def character_info_view(request, character_name):
             'symbol_data' : symbol_data,
             'preset_range': range(1, 4),
             'vmatrix_data': vmatrix_data,
+            'hyper_stat_data': hyper_stat_data,
         }
 
 
