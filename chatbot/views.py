@@ -6,6 +6,21 @@ import faiss
 import json
 import numpy as np
 import os
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def send_character_info_to_chatbot(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        character_info = data.get('characterInfo')
+        
+        # 여기에서 character_info를 챗봇의 컨텍스트에 추가하는 로직을 구현합니다.
+        # 예를 들어, 세션에 저장하거나 데이터베이스에 저장할 수 있습니다.
+        request.session['character_info'] = character_info
+        
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
 
 # OpenAI 클라이언트 초기화
 client = OpenAI(api_key=settings.OPENAI_API_KEY)
@@ -53,13 +68,20 @@ def chatbot_view(request):
         user_message = request.POST.get('message')
         if user_message:
             try:
+                # 세션에서 캐릭터 정보 가져오기
+                character_info = request.session.get('character_info', '')
+
                 # RAG를 사용하여 관련 정보 검색
                 search_results = search_all_indices(user_message, indices)
                 context = "\n".join([f"{result[0]}" for result in search_results])
 
+                # 캐릭터 정보를 컨텍스트에 추가
+                if character_info:
+                    context += f"\n캐릭터 정보: {character_info}"
+
                 # OpenAI API 호출 (파인튜닝 모델 사용)
                 response = client.chat.completions.create(
-                    model="ft:gpt-4o-2024-08-06:personal::ASKX7WaZ",  # 파인튜닝된 모델 ID
+                    model="ft:gpt-4o-2024-08-06:personal::ASKX7WaZ",
                     messages=[
                         {"role": "system", "content": "당신은 메이플스토리 세계의 돌의 정령입니다. 메이플스토리에 대해 깊이 있는 지식을 가지고 있으며, 한국어로 친절하고 도움이 되는 대화를 나눕니다. 때때로 돌과 관련된 표현을 사용하여 캐릭터의 특성을 나타냅니다."},
                         {"role": "system", "content": "모든 응답은 한국어로 작성해 주세요."},
@@ -69,14 +91,15 @@ def chatbot_view(request):
                 )
                 response_text = response.choices[0].message.content.strip()
 
-                # JsonResponse에서 ensure_ascii=False로 설정
                 return JsonResponse({'response': response_text}, json_dumps_params={'ensure_ascii': False})
             except Exception as e:
-                print(f"Error: {str(e)}")  # 로그에 오류 메시지 출력
+                print(f"Error: {str(e)}")
                 return JsonResponse({'error': f"챗봇 응답을 가져오는 중 오류가 발생했습니다: {str(e)}"}, status=500)
 
     return render(request, 'chatbot.html')
 
 def character_info_view(request):
-    # 캐릭터 정보 처리 로직
-    return render(request, 'character_info.html', {})
+    # 캐릭터 정보를 가져오는 로직
+    character_info = {...}  # 실제 캐릭터 정보
+    character_info_json = json.dumps(character_info)
+    return render(request, 'character_info.html', {'character_info_json': character_info_json})
