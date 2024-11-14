@@ -8,11 +8,23 @@
 <body>
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <div id="chat-container">
-        <div id="chat-box"></div>
+        <div id="chat-box">
+            <!-- 사용자 메시지 템플릿 -->
+            <div id="user-template" class="message user-message" style="display: none;">
+                <div class="message-content"></div>
+                <img src="/static/image/물의정령.png" alt="사용자" class="message-icon" style='max-width: 50px; max-height: 50px;'>          
+            </div>
+            
+            <!-- 봇 메시지 템플릿 -->
+            <div id="bot-template" class="message bot-message" style="display: none;">
+                <img src="/static/image/물의정령.png" alt="봇" class="message-icon" style='max-width: 50px; max-height: 50px;'>
+                <div class="message-content"></div>
+            </div>
+        </div>
         <div id="chat-input">
             <input type="text" id="message" placeholder="메시지를 입력하세요" autocomplete="off">
             <button id="send">
-                <img src="/static/image/glasses.jpg" alt="전송" />
+                <img src="/static/image/물의정령.png" alt="전송" />
             </button>
         </div>
     </div>
