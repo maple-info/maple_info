@@ -410,10 +410,26 @@ d<!DOCTYPE html>
             <!--3컬럼 -->
             <div class="col" id="col3">
 
+                {% comment %} 스킬 {% endcomment %}
+                
+                {% for skill in character_skill_data.skills %}
+                <div class="skill">
+                    <img src="{{ skill.skill_icon }}" alt="{{ skill.skill_name }}">
+                    <div class="skill-details">
+                        <h3>{{ skill.skill_name }}</h3>
+                        <p><strong>스킬 설명:</strong> {{ skill.skill_description }}</p>
+                        <p><strong>현재 레벨:</strong> {{ skill.skill_level }}</p>
+                        <p><strong>현재 효과:</strong> {{ skill.skill_effect }}</p>
+                        {% if skill.skill_effect_next %}
+                            <p><strong>다음 레벨 효과:</strong> {{ skill.skill_effect_next }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
                 <!-- v매트릭스 -->
-                <div class="row">
+                {% comment %} <div class="row">
                     <h2>V매트릭스 정보,,</h2>
-                    {% comment %} {% if vmatrix_data %}
+                    {% if vmatrix_data %}
                     <p>직업: {{ vmatrix_data.character_class }}</p>
                     <p>남은 슬롯 업그레이드 포인트: {{ vmatrix_data.remain_slot_upgrade_point }}</p>
                     
@@ -431,9 +447,20 @@ d<!DOCTYPE html>
                         </div>
                         <hr>
                     {% endfor %}
-                {% endif %} {% endcomment %}
-                </div>
-
+                {% endif %}
+                </div> {% endcomment %}
+                {% if character_skill_data %}
+                <p>직업: {{ character_skill_data.character_class }}</p>
+           
+                
+                {% for skill in character_skill_data.skills %}
+                    <div>
+                        <p>스킬이름: {{ skill.skill_name }}</p>
+                        <p>스킬레벨: {{ skill.skill_level }}</p>
+                    </div>
+                    <hr>
+                {% endfor %}
+            {% endif %}
                 <!-- 헥사 매트릭스 정보 -->
                 <div class="row">
                     <h3>헥사 매트릭스 정보</h3>
