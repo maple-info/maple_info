@@ -27,9 +27,6 @@ async def get_api_data(session, endpoint, params=None):
                 return None
     except Exception as e:
         logger.error(f"API 요청 중 오류 발생: {url}, 오류: {str(e)}")
-    async with session.get(url, headers=headers, params=params) as response:
-        if response.status == 200:
-            return await response.json()
         return None
 
 async def get_character_info(character_name, date=None):
@@ -43,6 +40,16 @@ async def get_character_info(character_name, date=None):
         if date:
             params["date"] = date
 
+        # 스킬 정보 요청
+        skill_grades = ["0", "1", "1.5", "2", "2.5", "3", "4", "hyperpassive", "hyperactive", "5", "6"]
+        skill_info = {}
+        for grade in skill_grades:
+            skill_params = params.copy()
+            skill_params["character_skill_grade"] = grade
+            grade_skill_info = await get_api_data(session, "/character/skill", skill_params)
+            if grade_skill_info:
+                skill_info[grade] = grade_skill_info
+        
         basic_info = await get_api_data(session, "/character/basic", params)
         stat_info = await get_api_data(session, "/character/stat", params)
         item_equipment_info = await get_api_data(session, "/character/item-equipment", params)
@@ -53,6 +60,7 @@ async def get_character_info(character_name, date=None):
         hexamatrix_stat_info = await get_api_data(session, "/character/hexamatrix-stat", params)
         symbol_equipment_info = await get_api_data(session, "/character/symbol-equipment", params)
         vmatrix_info = await get_api_data(session, "/character/vmatrix", params)
+        
         return {
             "basic_info": basic_info,
             "stat_info": stat_info,
@@ -63,7 +71,8 @@ async def get_character_info(character_name, date=None):
             "hexamatrix_info": hexamatrix_info,
             "hexamatrix_stat_info" : hexamatrix_stat_info,
             "symbol_equipment_info" : symbol_equipment_info,
-            "vmatrix_info": vmatrix_info
+            "vmatrix_info": vmatrix_info,
+            "skill_info":skill_info
         }
 
 
@@ -389,6 +398,30 @@ def extract_symbols(symbol_equipment_info):
 
     return symbol_data
 
+def extract_character_skills(skill_info):
+    if not isinstance(skill_info, dict):
+        return {"error": "유효하지 않은 데이터 형식입니다."}
+
+    extracted_skills = {}
+    for grade, grade_info in skill_info.items():
+        extracted_skills[grade] = {
+            "date": grade_info.get("date", "정보 없음"),
+            "character_class": grade_info.get("character_class", "정보 없음"),
+            "character_skill_grade": grade_info.get("character_skill_grade", "정보 없음"),
+            "skills": [
+                {
+                    "skill_name": skill.get("skill_name", "정보 없음"),
+                    "skill_description": skill.get("skill_description", "정보 없음"),
+                    "skill_level": skill.get("skill_level", 0),
+                    "skill_effect": skill.get("skill_effect", "정보 없음"),
+                    "skill_effect_next": skill.get("skill_effect_next", "정보 없음"),
+                    "skill_icon": skill.get("skill_icon", "정보 없음")
+                }
+                for skill in grade_info.get("character_skill", [])
+            ]
+        }
+    return extracted_skills
+
 def character_info_view(request):
     character_name = request.GET.get('character_name') 
 
@@ -407,9 +440,9 @@ async def character_info_view(request, character_name):
         hexa_data = extract_hexa(character_info.get('hexamatrix_info', []))
         symbol_data = extract_symbols(character_info.get('symbol_equipment_info', []))
         vmatrix_data = extract_vmatrix(character_info.get('vmatrix_info', {}))
-
+        character_skill_data = extract_character_skills(character_info.get('skill_info', {}))
+        
         cache.set(f'character_info_{character_name}', character_info, timeout=600)
-
 
         # 템플릿으로 전달할 컨텍스트
         context = {
@@ -420,12 +453,12 @@ async def character_info_view(request, character_name):
             'set_effect_data': set_effect_data,
             'link_skill_data': link_skill_data,
             'hexa_stats': hexa_stats,
-            'hexa_data' : hexa_data,
-            'symbol_data' : symbol_data,
+            'hexa_data': hexa_data,
+            'symbol_data': symbol_data,
             'preset_range': range(1, 4),
             'vmatrix_data': vmatrix_data,
+            'character_skill_data': character_skill_data,  # 이 부분은 변경 없음
         }
-
 
         return render(request, 'character_info/info.html', context)
     else:
