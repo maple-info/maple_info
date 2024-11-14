@@ -60,7 +60,6 @@ main {
   justify-content: space-between; /* 제목과 값 간격 자동 조정 */
   align-items: center; /* 텍스트 수직 정렬 */
 }
-
 /* 스탯박스 css */
 
 .stats-container {
@@ -124,7 +123,7 @@ main {
 }
 
 .col {
-  border: 2px solid black;
+  /* border: 2px solid black; */
   padding: 2px;
 }
 
@@ -133,7 +132,12 @@ main {
   max-width: 300px
 }
 .stat-container{
+  margin: 2px;
+  border-radius: 15px; /* 둥근 테두리 */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+  border: 2px solid rgb(175, 175, 175);
   padding: 0px 4px;
+  background-color: #e5e5e563;
 } 
 #col1>.row{
   border-bottom: 0.6px solid rgba(0, 0, 0, 0.2);
@@ -213,9 +217,20 @@ main {
   width: 100%
 }
 
+.col2-container{
+  margin: 2px;
+  border-radius: 15px; /* 둥근 테두리 */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+  border: 2px solid rgb(175, 175, 175);
+  padding: 0px 4px;
+  background-color: #e5e5e563;
+} 
+
 /* 장비 css */
 .equipment-container {
+  margin-top: 6px;
   position: relative;
+  border-radius: 15px; /* 둥근 테두리 */
   width: 262px;  /* 전체 크기 조정 */
   height: 315px;
   background-color: #ffffff;
@@ -424,7 +439,14 @@ main {
   width: 100%; /* 박스 고정 너비 */
   box-sizing: border-box; /* 패딩과 테두리 포함하여 크기 계산 */
 }
+
 /* 심볼 css */
+.symbol-box p {
+  text-align: center; /* 텍스트 가운데 정렬 */
+  font-weight: bold; /* (선택 사항) 제목 강조 */
+  font-size: 1.1rem; /* (선택 사항) 제목 크기 조정 */
+  margin-bottom: 10px; /* (선택 사항) 아래쪽 간격 추가 */
+}
 #arcane-symbol {
   display: flex;
   flex-direction: column;
@@ -472,6 +494,51 @@ main {
 #symbol h5{
   text-align: center;
   margin: 20px 0 10px;
+}
+/* 심볼 탭 */
+.symbol-box{
+  margin-top: 30px;
+}
+  /* 탭 버튼 스타일 */
+.symbol-tab-buttons {
+  display: flex;
+  justify-content: center; /* 가로 가운데 정렬 */
+  align-items: center; /* 세로 가운데 정렬 */
+}
+
+/* 왼쪽 제목 스타일 */
+.symbol-tab-title {
+  margin: 0; /* 기본 마진 제거 */
+  font-size: 15px; /* 원하는 크기로 설정 */
+}
+
+/* 오른쪽 버튼 컨테이너 */
+.symbol-tab-actions {
+  display: flex;
+}
+.symbol-tab-button { 
+  padding: 5px 10px; /* 버튼 안의 여백을 줄여서 크기를 작게 만듦 */
+  cursor: pointer;
+  text-align: center;
+  background-color: #464545;
+  border: none;
+  border-bottom: 2px solid transparent;
+  /* transition: all 0.3s; */
+}
+.symbol-tab-button.active {
+    font-weight: bold;
+    background-color: #6b6b6b;
+}
+/* 탭 내용 스타일 */
+.symbol-tab-content {
+    display: none;
+    border-top: none;
+}
+.symbol-tab-content.active {
+    display: block;
+}
+.symbol-tab-button:hover {
+  background-color: #919191;
 }
 
 /* 링크 스킬 css */
@@ -543,15 +610,23 @@ main {
 
 
 /* 어빌리티 css */
-
+.ability-container{
+  background-color: #ffffff;
+  border-radius: 15px; /* 둥근 테두리 */
+}
+.ability-container p {
+  text-align: center; /* 텍스트 가운데 정렬 */
+  font-weight: bold; /* (선택 사항) 제목 강조 */
+  font-size: 1.1rem; /* (선택 사항) 제목 크기 조정 */
+  margin-bottom: 10px; /* (선택 사항) 아래쪽 간격 추가 */
+}
   /* 탭 버튼 스타일 */
   .ability-tab-buttons {
     display: flex;
     align-items: center; /* 세로 가운데 정렬 */
-    background-color: #2e2e2e; /* 배경색 */
     padding: 5px 10px;
     border-radius: 5px; /* 모서리를 둥글게 */
-    color: #fff; /* 텍스트 색상 */
+    color: #000000; /* 텍스트 색상 */
     height: 30px;
 }
 
@@ -559,7 +634,7 @@ main {
 .ability-tab-title {
     margin-right: 10px; /* 오른쪽 간격 */
     font-size: 14px; /* 텍스트 크기 */
-    color: #fff; /* 제목 텍스트 색상 */
+    color: #000000; /* 제목 텍스트 색상 */
 }
 
 /* 오른쪽 버튼 컨테이너 */
@@ -595,15 +670,24 @@ main {
 
 
 /* 하이퍼스탯 css */
-
+.hyper-stat-container{
+  border-top: #000000;
+  background-color: #ffffff;
+  border-radius: 15px; /* 둥근 테두리 */
+}
+.hyper-stat-container p {
+  text-align: center; /* 텍스트 가운데 정렬 */
+  font-weight: bold; /* (선택 사항) 제목 강조 */
+  font-size: 1.1rem; /* (선택 사항) 제목 크기 조정 */
+  margin-bottom: 10px; /* (선택 사항) 아래쪽 간격 추가 */
+}
   /* 탭 버튼 스타일 */
   .hyper-tab-buttons {
     display: flex;
     align-items: center; /* 세로 가운데 정렬 */
-    background-color: #2e2e2e; /* 배경색 */
     padding: 5px 10px;
     border-radius: 5px; /* 모서리를 둥글게 */
-    color: #fff; /* 텍스트 색상 */
+    color: #000000; /* 텍스트 색상 */
     height: 30px;
 }
 
@@ -611,7 +695,7 @@ main {
 .hyper-tab-title {
     margin-right: 10px; /* 오른쪽 간격 */
     font-size: 14px; /* 텍스트 크기 */
-    color: #fff; /* 제목 텍스트 색상 */
+    color: #000000; /* 제목 텍스트 색상 */
 }
 
 /* 오른쪽 버튼 컨테이너 */
@@ -662,4 +746,73 @@ main {
 .hyperstat-level {
   font-size: 14px; /* 글자 크기 */
   color: #666; /* 텍스트 색상 */
+}
+.hyper-tab-button:hover {
+  background-color: #919191;
+}
+
+/* 스탯 더보기 토글 */
+
+.hidden-content {
+  display: none; /* 기본적으로 숨김 */
+  margin-top: 10px;
+}
+
+.toggle-button {
+  margin: 10px 0;
+  padding: 5px 10px;
+  width: 100%;
+  background-color: #a09f9f;
+  color: rgb(255, 255, 255);
+  border: none;
+  border-radius: 5px;
+  /* cursor: pointer; */
+}
+
+.toggle-button:focus {
+  outline: none;
+}
+
+.toggle-button:hover {
+  background-color: #919191;
+}
+
+/* 3컬럼 css */
+.skill-container{
+  margin: 2px;
+  border-radius: 15px; /* 둥근 테두리 */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+  border: 2px solid rgb(175, 175, 175);
+  padding: 0px 4px;
+  background-color: #e5e5e563;
+} 
+
+/* 전투력/스탯 */
+.stat-block {
+  display: flex;
+  justify-content: center; /* 가로 가운데 정렬 */
+  margin-bottom: 15px; /* 블록 간격 */
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column; /* 요소를 위아래로 정렬 */
+  align-items: center; /* 세로 가운데 정렬 */
+  text-align: center; /* 텍스트 가운데 정렬 */
+}
+
+.stat-title {
+  font-weight: bold; /* 제목 강조 */
+  font-size: 0.9rem; /* 제목 크기 */
+  margin-bottom: 5px; /* 제목과 값 간격 */
+}
+
+.stat-number {
+  font-size: 1.1rem; /* 값 크기 */
+  color: #333; /* 텍스트 색상 */
+}
+
+.divider {
+  border-top: 1px solid #ddd; /* 구분선 추가 */
+  padding-top: 15px; /* 구분선과 콘텐츠 간격 */
 }
