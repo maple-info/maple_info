@@ -3,156 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>메이플스토리 챗봇</title>
-    <style>
-        /* 기본 스타일 */
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 0; 
-            padding: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            background: #f0f0f0; 
-        }
-        #chat-container { 
-            width: 400px; 
-            height: 600px; 
-            background: #fff; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-        }
-        #chat-box { 
-            flex: 1; 
-            padding: 20px; 
-            overflow-y: auto; 
-        }
-        #chat-box p { 
-            margin: 5px 0; 
-            padding: 10px; 
-            border-radius: 8px; 
-            max-width: 80%; 
-        }
-        .user-message { 
-            background: #e6f7ff; 
-            align-self: flex-end; 
-        }
-        .bot-message { 
-            background: #f7f7f7; 
-            align-self: flex-start; 
-        }
-        #chat-input { 
-            display: flex; 
-            border-top: 1px solid #ddd; 
-        }
-        #message { 
-            flex: 1; 
-            padding: 10px; 
-            border: none; 
-            outline: none; 
-        }
-        #send { 
-            padding: 10px 20px; 
-            border: none; 
-            background: #007bff; 
-            color: #fff; 
-            cursor: pointer; 
-        }
-        #send:hover {
-            background: #0056b3;  /* 전송 버튼 hover 시 색상 변경 */
-        }
-    </style>
+    <link href="/static/css/chatbot.css" rel="stylesheet" />
 </head>
 <body>
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <div id="chat-container">
-        <div id="chat-box"></div>
+        <div id="chat-box">
+            <!-- 사용자 메시지 템플릿 -->
+            <div id="user-template" class="message user-message" style="display: none;">
+                <div class="message-content"></div>
+                <img src="/static/image/물의정령.png" alt="사용자" class="message-icon" style='max-width: 50px; max-height: 50px;'>          
+            </div>
+            
+            <!-- 봇 메시지 템플릿 -->
+            <div id="bot-template" class="message bot-message" style="display: none;">
+                <img src="/static/image/물의정령.png" alt="봇" class="message-icon" style='max-width: 50px; max-height: 50px;'>
+                <div class="message-content"></div>
+            </div>
+        </div>
         <div id="chat-input">
             <input type="text" id="message" placeholder="메시지를 입력하세요" autocomplete="off">
-            <button id="send">전송</button>
+            <button id="send">
+                <img src="/static/image/물의정령.png" alt="전송" />
+            </button>
         </div>
     </div>
+    </div>
 
-
-
-    <script>
-        const chatBox = document.getElementById('chat-box');
-        const messageInput = document.getElementById('message');
-        const sendButton = document.getElementById('send');
-
-        // 메시지를 채팅 창에 추가하는 함수
-        function addMessage(text, isBot) {
-            const messageElement = document.createElement('p');
-            messageElement.className = isBot ? 'bot-message' : 'user-message';
-            messageElement.textContent = text;
-            chatBox.appendChild(messageElement);
-            chatBox.scrollTop = chatBox.scrollHeight;  // 스크롤을 최하단으로 이동
-        }
-
-        // 글이 생성되는 것처럼 텍스트를 하나씩 표시하는 함수
-        function typeText(text) {
-            let i = 0;
-            const messageElement = document.createElement('p');
-            messageElement.className = 'bot-message';
-            chatBox.appendChild(messageElement);
-            
-            function typing() {
-                if (i < text.length) {
-                    messageElement.textContent += text[i];
-                    i++;
-                    setTimeout(typing, 50);  // 50ms마다 한 글자씩 추가
-                }
-            }
-            typing();
-        }
-
-        // 서버에 메시지를 전송하고 응답받기
-        async function sendMessage() {
-            const userMessage = messageInput.value.trim();
-            if (!userMessage) return;
-
-            addMessage(userMessage, false);
-            messageInput.value = '';
-
-            try {
-                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-                const response = await fetch('/chat/', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRFToken': csrftoken
-                    },
-                    body: new URLSearchParams({ 'message': userMessage })
-                });
-
-                if (!response.ok) throw new Error("서버 응답 오류");
-
-                const data = await response.json();
-
-                if (!data || !data.response) {
-                    throw new Error("유효하지 않은 서버 응답");
-                }
-
-                typeText(data.response);
-            } catch (error) {
-                console.error("메시지 전송 오류:", error);
-                typeText("서버 오류가 발생했습니다. 다시 시도해주세요.");
-            }
-        }
-
-
-        // 전송 버튼 클릭 이벤트
-        sendButton.addEventListener('click', sendMessage);
-
-        // Enter 키 입력 시 메시지 전송
-        messageInput.addEventListener('keyup', (event) => {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    </script>
+    <script src="/static/css/chatbot.js"></script>
 </body>
 </html>
