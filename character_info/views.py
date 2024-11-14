@@ -9,6 +9,7 @@ from datetime import timedelta
 from django.utils.safestring import mark_safe 
 import json
 
+
 logger = logging.getLogger(__name__)
 BASE_URL = "https://open.api.nexon.com/maplestory/v1"
 API_KEY = settings.NEXON_API_KEY
@@ -406,6 +407,10 @@ async def character_info_view(request, character_name):
         hexa_data = extract_hexa(character_info.get('hexamatrix_info', []))
         symbol_data = extract_symbols(character_info.get('symbol_equipment_info', []))
         vmatrix_data = extract_vmatrix(character_info.get('vmatrix_info', {}))
+
+        cache.set(f'character_info_{character_name}', character_info, timeout=600)
+
+
         # 템플릿으로 전달할 컨텍스트
         context = {
             'character_info': character_info,

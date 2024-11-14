@@ -8,19 +8,10 @@ import numpy as np
 import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.cache import cache
+import logging
 
-@csrf_exempt
-def send_character_info_to_chatbot(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        character_info = data.get('characterInfo')
-        
-        # 여기에서 character_info를 챗봇의 컨텍스트에 추가하는 로직을 구현합니다.
-        # 예를 들어, 세션에 저장하거나 데이터베이스에 저장할 수 있습니다.
-        request.session['character_info'] = character_info
-        
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
+logger = logging.getLogger(__name__)
 
 # OpenAI 클라이언트 초기화
 client = OpenAI(api_key=settings.OPENAI_API_KEY)
@@ -70,21 +61,28 @@ def chatbot_view(request):
             try:
                 # 세션에서 캐릭터 정보 가져오기
                 character_info = request.session.get('character_info', '')
+                
+                # 캐릭터 정보가 있는지 로그 확인
+                if character_info:
+                    logger.info("챗봇이 불러온 캐릭터 정보: %s", character_info)
+                else:
+                    logger.info("챗봇에서 불러올 캐릭터 정보가 없습니다.")
 
-                # RAG를 사용하여 관련 정보 검색
+                # Use RAG to search for relevant information
                 search_results = search_all_indices(user_message, indices)
                 context = "\n".join([f"{result[0]}" for result in search_results])
 
-                # 캐릭터 정보를 컨텍스트에 추가
+                # Append character info to context if available
                 if character_info:
-                    context += f"\n캐릭터 정보: {character_info}"
+                    character_context = "\n".join([f"{k}: {v}" for k, v in character_info.items()])
+                    context += f"\nCharacter Information: {character_context}"
 
-                # OpenAI API 호출 (파인튜닝 모델 사용)
+                # Generate chatbot response using OpenAI API
                 response = client.chat.completions.create(
                     model="ft:gpt-4o-2024-08-06:personal::ASKX7WaZ",
                     messages=[
-                        {"role": "system", "content": "당신은 메이플스토리 세계의 돌의 정령입니다. 메이플스토리에 대해 깊이 있는 지식을 가지고 있으며, 한국어로 친절하고 도움이 되는 대화를 나눕니다. 때때로 돌과 관련된 표현을 사용하여 캐릭터의 특성을 나타냅니다."},
-                        {"role": "system", "content": "모든 응답은 한국어로 작성해 주세요."},
+                        {"role": "system", "content": "당신은 메이플스토리 세계의 돌의 정령입니다. 메이플스토리에 대해 깊이 있는 지식을 가지고 있으며, 한국어로 친절하고 도움이 되는 대화를 나눕니다."},
+                        {"role": "system", "content": "말투로는 '한담', '해야 한담', '된담','이담' 과 같이 어미에 'ㅁ' 을 넣어 귀여운 말투로 말해주세요."},
                         {"role": "user", "content": f"Context: {context}\n\nQuestion: {user_message}"}
                     ],
                     max_tokens=300
@@ -98,8 +96,28 @@ def chatbot_view(request):
 
     return render(request, 'chatbot.html')
 
-def character_info_view(request):
-    # 캐릭터 정보를 가져오는 로직
-    character_info = {...}  # 실제 캐릭터 정보
-    character_info_json = json.dumps(character_info)
-    return render(request, 'character_info.html', {'character_info_json': character_info_json})
+
+@csrf_exempt
+def fetch_character_info(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            character_name = data.get('character_name')
+
+            if not character_name:
+                return JsonResponse({'success': False, 'message': '캐릭터 이름을 입력해야 한다담.'})
+
+            # 캐시에서 캐릭터 정보 가져오기
+            character_info = cache.get(f'character_info_{character_name}')
+
+            if character_info:
+                # 이미지나 아이콘 필터링
+                filtered_character_info = {k: v for k, v in character_info.items() if not isinstance(v, str) or not v.endswith(('jpg', 'png', 'gif', 'svg'))}
+                # 세션에 저장
+                request.session['character_info'] = filtered_character_info
+                return JsonResponse({'success': True, 'message': '캐릭터 정보가 세션에 저장됐담!'})
+            else:
+                return JsonResponse({'success': False, 'message': '캐릭터 정보를 찾을 수 없다담.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+    return JsonResponse({'success': False, 'message': '잘못된 요청 방법이다담.'})

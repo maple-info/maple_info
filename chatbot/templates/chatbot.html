@@ -77,6 +77,44 @@
     </div>
 
 
+    <form id="characterForm" method="post">
+        {% csrf_token %}
+        <label for="characterName">캐릭터 닉네임:</label>
+        <input type="text" id="characterName" name="characterName" required>
+        <button type="button" onclick="fetchCharacterInfo()">불러오기</button>
+    </form>
+    
+    <script>
+    function fetchCharacterInfo() {
+        const characterName = document.getElementById('characterName').value;
+    
+        // CSRF 토큰을 가져옵니다.
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+        fetch('fetch_character_info/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken // CSRF 토큰을 여기서 사용
+            },
+            body: JSON.stringify({ character_name: characterName })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert("캐릭터 정보가 성공적으로 저장됐담!");
+            } else {
+                alert("캐릭터 정보를 불러오는 데 실패했담...");
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    }
+    </script>
 
     <script>
         const chatBox = document.getElementById('chat-box');
