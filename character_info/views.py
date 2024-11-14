@@ -53,6 +53,7 @@ async def get_character_info(character_name, date=None):
         symbol_equipment_info = await get_api_data(session, "/character/symbol-equipment", params)
         vmatrix_info = await get_api_data(session, "/character/vmatrix", params)
         hyper_stat_info = await get_api_data(session, "/character/hyper-stat", params)
+        skill_info = await get_api_data(session, "/character/skill", params)
         return {
             "basic_info": basic_info,
             "stat_info": stat_info,
@@ -65,6 +66,7 @@ async def get_character_info(character_name, date=None):
             "symbol_equipment_info" : symbol_equipment_info,
             "vmatrix_info": vmatrix_info,
             "hyper_stat_info":hyper_stat_info,
+            "skill_info":skill_info
         }
 
 
@@ -354,6 +356,33 @@ def extract_hexa(hexamatrix_info):
 
     return hexa_data if hexa_data["character_hexa_core_equipment"] else None
 
+def extract_character_skills(skill_info):
+
+    # 데이터 검증
+    if not isinstance(skill_info, dict):
+        return {"error": "유효하지 않은 데이터 형식입니다."}
+
+    # 기본 데이터 구조 생성
+    character_skill_data = {
+        "character_class": skill_info.get("character_class", "정보 없음"),
+        "skill_grade": skill_info.get("character_skill_grade", "정보 없음"),
+        "skills": []
+    }
+
+        # 스킬 정보 추가
+        
+    for skill in skill_info.get("character_skill", []):
+        character_skill_data["skills"].append({
+            "skill_name": skill.get("skill_name", "정보 없음"),
+            "skill_description": skill.get("skill_description", "정보 없음"),
+            "skill_level": skill.get("skill_level", 0),
+            "skill_effect": skill.get("skill_effect", "정보 없음"),
+            "skill_effect_next": skill.get("skill_effect_next", "정보 없음"),
+            "skill_icon": skill.get("skill_icon", "정보 없음")
+        })
+
+    return character_skill_data
+
 def extract_vmatrix(vmatrix_info):
     if not isinstance(vmatrix_info, dict):
         return {}
@@ -452,6 +481,7 @@ async def character_info_view(request, character_name):
         symbol_data = extract_symbols(character_info.get('symbol_equipment_info', []))
         vmatrix_data = extract_vmatrix(character_info.get('vmatrix_info', {}))
         hyper_stat_data = extract_hyper_stats(character_info.get('hyper_stat_info', []))
+        character_skill_data = extract_character_skills(character_info.get('skill_info', []))
         # 템플릿으로 전달할 컨텍스트
         context = {
             'character_info': character_info,
@@ -466,6 +496,7 @@ async def character_info_view(request, character_name):
             'preset_range': range(1, 4),
             'vmatrix_data': vmatrix_data,
             'hyper_stat_data': hyper_stat_data,
+            'character_skill_data': character_skill_data,
         }
 
 

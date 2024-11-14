@@ -1,5 +1,4 @@
-d<!DOCTYPE html>
-{% load humanize %}
+<!DOCTYPE html>
 
 <html lang="ko">
 <head>
@@ -18,7 +17,7 @@ d<!DOCTYPE html>
         <div class="container" style="margin: 0 auto; max-width: 1300px;">
             <div class="col" id="col1">
                 <!-- 기본 정보 -->
-            
+                {% load humanize %} 
                 <div class='stat-container'>
                     <div class="row">
                         <div class="info-box">
@@ -44,14 +43,22 @@ d<!DOCTYPE html>
                     <!-- 전투 스탯 -->
                     <div class="row">
                         <div class="stats-container">
-                            <div class="stat-row">
-                                <span class="stat-label" style='font-weight: bold;'>전투력</span>
-                                <span class="stat-value">{{ final_stats.전투력|default:"N/A"|intcomma }}</span>
+                            <div class="stat-block">
+                                <div class="stat-content">
+                                    <span class="stat-title">전투력</span>
+                                    <span class="stat-number" id="battle-power">{{ final_stats.전투력|default:"N/A"|intcomma }}</span>
+                                </div>
                             </div>
-                            <div class="stat-row stat-divider">
-                                <span class="stat-label" style='font-weight: bold;'>스공</span>
-                                <span class="stat-value">{{ final_stats.최소_스탯공격력|default:"N/A"|intcomma }}~{{ final_stats.최대_스탯공격력|default:"N/A"|intcomma }}</span>
+                            <div class="stat-block divider">
+                                <div class="stat-content">
+                                    <span class="stat-title">스공</span>
+                                    <span class="stat-number" id="attack-power">
+                                        {{ final_stats.최소_스탯공격력|default:"N/A"|intcomma }}~
+                                        {{ final_stats.최대_스탯공격력|default:"N/A"|intcomma }}
+                                    </span>
+                                </div>
                             </div>
+                            <hr></hr>
                             <div class="stat-row">
                                 <span class="stat-label">데미지</span>
                                 <span class="stat-value">{{ final_stats.데미지|default:"N/A" }}%</span>
@@ -108,461 +115,513 @@ d<!DOCTYPE html>
                                 <span class="stat-label">상태이상 추가 데미지</span>
                                 <span class="stat-value">{{ final_stats.상태이상_추가_데미지|default:"N/A" }}%</span>
                             </div>
-                            <div class="stat-row stat-divider">
-                                <span class="stat-label">소환수 지속시간 증가</span>
-                                <span class="stat-value">{{ final_stats.소환수_지속시간_증가|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">메소 획득량</span>
-                                <span class="stat-value">{{ final_stats.메소_획득량|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">아이템 드롭률</span>
-                                <span class="stat-value">{{ final_stats.아이템_드롭률|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label stat-divider">추가 경험치 획득</span>
-                                <span class="stat-value">{{ final_stats.추가_경험치_획득|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">스타포스</span>
-                                <span class="stat-value">{{ final_stats.스타포스|default:"N/A" }}</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">아케인포스</span>
-                                <span class="stat-value">{{ final_stats.아케인포스|default:"N/A" }}</span>
-                            </div>
-                            <div class="stat-row stat-divider">
-                                <span class="stat-label">어센틱포스</span>
-                                <span class="stat-value">{{ final_stats.어센틱포스|default:"N/A" }}</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">방어력</span>
-                                <span class="stat-value">{{ final_stats.방어력|default:"N/A"|intcomma }}</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">상태이상 내성</span>
-                                <span class="stat-value">{{ final_stats.상태이상_내성|default:"N/A" }}</span>
-                            </div>
-                            <div class="stat-row stat-divider">
-                                <span class="stat-label">스탠스</span>
-                                <span class="stat-value">{{ final_stats.스탠스|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">이동속도</span>
-                                <span class="stat-value">{{ final_stats.이동속도|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">점프력</span>
-                                <span class="stat-value">{{ final_stats.점프력|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row stat-divider">
-                                <span class="stat-label">공격속도</span>
-                                <span class="stat-value">{{ final_stats.공격_속도|default:"N/A" }}단계</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">STR</span>
-                                <span class="stat-value">{{ final_stats.STR|default:"N/A"|intcomma }}</td>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">DEX</span>
-                                <span class="stat-value">{{ final_stats.DEX|default:"N/A"|intcomma }}</td>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">INT</span>
-                                <span class="stat-value">{{ final_stats.INT|default:"N/A"|intcomma }}</td>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">LUK</span>
-                                <span class="stat-value">{{ final_stats.LUK|default:"N/A"|intcomma }}</td>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">HP</span>
-                                <span class="stat-value">{{ final_stats.HP|default:"N/A"|intcomma }}</td>
-                            </div>
-                            <div class="stat-row stat-divider">
-                                <span class="stat-label">MP</span>
-                                <span class="stat-value">{{ final_stats.MP|default:"N/A"|intcomma }}</td>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 하이퍼스탯 -->
-                    {% comment %} <div class="row">
-                        {% for preset_link, stats in hyper_stat_data.items %}
-                            {% if preset_link == "preset_1" %}
-                                {% if stats %}
-                                    <div>
-                                        {% for stat in stats %}
-                                            <div>
-                                                <span>{{ stat.type }}</span>
-                                                <span>Lv. {{ stat.level}}</td>                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    <p>이 프리셋에 하이퍼 스텟 정보가 없습니다.</p>
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
-                    </div> {% endcomment %}
-                    <div class='row'>
-                        <p>하이퍼 스탯</p>
-                        <div class="hyper-tab-content active" id="preset-1">
-                            <div class="row">
-                                {% for preset_link, stats in hyper_stat_data.items %}
-                                    {% if preset_link == "preset_1" %}
-                                        {% if stats %}
-                                            {% for stat in stats %}
-                                                <div class="hyperstat-row">
-                                                    <span>{{ stat.type }}</span>
-                                                    <span>Lv. {{ stat.level }}</span>
-                                                </div>
-                                            {% endfor %}
-                                        {% else %}
-                                            <p>이 프리셋에 하이퍼 스탯 정보가 없습니다.</p>
-                                        {% endif %}
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
+                            <!-- 접기/펼치기 버튼 -->
+                            <button id="toggle-more-stats" class="toggle-button">더보기</button>
+                            <!-- 접히는 내용 -->
+                            <div id="more-stats" class="hidden-content">
+                                <div class="stat-row stat-divider">
+                                    <span class="stat-label">소환수 지속시간 증가</span>
+                                    <span class="stat-value">{{ final_stats.소환수_지속시간_증가|default:"N/A" }}%</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">메소 획득량</span>
+                                    <span class="stat-value">{{ final_stats.메소_획득량|default:"N/A" }}%</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">아이템 드롭률</span>
+                                    <span class="stat-value">{{ final_stats.아이템_드롭률|default:"N/A" }}%</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">추가 경험치 획득</span>
+                                    <span class="stat-value">{{ final_stats.추가_경험치_획득|default:"N/A" }}%</span>
+                                </div>
 
-                        <div class="hyper-tab-content" id="preset-2">
-                            <div class="row">
-                                {% for preset_link, stats in hyper_stat_data.items %}
-                                    {% if preset_link == "preset_2" %}
-                                        {% if stats %}
-                                            {% for stat in stats %}
-                                                <div class="hyperstat-row">
-                                                    <span>{{ stat.type }}</span>
-                                                    <span>Lv. {{ stat.level }}</span>
-                                                </div>
-                                            {% endfor %}
-                                        {% else %}
-                                            <p>이 프리셋에 하이퍼 스탯 정보가 없습니다.</p>
-                                        {% endif %}
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-
-                        <div class="hyper-tab-content" id="preset-3">
-                            <div class="row">
-                                {% for preset_link, stats in hyper_stat_data.items %}
-                                    {% if preset_link == "preset_3" %}
-                                        {% if stats %}
-                                            {% for stat in stats %}
-                                                <div class="hyperstat-row">
-                                                    <span>{{ stat.type }}</span>
-                                                    <span>Lv. {{ stat.level }}</span>
-                                                </div>
-                                            {% endfor %}
-                                        {% else %}
-                                            <p>이 프리셋에 하이퍼 스탯 정보가 없습니다.</p>
-                                        {% endif %}
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="hyper-tab-buttons">
-                            <h2 class="hyper-tab-title">프리셋</h2>
-                            <div class="hyper-tab-actions">
-                                <button class="hyper-tab-button active" data-hyper-tab="preset-1">1</button>
-                                <button class="hyper-tab-button" data-hyper-tab="preset-2">2</button>
-                                <button class="hyper-tab-button" data-hyper-tab="preset-3">3</button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 어빌리티 -->
-                    <div class="row">
-                        <p>어빌리티</p>
-                        <div class="ability-tab-content active" id="ability-tab1">
-                            <div class="row">
-                                {% for preset_key, preset in ability_data.items %}
-                                    {% if preset_key == "preset_1" %}
-                                    <div class="preset-container">
-                                        <div>
-                                            {% for ability in preset.abilities %}
-                                                <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
-                                            {% empty %}
-                                            <li>어빌리티 정보가 없습니다.</li>
+                                <div class="stat-row">
+                                    <span class="stat-label">스타포스</span>
+                                    <span class="stat-value">{{ final_stats.스타포스|default:"N/A" }}</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">아케인포스</span>
+                                    <span class="stat-value">{{ final_stats.아케인포스|default:"N/A" }}</span>
+                                </div>
+                                <div class="stat-row stat-divider">
+                                    <span class="stat-label">어센틱포스</span>
+                                    <span class="stat-value">{{ final_stats.어센틱포스|default:"N/A" }}</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">방어력</span>
+                                    <span class="stat-value">{{ final_stats.방어력|default:"N/A"|intcomma }}</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">상태이상 내성</span>
+                                    <span class="stat-value">{{ final_stats.상태이상_내성|default:"N/A" }}</span>
+                                </div>
+                                <div class="stat-row stat-divider">
+                                    <span class="stat-label">스탠스</span>
+                                    <span class="stat-value">{{ final_stats.스탠스|default:"N/A" }}%</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">이동속도</span>
+                                    <span class="stat-value">{{ final_stats.이동속도|default:"N/A" }}%</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">점프력</span>
+                                    <span class="stat-value">{{ final_stats.점프력|default:"N/A" }}%</span>
+                                </div>
+                                <div class="stat-row stat-divider">
+                                    <span class="stat-label">공격속도</span>
+                                    <span class="stat-value">{{ final_stats.공격_속도|default:"N/A" }}단계</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">STR</span>
+                                    <span class="stat-value">{{ final_stats.STR|default:"N/A"|intcomma }}</td>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">DEX</span>
+                                    <span class="stat-value">{{ final_stats.DEX|default:"N/A"|intcomma }}</td>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">INT</span>
+                                    <span class="stat-value">{{ final_stats.INT|default:"N/A"|intcomma }}</td>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">LUK</span>
+                                    <span class="stat-value">{{ final_stats.LUK|default:"N/A"|intcomma }}</td>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">HP</span>
+                                    <span class="stat-value">{{ final_stats.HP|default:"N/A"|intcomma }}</td>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">MP</span>
+                                    <span class="stat-value">{{ final_stats.MP|default:"N/A"|intcomma }}</td>
+                                </div>
+                                <!-- 하이퍼스탯 -->
+                                <div class='row hyper-stat-container'>
+                                    <p>하이퍼 스탯</p>
+                                    <div  class="hyper-tab-content active" id="preset-1">
+                                        <div class="row">
+                                            {% for preset_link, stats in hyper_stat_data.items %}
+                                                {% if preset_link == "preset_1" %}
+                                                    {% if stats %}
+                                                        {% for stat in stats %}
+                                                            <div class="hyperstat-row">
+                                                                <span>{{ stat.type }}</span>
+                                                                <span>Lv. {{ stat.level }}</span>
+                                                            </div>
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        <p>이 프리셋에 하이퍼 스탯 정보가 없습니다.</p>
+                                                    {% endif %}
+                                                {% endif %}
                                             {% endfor %}
                                         </div>
                                     </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="ability-tab-content" id="ability-tab2">
-                            <div class="row">
-                                {% for preset_key, preset in ability_data.items %}
-                                    {% if preset_key == "preset_2" %}
-                                    <div class="preset-container">
-                                        <div>
-                                            {% for ability in preset.abilities %}
-                                                <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
-                                            {% empty %}
-                                            <li>어빌리티 정보가 없습니다.</li>
+                                
+                                    <div class="hyper-tab-content" id="preset-2">
+                                        <div class="row">
+                                            {% for preset_link, stats in hyper_stat_data.items %}
+                                                {% if preset_link == "preset_2" %}
+                                                    {% if stats %}
+                                                        {% for stat in stats %}
+                                                            <div class="hyperstat-row">
+                                                                <span>{{ stat.type }}</span>
+                                                                <span>Lv. {{ stat.level }}</span>
+                                                            </div>
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        <p>이 프리셋에 하이퍼 스탯 정보가 없습니다.</p>
+                                                    {% endif %}
+                                                {% endif %}
                                             {% endfor %}
                                         </div>
                                     </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="ability-tab-content" id="ability-tab3">
-                            {% for preset_key, preset in ability_data.items %}
-                                {% if preset_key == "preset_3" %}
-                                <div class="preset-container">
-                                    <div>
-                                        {% for ability in preset.abilities %}
-                                            <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
-                                        {% empty %}
-                                        <li>어빌리티 정보가 없습니다.</li>
-                                        {% endfor %}
+                                
+                                    <div class="hyper-tab-content" id="preset-3">
+                                        <div class="row">
+                                            {% for preset_link, stats in hyper_stat_data.items %}
+                                                {% if preset_link == "preset_3" %}
+                                                    {% if stats %}
+                                                        {% for stat in stats %}
+                                                            <div class="hyperstat-row">
+                                                                <span>{{ stat.type }}</span>
+                                                                <span>Lv. {{ stat.level }}</span>
+                                                            </div>
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        <p>이 프리셋에 하이퍼 스탯 정보가 없습니다.</p>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="hyper-tab-buttons">
+                                        <h2 class="hyper-tab-title">프리셋</h2>
+                                        <div class="hyper-tab-actions">
+                                            <button class="hyper-tab-button active" data-hyper-tab="preset-1">1</button>
+                                            <button class="hyper-tab-button" data-hyper-tab="preset-2">2</button>
+                                            <button class="hyper-tab-button" data-hyper-tab="preset-3">3</button>
+                                        </div>
                                     </div>
                                 </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        <div class="ability-tab-buttons">
-                            <h5 class="ability-tab-title">프리셋</h5>
-                            <div class="ability-tab-actions">
-                                <button class="ability-tab-button active" data-ability-tab="ability-tab1">1</button>
-                                <button class="ability-tab-button" data-ability-tab="ability-tab2">2</button>
-                                <button class="ability-tab-button" data-ability-tab="ability-tab3">3</button>
+                                <!-- 어빌리티 -->
+                                <div class="row ability-container">
+                                    <p>어빌리티</p>
+                                    <div class="ability-tab-content active" id="ability-tab1">
+                                        <div class="row">
+                                            {% for preset_key, preset in ability_data.items %}
+                                                {% if preset_key == "preset_1" %}
+                                                <div class="preset-container">
+                                                    <div>
+                                                        {% for ability in preset.abilities %}
+                                                            <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
+                                                        {% empty %}
+                                                        <li>어빌리티 정보가 없습니다.</li>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="ability-tab-content" id="ability-tab2">
+                                        <div class="row">
+                                            {% for preset_key, preset in ability_data.items %}
+                                                {% if preset_key == "preset_2" %}
+                                                <div class="preset-container">
+                                                    <div>
+                                                        {% for ability in preset.abilities %}
+                                                            <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
+                                                        {% empty %}
+                                                        <li>어빌리티 정보가 없습니다.</li>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="ability-tab-content" id="ability-tab3">
+                                        {% for preset_key, preset in ability_data.items %}
+                                            {% if preset_key == "preset_3" %}
+                                            <div class="preset-container">
+                                                <div>
+                                                    {% for ability in preset.abilities %}
+                                                        <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
+                                                    {% empty %}
+                                                    <li>어빌리티 정보가 없습니다.</li>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="ability-tab-buttons">
+                                        <h5 class="ability-tab-title">프리셋</h5>
+                                        <div class="ability-tab-actions">
+                                            <button class="ability-tab-button active" data-ability-tab="ability-tab1">1</button>
+                                            <button class="ability-tab-button" data-ability-tab="ability-tab2">2</button>
+                                            <button class="ability-tab-button" data-ability-tab="ability-tab3">3</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </div>  
                 </div>
             </div>
                 
             <!-- 장비 -->
             <div class="col" id="col2">
-
-                {{ equipment_data|json_script:"equipment-data" }}
-
-                <div class="equipment-container">
-                    {% for slot, item in equipment_data.item_equipment.items %}
-                        <div 
-                            class="slot {{ slot }} {{ item.potential_option_grade }}" 
-                            onmouseenter="showTooltip(event, '{{ slot }}')" 
-                            onmouseleave="hideTooltip()">
-                            <img src="{{ item.icon }}" alt="{{ item.name }}">
-                        </div>
-                    {% endfor %}
-                </div>
-
-                <div class="tooltip" id="tooltip" style="display: none;"></div>
-                
-                {% comment %} 세트효과 {% endcomment %}
-                <div id="set-effect">
-                    <h4>세트 효과</h4>
-                    {% if set_effect_data.set_effects %}
-                        <div>
-                        {% for set in set_effect_data.set_effects %}
-                            {% if set.total_set_count > 1 %}
-                                <p>
-                                    <span>{{ set.set_name }} ({{ set.total_set_count }} 세트)</span>
-                                </p>
-                            {% endif %}
+                <div class='col2-container'>
+                    {{ equipment_data|json_script:"equipment-data" }}
+                    
+                    <div class="equipment-container">
+                        {% for slot, item in equipment_data.item_equipment.items %}
+                            <div 
+                                class="slot {{ slot }} {{ item.potential_option_grade }}" 
+                                onmouseenter="showTooltip(event, '{{ slot }}')" 
+                                onmouseleave="hideTooltip()">
+                                <img src="{{ item.icon }}" alt="{{ item.name }}">
+                            </div>
                         {% endfor %}
-                        </div>
-                    {% else %}
-                        <p>세트 효과 정보가 없습니다.</p>
-                    {% endif %}
-                </div>
-
-                {% comment %} 심볼 {% endcomment %}
+                    </div>
                 
-                <div id="arcane-symbol">
-                    <h5>아케인 심볼</h5>
-                    {% if symbol_data.arcane_symbols %}
-                        <div class="symbol-container">
-                            {% for symbol in symbol_data.arcane_symbols %}
-                                <div class="symbol-item" data-name="{{ symbol.name }}">
-                                    <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
-                                    <strong>Lv:</strong> {{ symbol.level }}
-                                </div>
+                    <div class="tooltip" id="tooltip" style="display: none;"></div>
+                    
+                    {% comment %} 세트효과 {% endcomment %}
+                    <div id="set-effect">
+                        <h4>세트 효과</h4>
+                        {% if set_effect_data.set_effects %}
+                            <div>
+                            {% for set in set_effect_data.set_effects %}
+                                {% if set.total_set_count > 1 %}
+                                    <p>
+                                        <span>{{ set.set_name }} ({{ set.total_set_count }} 세트)</span>
+                                    </p>
+                                {% endif %}
                             {% endfor %}
-                        </div>
-                    {% else %}
-                        <p>아케인 심볼이 없습니다.</p>
-                    {% endif %}
-                </div>
+                            </div>
+                        {% else %}
+                            <p>세트 효과 정보가 없습니다.</p>
+                        {% endif %}
+                    </div>
                 
-                <!-- 어센틱 심볼 섹션 -->
-                <div id="authentic-symbol">
-                    <h5>어센틱 심볼</h5>
-                    {% if symbol_data.authentic_symbols %}
-                        <div class="symbol-container">
-                            {% for symbol in symbol_data.authentic_symbols %}
-                                <div class="symbol-item" data-name="{{ symbol.name }}">
-                                    <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
-                                    <strong>Lv:</strong> {{ symbol.level }}
-                                </div>
-                            {% endfor %}
+                    {% comment %} 심볼 {% endcomment %}
+                    <div class='symbol-box'>
+                        <div class="symbol-tabs">
+                            <!-- 탭 버튼 -->
+                            <div class="symbol-tab-buttons">
+                                <button class="symbol-tab-button active" data-tab="arcane-tab">아케인 심볼</button>
+                                <button class="symbol-tab-button" data-tab="authentic-tab">어센틱 심볼</button>
+                            </div>
+                        
+                            <!-- 아케인 심볼 탭 -->
+                            <div id="arcane-tab" class="symbol-tab-content active">
+                                <p>아케인 심볼</p>
+                                {% if symbol_data.arcane_symbols %}
+                                    <div class="symbol-container">
+                                        {% for symbol in symbol_data.arcane_symbols %}
+                                            <div class="symbol-item" data-name="{{ symbol.name }}">
+                                                <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
+                                                <strong>Lv:</strong> {{ symbol.level }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p>아케인 심볼이 없습니다.</p>
+                                {% endif %}
+                            </div>
+                        
+                            <!-- 어센틱 심볼 탭 -->
+                            <div id="authentic-tab" class="symbol-tab-content">
+                                <p>어센틱 심볼</p>
+                                {% if symbol_data.authentic_symbols %}
+                                    <div class="symbol-container">
+                                        {% for symbol in symbol_data.authentic_symbols %}
+                                            <div class="symbol-item" data-name="{{ symbol.name }}">
+                                                <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
+                                                <strong>Lv:</strong> {{ symbol.level }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p>어센틱 심볼이 없습니다.</p>
+                                {% endif %}
+                            </div>
                         </div>
-                    {% else %}
-                        <p>어센틱 심볼이 없습니다.</p>
-                    {% endif %}
+                    </div>
+                    {% comment %} <div id="arcane-symbol">
+                        <h5>아케인 심볼</h5>
+                        {% if symbol_data.arcane_symbols %}
+                            <div class="symbol-container">
+                                {% for symbol in symbol_data.arcane_symbols %}
+                                    <div class="symbol-item" data-name="{{ symbol.name }}">
+                                        <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
+                                        <strong>Lv:</strong> {{ symbol.level }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p>아케인 심볼이 없습니다.</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- 어센틱 심볼 섹션 -->
+                    <div id="authentic-symbol">
+                        <h5>어센틱 심볼</h5>
+                        {% if symbol_data.authentic_symbols %}
+                            <div class="symbol-container">
+                                {% for symbol in symbol_data.authentic_symbols %}
+                                    <div class="symbol-item" data-name="{{ symbol.name }}">
+                                        <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
+                                        <strong>Lv:</strong> {{ symbol.level }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p>어센틱 심볼이 없습니다.</p>
+                        {% endif %}
+                    </div> {% endcomment %}
                 </div>
             </div>
-
-            <!--3컬럼 -->
+            
+            <!-- 3컬럼 -->
             <div class="col" id="col3">
-
-                <!-- v매트릭스 -->
-                <div class="row">
-                    <h2>V매트릭스 정보,,</h2>
-                    {% comment %} {% if vmatrix_data %}
-                    <p>직업: {{ vmatrix_data.character_class }}</p>
-                    <p>남은 슬롯 업그레이드 포인트: {{ vmatrix_data.remain_slot_upgrade_point }}</p>
+                <div class='skill-container'>
+                    {% for skill in character_skill_data.skills %}
+                    <div class="skill">
+                            <img src="{{ skill.skill_icon }}" alt="{{ skill.skill_name }}">
+                        <div class="skill-details">
+                            <h3>{{ skill.skill_name }}</h3>
+                            <p><strong>스킬 설명:</strong> {{ skill.skill_description }}</p>
+                            <p><strong>현재 레벨:</strong> {{ skill.skill_level }}</p>
+                            <p><strong>현재 효과:</strong> {{ skill.skill_effect }}</p>
+                            {% if skill.skill_effect_next %}
+                                <p><strong>다음 레벨 효과:</strong> {{ skill.skill_effect_next }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <!-- v매트릭스 -->
+                    {% comment %} <div class="row">
+                        <h2>V매트릭스 정보,,</h2>
+                        {% if vmatrix_data %}
+                        <p>직업: {{ vmatrix_data.character_class }}</p>
+                        <p>남은 슬롯 업그레이드 포인트: {{ vmatrix_data.remain_slot_upgrade_point }}</p>
+                        
+                        <h3>V코어 장비</h3>
+                        {% for core in vmatrix_data.v_cores %}
+                            <div>
+                                <p>슬롯 ID: {{ core.slot_id }}</p>
+                                <p>슬롯 레벨: {{ core.slot_level }}</p>
+                                <p>코어 이름: {{ core.name }}</p>
+                                <p>코어 타입: {{ core.type }}</p>
+                                <p>코어 레벨: {{ core.level }}</p>
+                                <p>스킬 1: {{ core.skill_1 }}</p>
+                                <p>스킬 2: {{ core.skill_2 }}</p>
+                                <p>스킬 3: {{ core.skill_3 }}</p>
+                            </div>
+                            <hr>
+                        {% endfor %}
+                    {% endif %}
+                    </div> {% endcomment %}
+                    {% comment %} {% if character_skill_data %}
+                    <p>직업: {{ character_skill_data.character_class }}</p>
                     
-                    <h3>V코어 장비</h3>
-                    {% for core in vmatrix_data.v_cores %}
+                    {% for skill in character_skill_data.skills %}
                         <div>
-                            <p>슬롯 ID: {{ core.slot_id }}</p>
-                            <p>슬롯 레벨: {{ core.slot_level }}</p>
-                            <p>코어 이름: {{ core.name }}</p>
-                            <p>코어 타입: {{ core.type }}</p>
-                            <p>코어 레벨: {{ core.level }}</p>
-                            <p>스킬 1: {{ core.skill_1 }}</p>
-                            <p>스킬 2: {{ core.skill_2 }}</p>
-                            <p>스킬 3: {{ core.skill_3 }}</p>
+                            <p>스킬이름: {{ skill.skill_name }}</p>
+                            <p>스킬레벨: {{ skill.skill_level }}</p>
                         </div>
                         <hr>
                     {% endfor %}
-                {% endif %} {% endcomment %}
-                </div>
-
-                <!-- 헥사 매트릭스 정보 -->
-                <div class="row">
-                    <h3>헥사 매트릭스 정보</h3>
-                    <ul>
-                        {% for stat in hexa_data.character_hexa_core_equipment %}
-                            <li>
-                                <strong>헥사 스킬 이름:</strong> {{ stat.hexa_core_name }}<br>
-                                {% comment %} <strong>헥사 스킬 레벨:</strong> {{ stat.hexa_core_level }}<br>
-                                <strong>헥사 스킬 타입:</strong> {{ stat.hexa_core_type }}<br> {% endcomment %}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <!-- 링크 -->
-                <div class="row">
-                    <div class="link-tab-buttons">
-                        <h5 class="link-tab-title">링크 스킬</h5>
-                        <div class="link-tab-actions">
-                            <button class="link-tab-button active" data-link-tab="link-tab1">프리셋 1</button>
-                            <button class="link-tab-button" data-link-tab="link-tab2">프리셋 2</button>
-                            <button class="link-tab-button" data-link-tab="link-tab3">프리셋 3</button>
-                        </div>
-                    </div>
-                    
-                    <!-- 탭 내용 -->
-                    <div class="link-tab-content active" id="link-tab1">
-                        <div class="row">
-                            {% for preset_link, skills in link_skill_data.items %}
-                                {% if preset_link == "preset_1" %}
-                                    {% if skills %}
-                                        <div class="skill-grid">
-                                            {% for skill in skills %}
-                                                <div class="skill">
-                                                    <img src="{{ skill.icon }}" alt="{{ skill.name }}">
-                                                    <span class="skill-text">{{ skill.name }} (레벨 {{ skill.level }})</span>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                    {% else %}
-                                        <p>이 프리셋에 링크 스킬 정보가 없습니다.</p>
-                                    {% endif %}
-                                {% endif %}
+                    {% endif %} {% endcomment %}
+                    <!-- 헥사 매트릭스 정보 -->
+                    <div class="row">
+                        <h3>헥사 매트릭스 정보</h3>
+                        <ul>
+                            {% for stat in hexa_data.character_hexa_core_equipment %}
+                                <li>
+                                    <strong>헥사 스킬 이름:</strong> {{ stat.hexa_core_name }}<br>
+                                    {% comment %} <strong>헥사 스킬 레벨:</strong> {{ stat.hexa_core_level }}<br>
+                                    <strong>헥사 스킬 타입:</strong> {{ stat.hexa_core_type }}<br> {% endcomment %}
+                                </li>
                             {% endfor %}
+                        </ul>
+                    </div>
+                    <!-- 링크 -->
+                    <div class="row">
+                        <div class="link-tab-buttons">
+                            <h5 class="link-tab-title">링크 스킬</h5>
+                            <div class="link-tab-actions">
+                                <button class="link-tab-button active" data-link-tab="link-tab1">프리셋 1</button>
+                                <button class="link-tab-button" data-link-tab="link-tab2">프리셋 2</button>
+                                <button class="link-tab-button" data-link-tab="link-tab3">프리셋 3</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 탭 내용 -->
+                        <div class="link-tab-content active" id="link-tab1">
+                            <div class="row">
+                                {% for preset_link, skills in link_skill_data.items %}
+                                    {% if preset_link == "preset_1" %}
+                                        {% if skills %}
+                                            <div class="skill-grid">
+                                                {% for skill in skills %}
+                                                    <div class="skill">
+                                                        <img src="{{ skill.icon }}" alt="{{ skill.name }}">
+                                                        <span class="skill-text">{{ skill.name }} (레벨 {{ skill.level }})</span>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            <p>이 프리셋에 링크 스킬 정보가 없습니다.</p>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="link-tab-content" id="link-tab2">
+                            <div class="row">
+                                {% for preset_link, skills in link_skill_data.items %}
+                                    {% if preset_link == "preset_2" %}
+                                        {% if skills %}
+                                            <div class="skill-grid">
+                                                {% for skill in skills %}
+                                                    <div class="skill">
+                                                        <img src="{{ skill.icon }}" alt="{{ skill.name }}">
+                                                        <span class="skill-text">{{ skill.name }} (레벨 {{ skill.level }})</span>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            <p>이 프리셋에 링크 스킬 정보가 없습니다.</p>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="link-tab-content" id="link-tab3">
+                            <div class="row">
+                                {% for preset_link, skills in link_skill_data.items %}
+                                    {% if preset_link == "preset_3" %}
+                                        {% if skills %}
+                                            <div class="skill-grid">
+                                                {% for skill in skills %}
+                                                    <div class="skill">
+                                                        <img src="{{ skill.icon }}" alt="{{ skill.name }}">
+                                                        <span class="skill-text">{{ skill.name }} (레벨 {{ skill.level }})</span>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            <p>이 프리셋에 링크 스킬 정보가 없습니다.</p>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
-                    <div class="link-tab-content" id="link-tab2">
-                        <div class="row">
-                            {% for preset_link, skills in link_skill_data.items %}
-                                {% if preset_link == "preset_2" %}
-                                    {% if skills %}
-                                        <div class="skill-grid">
-                                            {% for skill in skills %}
-                                                <div class="skill">
-                                                    <img src="{{ skill.icon }}" alt="{{ skill.name }}">
-                                                    <span class="skill-text">{{ skill.name }} (레벨 {{ skill.level }})</span>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                    {% else %}
-                                        <p>이 프리셋에 링크 스킬 정보가 없습니다.</p>
-                                    {% endif %}
-                                {% endif %}
+                    <!-- 헥사 매트릭스 스탯 정보 -->
+                    <div class="row">
+                        {% comment %} <h2>헥사 스텟 정보</h2>
+                        <ul>
+                            {% for stat in hexa_stats.character_hexa_stat_core %}
+                                <li>
+                                    <strong>슬롯 ID:</strong> {{ stat.slot_id }}<br>
+                                    <strong>주력 스탯 이름:</strong> {{ stat.main_stat_name }}<br>
+                                    <strong>서브 스탯 1:</strong> {{ stat.sub_stat_name_1 }}<br>
+                                    <strong>서브 스탯 2:</strong> {{ stat.sub_stat_name_2 }}<br>
+                                    <strong>주력 스탯 레벨:</strong> {{ stat.main_stat_level }}<br>
+                                    <strong>서브 스탯 1 레벨:</strong> {{ stat.sub_stat_level_1 }}<br>
+                                    <strong>서브 스탯 2 레벨:</strong> {{ stat.sub_stat_level_2 }}<br>
+                                    <strong>스탯 등급:</strong> {{ stat.stat_grade }}<br>
+                                </li>
                             {% endfor %}
-                        </div>
-                    </div>
-                    <div class="link-tab-content" id="link-tab3">
-                        <div class="row">
-                            {% for preset_link, skills in link_skill_data.items %}
-                                {% if preset_link == "preset_3" %}
-                                    {% if skills %}
-                                        <div class="skill-grid">
-                                            {% for skill in skills %}
-                                                <div class="skill">
-                                                    <img src="{{ skill.icon }}" alt="{{ skill.name }}">
-                                                    <span class="skill-text">{{ skill.name }} (레벨 {{ skill.level }})</span>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                    {% else %}
-                                        <p>이 프리셋에 링크 스킬 정보가 없습니다.</p>
-                                    {% endif %}
-                                {% endif %}
+                        </ul>
+                        <h4>프리셋 헥사 스텟 코어</h4>
+                        <ul>
+                            {% for preset_stat in hexa_stats.preset_hexa_stat_core %}
+                                <li>
+                                    <strong>슬롯 ID:</strong> {{ preset_stat.slot_id }}<br>
+                                    <strong>주력 스탯 이름:</strong> {{ preset_stat.main_stat_name }}<br>
+                                    <strong>서브 스탯 1:</strong> {{ preset_stat.sub_stat_name_1 }}<br>
+                                    <strong>서브 스탯 2:</strong> {{ preset_stat.sub_stat_name_2 }}<br>
+                                    <strong>주력 스탯 레벨:</strong> {{ preset_stat.main_stat_level }}<br>
+                                    <strong>서브 스탯 1 레벨:</strong> {{ preset_stat.sub_stat_level_1 }}<br>
+                                    <strong>서브 스탯 2 레벨:</strong> {{ preset_stat.sub_stat_level_2 }}<br>
+                                    <strong>스탯 등급:</strong> {{ preset_stat.stat_grade }}<br>
+                                </li>
                             {% endfor %}
-                        </div>
+                        </ul> {% endcomment %}
                     </div>
                 </div>
-
-             
-                <!-- 헥사 매트릭스 스탯 정보 -->
-                <div class="row">
-                    {% comment %} <h2>헥사 스텟 정보</h2>
-                    <ul>
-                        {% for stat in hexa_stats.character_hexa_stat_core %}
-                            <li>
-                                <strong>슬롯 ID:</strong> {{ stat.slot_id }}<br>
-                                <strong>주력 스탯 이름:</strong> {{ stat.main_stat_name }}<br>
-                                <strong>서브 스탯 1:</strong> {{ stat.sub_stat_name_1 }}<br>
-                                <strong>서브 스탯 2:</strong> {{ stat.sub_stat_name_2 }}<br>
-                                <strong>주력 스탯 레벨:</strong> {{ stat.main_stat_level }}<br>
-                                <strong>서브 스탯 1 레벨:</strong> {{ stat.sub_stat_level_1 }}<br>
-                                <strong>서브 스탯 2 레벨:</strong> {{ stat.sub_stat_level_2 }}<br>
-                                <strong>스탯 등급:</strong> {{ stat.stat_grade }}<br>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <h4>프리셋 헥사 스텟 코어</h4>
-                    <ul>
-                        {% for preset_stat in hexa_stats.preset_hexa_stat_core %}
-                            <li>
-                                <strong>슬롯 ID:</strong> {{ preset_stat.slot_id }}<br>
-                                <strong>주력 스탯 이름:</strong> {{ preset_stat.main_stat_name }}<br>
-                                <strong>서브 스탯 1:</strong> {{ preset_stat.sub_stat_name_1 }}<br>
-                                <strong>서브 스탯 2:</strong> {{ preset_stat.sub_stat_name_2 }}<br>
-                                <strong>주력 스탯 레벨:</strong> {{ preset_stat.main_stat_level }}<br>
-                                <strong>서브 스탯 1 레벨:</strong> {{ preset_stat.sub_stat_level_1 }}<br>
-                                <strong>서브 스탯 2 레벨:</strong> {{ preset_stat.sub_stat_level_2 }}<br>
-                                <strong>스탯 등급:</strong> {{ preset_stat.stat_grade }}<br>
-                            </li>
-                        {% endfor %}
-                    </ul> {% endcomment %}
-
-
-                </div>
-                
             </div>
-        </div>
-    </main>
-
-
+        </div>  
+    </main> 
+    
+    
 <script src="/static/css/info.js"></script>
-</body> 
+</body>     
 </html>

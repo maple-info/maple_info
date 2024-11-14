@@ -229,3 +229,79 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// 스탯 더보기 토글
+
+document.getElementById('toggle-more-stats').addEventListener('click', function () {
+    const moreStats = document.getElementById('more-stats');
+    const button = this;
+    if (moreStats.style.display === 'none' || moreStats.style.display === '') {
+        moreStats.style.display = 'block'; // 펼치기
+        button.textContent = '접기'; // 버튼 텍스트 변경
+    } else {
+        moreStats.style.display = 'none'; // 접기
+        button.textContent = '더보기'; // 버튼 텍스트 변경
+    }
+});
+
+// 심볼 탭 구성
+document.addEventListener("DOMContentLoaded", () => {
+    // 탭 버튼과 탭 콘텐츠 선택
+    const tabButtons = document.querySelectorAll(".symbol-tab-button");
+    const tabContents = document.querySelectorAll(".symbol-tab-content");
+
+    tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const targetTab = button.getAttribute("data-tab");
+
+            // 모든 버튼 비활성화
+            tabButtons.forEach((btn) => btn.classList.remove("active"));
+            // 현재 클릭된 버튼 활성화
+            button.classList.add("active");
+
+            // 모든 콘텐츠 숨기기
+            tabContents.forEach((content) => content.classList.remove("active"));
+            // 클릭된 버튼에 해당하는 콘텐츠 표시
+            document.getElementById(targetTab).classList.add("active");
+        });
+    });
+});
+
+
+// 숫자를 한국식 단위(억, 만)로 변환하는 함수
+function formatKoreanNumber(number) {
+    number = parseInt(number.replace(/,/g, ""), 10); // 콤마 제거 및 숫자로 변환
+    if (isNaN(number)) return "N/A";
+
+    const eok = Math.floor(number / 100000000); // 억 단위
+    const man = Math.floor((number % 100000000) / 10000); // 만 단위
+    const rest = number % 10000; // 나머지
+
+    let result = "";
+    if (eok > 0) result += `${eok}억 `;
+    if (man > 0) result += `${man}만 `;
+    if (rest > 0 || (eok === 0 && man === 0)) result += rest;
+
+    return result.trim(); // 불필요한 공백 제거
+}
+
+// DOM에 데이터를 변환하여 적용하는 함수
+function transformStats() {
+    // 전투력
+    const battlePowerElement = document.getElementById("battle-power");
+    if (battlePowerElement) {
+        const battlePower = battlePowerElement.textContent.trim();
+        battlePowerElement.textContent = formatKoreanNumber(battlePower);
+    }
+
+    // 스공
+    const attackPowerElement = document.getElementById("attack-power");
+    if (attackPowerElement) {
+        const attackPower = attackPowerElement.textContent.trim();
+        const [min, max] = attackPower.split("~").map((val) => val.trim());
+        attackPowerElement.textContent = `${formatKoreanNumber(min)}~${formatKoreanNumber(max)}`;
+    }
+}
+
+// DOM이 로드된 후 실행
+document.addEventListener("DOMContentLoaded", transformStats);
