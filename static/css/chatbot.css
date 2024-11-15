@@ -106,7 +106,7 @@ body {
 }
 /* 사용자 메시지 스타일 */
 .user-message {
-    align-self: flex-end;
+    align-self: flex-start;
 }
 .message-content{
     background-color: rgba(221, 221, 221, 0.5); /* 투명도 추가 */
@@ -120,7 +120,7 @@ body {
 
 /* 봇 메시지 스타일 */
 .bot-message {
-    align-self: flex-start;
+    align-self: flex-end;
     max-width: 400px;
 }
 .message-content{
@@ -130,6 +130,13 @@ body {
     padding: 10px;
 }
 .bot-message img{
+    margin: 10px;
+    width: 60px;
+    height: 60px;
+    background-color: black;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s;
     margin: 10px;
 
 }
@@ -153,8 +160,8 @@ body {
 }
 
 #chat-input button {
-    margin-top: 20px;
-    margin-bottom: 10px;
+    margin-top: 14px;
+    margin-bottom: 15px;
     margin-right: 10px;
     border-radius: 50%;
     border: none;
@@ -163,6 +170,7 @@ body {
     margin-left: 10px;
 }
 #chat-input img{
+    margin: 10px;
     width: 60px;
     height: 60px;
     background-color: black;
@@ -170,6 +178,6 @@ body {
     cursor: pointer;
     transition: background-color 0.3s;
 }
-#chat-input button:hover {
+#chat-input img:hover {
     background-color: #c0c0c0;
 }
