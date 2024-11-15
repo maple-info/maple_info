@@ -369,16 +369,12 @@
                 
                     {% comment %} 심볼 {% endcomment %}
                     <div class='symbol-box'>
+                        <p>아케인 심볼</p>
                         <div class="symbol-tabs">
-                            <!-- 탭 버튼 -->
-                            <div class="symbol-tab-buttons">
-                                <button class="symbol-tab-button active" data-tab="arcane-tab">아케인 심볼</button>
-                                <button class="symbol-tab-button" data-tab="authentic-tab">어센틱 심볼</button>
-                            </div>
                         
                             <!-- 아케인 심볼 탭 -->
                             <div id="arcane-tab" class="symbol-tab-content active">
-                                <p>아케인 심볼</p>
+                            
                                 {% if symbol_data.arcane_symbols %}
                                     <div class="symbol-container">
                                         {% for symbol in symbol_data.arcane_symbols %}
@@ -408,6 +404,11 @@
                                 {% else %}
                                     <p>어센틱 심볼이 없습니다.</p>
                                 {% endif %}
+                            </div>
+                            <!-- 탭 버튼 -->
+                            <div class="symbol-tab-buttons">
+                                <button class="symbol-tab-button active" data-tab="arcane-tab">아케인 심볼</button>
+                                <button class="symbol-tab-button" data-tab="authentic-tab">어센틱 심볼</button>
                             </div>
                         </div>
                     </div>
