@@ -2,194 +2,244 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>메이플스토리 챗봇</title>
     <style>
-        /* 기본 스타일 */
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 0; 
-            padding: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            background: #f0f0f0; 
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
         }
-        #chat-container { 
-            width: 400px; 
-            height: 600px; 
-            background: #fff; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
+        #main-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
-        #chat-box { 
-            flex: 1; 
-            padding: 20px; 
-            overflow-y: auto; 
+        #character-search {
+            padding: 20px;
+            background-color: #e9ecef;
+            border-bottom: 1px solid #dee2e6;
         }
-        #chat-box p { 
-            margin: 5px 0; 
-            padding: 10px; 
-            border-radius: 8px; 
-            max-width: 80%; 
+        #character-info {
+            padding: 10px;
+            background-color: #f8f9fa;
+            display: none;
         }
-        .user-message { 
-            background: #e6f7ff; 
-            align-self: flex-end; 
+        #chat-container {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
         }
-        .bot-message { 
-            background: #f7f7f7; 
-            align-self: flex-start; 
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 80%;
         }
-        #chat-input { 
-            display: flex; 
-            border-top: 1px solid #ddd; 
+        .user-message {
+            background-color: #e1ffc7;
+            margin-left: auto;
         }
-        #message { 
-            flex: 1; 
-            padding: 10px; 
-            border: none; 
-            outline: none; 
+        .bot-message {
+            background-color: #f0f0f0;
         }
-        #send { 
-            padding: 10px 20px; 
-            border: none; 
-            background: #007bff; 
-            color: #fff; 
-            cursor: pointer; 
+        #chat-input {
+            display: flex;
+            padding: 10px;
+            background-color: #f9f9f9;
         }
-        #send:hover {
-            background: #0056b3;  /* 전송 버튼 hover 시 색상 변경 */
+        input[type="text"], button {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        input[type="text"] {
+            flex-grow: 1;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .loading, .error {
+            text-align: center;
+            padding: 10px;
+        }
+        .error {
+            color: #ff0000;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-    <div id="chat-container">
-        <div id="chat-box"></div>
+    <div id="main-container">
+        <div id="character-search">
+            <form id="character-search-form">
+                <input type="text" id="nickname" name="nickname" placeholder="캐릭터 닉네임 입력">
+                <button type="submit">검색</button>
+            </form>
+        </div>
+        <div id="character-info"></div>
+        <div id="chat-container"></div>
         <div id="chat-input">
             <input type="text" id="message" placeholder="메시지를 입력하세요" autocomplete="off">
             <button id="send">전송</button>
         </div>
     </div>
 
-
-    <form id="characterForm" method="post">
-        {% csrf_token %}
-        <label for="characterName">캐릭터 닉네임:</label>
-        <input type="text" id="characterName" name="characterName" required>
-        <button type="button" onclick="fetchCharacterInfo()">불러오기</button>
-    </form>
-    
-    <script>
-    function fetchCharacterInfo() {
-        const characterName = document.getElementById('characterName').value;
-    
-        // CSRF 토큰을 가져옵니다.
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    
-        fetch('fetch_character_info/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken // CSRF 토큰을 여기서 사용
-            },
-            body: JSON.stringify({ character_name: characterName })
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                alert("캐릭터 정보가 성공적으로 저장됐담!");
-            } else {
-                alert("캐릭터 정보를 불러오는 데 실패했담...");
-            }
-        })
-        .catch(error => console.error("Error:", error));
-    }
-    </script>
+    {% csrf_token %}
 
     <script>
-        const chatBox = document.getElementById('chat-box');
-        const messageInput = document.getElementById('message');
-        const sendButton = document.getElementById('send');
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatContainer = document.getElementById('chat-container');
+            const messageInput = document.getElementById('message');
+            const sendButton = document.getElementById('send');
+            const characterSearchForm = document.getElementById('character-search-form');
+            const characterInfoDiv = document.getElementById('character-info');
 
-        // 메시지를 채팅 창에 추가하는 함수
-        function addMessage(text, isBot) {
-            const messageElement = document.createElement('p');
-            messageElement.className = isBot ? 'bot-message' : 'user-message';
-            messageElement.textContent = text;
-            chatBox.appendChild(messageElement);
-            chatBox.scrollTop = chatBox.scrollHeight;  // 스크롤을 최하단으로 이동
-        }
+            function addMessage(text, isBot) {
+                const messageElement = document.createElement('div');
+                messageElement.className = isBot ? 'message bot-message' : 'message user-message';
+                messageElement.textContent = text;
+                chatContainer.appendChild(messageElement);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
 
-        // 글이 생성되는 것처럼 텍스트를 하나씩 표시하는 함수
-        function typeText(text) {
-            let i = 0;
-            const messageElement = document.createElement('p');
-            messageElement.className = 'bot-message';
-            chatBox.appendChild(messageElement);
-            
-            function typing() {
-                if (i < text.length) {
-                    messageElement.textContent += text[i];
-                    i++;
-                    setTimeout(typing, 50);  // 50ms마다 한 글자씩 추가
+            function typeText(text) {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message bot-message';
+                chatContainer.appendChild(messageElement);
+                
+                let i = 0;
+                function typing() {
+                    if (i < text.length) {
+                        messageElement.textContent += text[i];
+                        i++;
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
+                        setTimeout(typing, 30);
+                    }
+                }
+                typing();
+            }
+
+            function showLoading() {
+                const loadingElement = document.createElement('div');
+                loadingElement.className = 'loading';
+                loadingElement.textContent = '처리 중...';
+                chatContainer.appendChild(loadingElement);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                return loadingElement;
+            }
+
+            function showError(message) {
+                const errorElement = document.createElement('div');
+                errorElement.className = 'error';
+                errorElement.textContent = message;
+                chatContainer.appendChild(errorElement);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+
+            async function sendMessage() {
+                const userMessage = messageInput.value.trim();
+                if (!userMessage) return;
+
+                addMessage(userMessage, false);
+                messageInput.value = '';
+                sendButton.disabled = true;
+
+                const loadingElement = showLoading();
+
+                try {
+                    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                    const response = await fetch('/chatbot/', {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: new URLSearchParams({ 'message': userMessage })
+                    });
+
+                    loadingElement.remove();
+
+                    if (!response.ok) throw new Error("서버 응답 오류");
+
+                    const data = await response.json();
+                    if (!data || !data.response) {
+                        throw new Error("유효하지 않은 서버 응답");
+                    }
+
+                    typeText(data.response);
+                } catch (error) {
+                    console.error("메시지 전송 오류:", error);
+                    showError("오류가 발생했습니다. 다시 시도해주세요.");
+                } finally {
+                    sendButton.disabled = false;
                 }
             }
-            typing();
-        }
 
-        // 서버에 메시지를 전송하고 응답받기
-        async function sendMessage() {
-            const userMessage = messageInput.value.trim();
-            if (!userMessage) return;
-
-            addMessage(userMessage, false);
-            messageInput.value = '';
-
-            try {
-                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-                const response = await fetch('/chat/', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRFToken': csrftoken
-                    },
-                    body: new URLSearchParams({ 'message': userMessage })
-                });
-
-                if (!response.ok) throw new Error("서버 응답 오류");
-
-                const data = await response.json();
-
-                if (!data || !data.response) {
-                    throw new Error("유효하지 않은 서버 응답");
+            sendButton.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keyup', (event) => {
+                if (event.key === 'Enter') {
+                    sendMessage();
                 }
+            });
 
-                typeText(data.response);
-            } catch (error) {
-                console.error("메시지 전송 오류:", error);
-                typeText("서버 오류가 발생했습니다. 다시 시도해주세요.");
+            characterSearchForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const nickname = document.getElementById('nickname').value;
+                const loadingElement = showLoading();
+
+                try {
+                    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                    const response = await fetch('/chatbot/search_character/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: 'nickname=' + encodeURIComponent(nickname)
+                    });
+
+
+                    loadingElement.remove();
+
+                    const data = await response.json();
+                    if (data.success) {
+                        displayCharacterInfo(data.character_info);
+                    } else {
+                        showError(data.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showError("캐릭터 검색 중 오류가 발생했습니다.");
+                }
+            });
+
+            function displayCharacterInfo(info) {
+                characterInfoDiv.style.display = 'block';
+                characterInfoDiv.innerHTML = `
+                    <h3>${info.character_name}</h3>
+                    <p>레벨: ${info.character_level}</p>
+                    <p>서버: ${info.world_name}</p>
+                    <p>직업: ${info.character_class}</p>
+                    <img src="${info.character_image}" alt="${info.character_name}" style="max-width: 100px; border-radius: 8px;">
+                `;
             }
-        }
 
 
-        // 전송 버튼 클릭 이벤트
-        sendButton.addEventListener('click', sendMessage);
-
-        // Enter 키 입력 시 메시지 전송
-        messageInput.addEventListener('keyup', (event) => {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
+            // 초기 메시지 표시
+            typeText("안녕하세요! 메이플스토리에 대해 무엇이든 물어보세요.");
         });
     </script>
 </body>

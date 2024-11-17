@@ -1,4 +1,3 @@
-import asyncio
 import aiohttp
 from django.shortcuts import render
 from django.conf import settings
@@ -8,6 +7,9 @@ import logging
 from datetime import timedelta
 from django.utils.safestring import mark_safe 
 import json
+import faiss
+import numpy as np
+import os
 
 
 logger = logging.getLogger(__name__)
@@ -425,28 +427,158 @@ def extract_character_skills(skill_info):
 def character_info_view(request):
     character_name = request.GET.get('character_name') 
 
+
+from asgiref.sync import sync_to_async
+
+FAISS_INDEX_PATH = r'C:\Users\ccg70\OneDrive\desktop\nexon_project\chatbot_project\character_faiss'
+
+
+def vectorize_character_data(character_info):
+    """
+    Convert character data to vector representation.
+    This example uses simple numerical representations for character attributes.
+    """
+    # 기본 벡터 초기화 (128차원)
+    vector = np.zeros(128)
+
+    # 캐릭터의 기본 정보에서 벡터화
+    basic_info = character_info.get('basic_info', {})
+    
+    # 예를 들어, 캐릭터 클래스와 레벨을 벡터에 매핑
+    character_class = basic_info.get('character_class', '정보 없음')
+    level = basic_info.get('level', 1)
+
+    # 캐릭터 클래스에 대한 간단한 매핑
+    class_mapping = {
+        '전사': 0,
+        '법사': 1,
+        '궁수': 2,
+        '도적': 3,
+        '해적': 4,
+    }
+
+    # 클래스에 따라 벡터의 특정 인덱스에 1을 설정
+    if character_class in class_mapping:
+        vector[class_mapping[character_class]] = 1
+
+    # 레벨을 0~1 범위로 정규화하여 벡터의 특정 위치에 저장
+    vector[5] = min(level / 100, 1)  # 레벨을 0~1 범위로 정규화하여 인덱스 5에 설정
+
+    # 스탯 정보를 가져와서 벡터에 추가 (예: 힘, 민첩성 등)
+    stats = character_info.get('stat_info', {})
+    
+    # 예시로 힘과 민첩성을 정규화하여 각각 인덱스 6과 7에 저장
+    vector[6] = min(stats.get('STR', 0) / 1000, 1)   # 힘
+    vector[7] = min(stats.get('DEX', 0) / 1000, 1) # 민첩성
+    vector[8] = min(stats.get('INT', 0) / 1000, 1)   # 힘
+    vector[9] = min(stats.get('LUK', 0) / 1000, 1) # 민첩성
+
+    return vector
+
+
+import hashlib
+
+
+def remove_image_links(data, keep_basic_info_image=False):
+    """
+    Recursively remove fields with image links from the data,
+    optionally keeping the image in basic_info.
+    """
+    if isinstance(data, dict):
+        return {
+            key: (remove_image_links(value, key == 'basic_info') if key == 'basic_info' else remove_image_links(value))
+            for key, value in data.items()
+            if not (isinstance(value, str) and value.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')))
+            or (keep_basic_info_image and key == 'character_image')
+        }
+    elif isinstance(data, list):
+        return [remove_image_links(item) for item in data]
+    else:
+        return data
+
+def save_to_faiss(character_name, character_info):
+    """
+    Save filtered character data to FAISS index, using FAISS_INDEX_PATH and unique naming for each character.
+    """
+    try:
+        # Ensure the FAISS index directory exists
+        if not os.path.exists(FAISS_INDEX_PATH):
+            os.makedirs(FAISS_INDEX_PATH)
+
+        # Generate a unique filename using hash
+        hashed_name = hashlib.sha256(character_name.encode('utf-8')).hexdigest()[:8]
+        faiss_file_name = f"{hashed_name}.faiss"
+        metadata_file_name = f"{hashed_name}_metadata.json"
+        faiss_file_path = os.path.join(FAISS_INDEX_PATH, faiss_file_name)
+        metadata_file_path = os.path.join(FAISS_INDEX_PATH, metadata_file_name)
+
+        # FAISS index dimension
+        dimension = 128  # Adjust to match the vector embedding
+
+        # Create or load a FAISS index for this character
+        if os.path.exists(faiss_file_path):
+            index = faiss.read_index(faiss_file_path)
+        else:
+            index = faiss.IndexFlatL2(dimension)
+
+        # Convert character data to vector (implement this function)
+        vector = vectorize_character_data(character_info)
+        vector = np.array([vector], dtype=np.float32)
+
+        # Add vector to the index and save
+        index.add(vector)
+        faiss.write_index(index, faiss_file_path)
+
+        # Filter data for metadata
+        filtered_data = {
+            'character_name': character_name,
+            'basic_info': character_info.get('basic_info', {}),
+            'final_stats': character_info.get('stat_info', {}),
+            'equipment_data': character_info.get('item_equipment_info', []),
+            'hexa_stats': character_info.get('hexamatrix_stat_info', []),
+            'hexa_data': character_info.get('hexamatrix_info', []),
+            'vmatrix_data': character_info.get('vmatrix_info', {}),
+        }
+
+        # Apply the modified remove_image_links function
+        filtered_data = remove_image_links(filtered_data, keep_basic_info_image=True)
+
+        # Save metadata in a separate JSON file
+        with open(metadata_file_path, 'w', encoding='utf-8') as f:
+            json.dump(filtered_data, f, ensure_ascii=False)
+
+        print(f"Saved {character_name} to {faiss_file_path} and {metadata_file_path}")
+
+    except Exception as e:
+        print(f"Error saving to FAISS for {character_name}: {str(e)}")
+    
+
 async def character_info_view(request, character_name):
     # URL에서 받은 character_name 인수 사용
     character_info = await get_character_info(character_name)
 
     if character_info:
         # 각 데이터를 추출하는 함수들
-        final_stats = extract_final_stats(character_info.get('stat_info', {}))
-        equipment_data = extract_item_equipment(character_info.get('item_equipment_info', []))
-        ability_data = extract_ability_info(character_info.get('ability_info', {}))
-        set_effect_data = extract_set_effect(character_info.get('set_effect_info', []))
-        link_skill_data = extract_link_skills(character_info.get('link_skill_info', []))
-        hexa_stats = extract_hexa_stats(character_info.get('hexamatrix_stat_info', []))
-        hexa_data = extract_hexa(character_info.get('hexamatrix_info', []))
-        symbol_data = extract_symbols(character_info.get('symbol_equipment_info', []))
-        vmatrix_data = extract_vmatrix(character_info.get('vmatrix_info', {}))
-        character_skill_data = extract_character_skills(character_info.get('skill_info', {}))
-        
+        final_stats = await sync_to_async(extract_final_stats)(character_info.get('stat_info', {}))
+        equipment_data = await sync_to_async(extract_item_equipment)(character_info.get('item_equipment_info', []))
+        ability_data = await sync_to_async(extract_ability_info)(character_info.get('ability_info', {}))
+        set_effect_data = await sync_to_async(extract_set_effect)(character_info.get('set_effect_info', []))
+        link_skill_data = await sync_to_async(extract_link_skills)(character_info.get('link_skill_info', []))
+        hexa_stats = await sync_to_async(extract_hexa_stats)(character_info.get('hexamatrix_stat_info', []))
+        hexa_data = await sync_to_async(extract_hexa)(character_info.get('hexamatrix_info', []))
+        symbol_data = await sync_to_async(extract_symbols)(character_info.get('symbol_equipment_info', []))
+        vmatrix_data = await sync_to_async(extract_vmatrix)(character_info.get('vmatrix_info', {}))
+        character_skill_data = await sync_to_async(extract_character_skills)(character_info.get('skill_info', {}))
+
+        # 캐시 저장
         cache.set(f'character_info_{character_name}', character_info, timeout=600)
+
+        # FAISS에 캐릭터 정보 저장
+        await sync_to_async(save_to_faiss)(character_name, character_info)
 
         # 템플릿으로 전달할 컨텍스트
         context = {
-            'character_info': character_info,
+            'character_name': character_name,
             'final_stats': final_stats,
             'equipment_data': equipment_data,
             'ability_data': ability_data,
@@ -457,17 +589,12 @@ async def character_info_view(request, character_name):
             'symbol_data': symbol_data,
             'preset_range': range(1, 4),
             'vmatrix_data': vmatrix_data,
-            'character_skill_data': character_skill_data,  # 이 부분은 변경 없음
+            'character_skill_data': character_skill_data,
         }
 
         return render(request, 'character_info/info.html', context)
     else:
         return render(request, 'character_info/error.html', {'error': '캐릭터 정보를 찾을 수 없습니다.'})
-    
-
-def chatbot_view(request):
-    return render(request, 'character_info/info.html')  # 챗봇 템플릿 경로
-
 
 ##여기는 장비템위에 마우스 갖다대면 띄우는 툴팁을 위해 장비 정보를 안전하게 json파일로 보내기 위한 함수
 def character_equipment_view(request):
@@ -486,3 +613,4 @@ def character_equipment_view(request):
     equipment_data_json = mark_safe(json.dumps(equipment_data["item_equipment"]))  # JSON으로 변환하고 안전하게 마크
     
     return render(request, "character_equipment.html", {"equipment_data": equipment_data, "equipment_data_json": equipment_data_json})
+

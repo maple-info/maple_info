@@ -5,7 +5,7 @@ from decouple import config
 client = OpenAI(api_key=config('OPENAI_API_KEY'))
 
 # jsonl 파일을 업로드
-with open(r"C:\Users\ccg70\OneDrive\desktop\넥슨 프로젝트\chatbot_project\chat_formatted_game_qa_data.jsonl", "rb") as file:
+with open(r"C:\Users\ccg70\OneDrive\desktop\nexon_project\chatbot_project\chat_formatted_game_qa_data.jsonl", "rb") as file:
     file_response = client.files.create(
         file=file,
         purpose="fine-tune"
