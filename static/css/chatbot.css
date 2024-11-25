@@ -181,3 +181,54 @@ body {
 #chat-input img:hover {
     background-color: #c0c0c0;
 }
+
+/* 사이드바 */
+.sidebar {
+  width: 250px;
+  height: 100%;
+  background-color: #333;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: -250px;
+  transition: left 0.3s ease;
+  padding-top: 20px;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 60px; /* 메뉴와 간격 */
+}
+
+.sidebar ul li {
+  padding: 10px 20px;
+}
+
+.sidebar ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+.toggle-btn {
+  background-color: #444;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  position: fixed; /* 버튼을 화면에 고정 */
+  top: 20px; /* 화면 상단에서 20px 아래 */
+  left: 20px; /* 화면 왼쪽에서 20px 오른쪽 */
+  z-index: 1000; /* 버튼이 항상 보이도록 높은 z-index 설정 */
+  border-radius: 4px;
+  transition: left 0.3s ease; /* 버튼 위치의 부드러운 이동 효과 */
+}
+
+.toggle-btn:hover {
+  background-color: #555;
+}
+
+/* 사이드바가 열릴 때 버튼 위치 조정 */
+.sidebar.open ~ .toggle-btn {
+  left: 270px; /* 사이드바 너비 + 여유 공간 */
+}
