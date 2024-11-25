@@ -8,6 +8,18 @@
 <body>
 
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+      <div id="sidebar" class="sidebar">
+        <ul>
+          <li><a href="#">챗봇</a></li>
+          <li><a href="{% url 'info' %}">캐릭터정보</a></li>
+        </ul>
+      </div>
+      <button id="toggle-btn" class="toggle-btn" onclick="toggleSidebar()">
+        <img src="sidebar1.png" alt="" class="button-image">
+      </button>
+
     <div id="chat-container">
         <div id="chat-box">
             <!-- 사용자 메시지 템플릿 -->
