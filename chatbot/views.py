@@ -145,7 +145,7 @@ def chatbot_view(request):
             )
 
             user_message_with_context = f"Context: {context}\n\nQuestion: {user_message}"
-            user_message_with_context = truncate_text(user_message_with_context, max_tokens=4000)
+            user_message_with_context = truncate_text(user_message_with_context, max_tokens=8000)
 
             try:
                 response = client.chat.completions.create(

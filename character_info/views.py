@@ -1,3 +1,4 @@
+import asyncio
 import aiohttp
 from django.shortcuts import render
 from django.conf import settings
@@ -10,7 +11,6 @@ import json
 import faiss
 import numpy as np
 import os
-
 
 logger = logging.getLogger(__name__)
 BASE_URL = "https://open.api.nexon.com/maplestory/v1"
@@ -29,6 +29,9 @@ async def get_api_data(session, endpoint, params=None):
                 return None
     except Exception as e:
         logger.error(f"API 요청 중 오류 발생: {url}, 오류: {str(e)}")
+    async with session.get(url, headers=headers, params=params) as response:
+        if response.status == 200:
+            return await response.json()
         return None
 
 async def get_character_info(character_name, date=None):
@@ -78,6 +81,7 @@ async def get_character_info(character_name, date=None):
         }
 
 
+
     
 def extract_final_stats(stat_info):
     # final_stat에서 원하는 정보 추출
@@ -88,7 +92,6 @@ def extract_final_stats(stat_info):
         final_stats[stat_name] = stat['stat_value']
     
     return final_stats
-
 
 ##### 아이템 슬롯명 매핑 테이블
 SLOT_MAPPING = {
@@ -137,6 +140,7 @@ def extract_item_equipment(item_equipment_info):
 
         # 슬롯 이름을 키로 하여 데이터 저장
         equipment_data["item_equipment"][slot] = {
+            "en_slot":item.get("item_equipment_slot", "정보 없음"),
             "slot": slot,  # 슬롯 이름 저장
             "part": item.get("item_equipment_part", "정보 없음"),
             "name": item.get("item_name", "정보 없음"),
@@ -176,23 +180,42 @@ def extract_item_equipment(item_equipment_info):
 
     return equipment_data
 
-def extract_ability_info(ability_info):
-    if not isinstance(ability_info, dict):
+def extract_ability_presets(ability_data):
+    """
+    어빌리티 프리셋 정보를 추출하여 프리셋별로 정리
+    """
+    if not isinstance(ability_data, dict):
         return {}
 
-    ability_data = {
-        "grade": ability_info.get("ability_grade", "정보 없음"),
-        "abilities": []
-    }
-    
-    for ability in ability_info.get("ability_info", []):
-        ability_data["abilities"].append({
-            "no": ability.get("ability_no", "정보 없음"),
-            "grade": ability.get("ability_grade", "정보 없음"),
-            "value": ability.get("ability_value", "정보 없음"),
-        })
-    
-    return ability_data
+    extracted_presets = {}
+
+    # 프리셋 데이터를 반복
+    for preset_key, preset_value in ability_data.items():
+        # 프리셋 키가 'ability_preset_'으로 시작하는 경우만 처리
+        if preset_key.startswith('ability_preset_'):
+            # 프리셋 번호 추출
+            preset_number = preset_key.split('_')[-1]
+
+            # 각 프리셋의 데이터 추출
+            preset_data = {
+                "description": preset_value.get("description", "정보 없음"),
+                "grade": preset_value.get("ability_preset_grade", "정보 없음"),
+                "abilities": []
+            }
+
+            # 어빌리티 상세 정보를 abilities 리스트에 추가
+            for ability in preset_value.get("ability_info", []):
+                ability_data = {
+                    "no": ability.get("ability_no", "정보 없음"),
+                    "grade": ability.get("ability_grade", "정보 없음"),
+                    "value": ability.get("ability_value", "정보 없음")
+                }
+                preset_data["abilities"].append(ability_data)
+
+            # 프리셋 데이터를 저장
+            extracted_presets[f"preset_{preset_number}"] = preset_data
+
+    return extracted_presets
 
 def extract_set_effect(set_effect_info):
     # set_effect_info가 딕셔너리인지 확인하고 'set_effect' 필드를 가져옴
@@ -240,6 +263,32 @@ def extract_set_effect(set_effect_info):
     return set_effect_data
 
 
+
+
+def extract_hyper_stats(hyper_stat_info):
+    if not isinstance(hyper_stat_info, dict):
+        return {}
+
+    extracted_hyper_stats = {}
+
+    for preset_key, stats in hyper_stat_info.items():
+        if preset_key.startswith('hyper_stat_preset_'):
+            preset_number = preset_key.split('_')[-1]
+            # stats가 리스트가 아닌 경우 강제로 리스트로 변환
+            if not isinstance(stats, list):
+                stats = []
+            extracted_hyper_stats[f'preset_{preset_number}'] = []
+
+            for stat in stats:
+                if isinstance(stat, dict):  # stat이 딕셔너리인지 확인
+                    stat_data = {
+                        "type": stat.get("stat_type", "정보 없음"),
+                        "points": stat.get("stat_point", 0),
+                        "level": stat.get("stat_level", 0),
+                        "increase": stat.get("stat_increase", "정보 없음")
+                    }
+                    extracted_hyper_stats[f'preset_{preset_number}'].append(stat_data)
+    return extracted_hyper_stats
 
 def extract_link_skills(link_skill_info):
     if not isinstance(link_skill_info, dict):
@@ -320,6 +369,33 @@ def extract_hexa(hexamatrix_info):
             })
 
     return hexa_data if hexa_data["character_hexa_core_equipment"] else None
+
+def extract_character_skills(skill_info):
+
+    # 데이터 검증
+    if not isinstance(skill_info, dict):
+        return {"error": "유효하지 않은 데이터 형식입니다."}
+
+    # 기본 데이터 구조 생성
+    character_skill_data = {
+        "character_class": skill_info.get("character_class", "정보 없음"),
+        "skill_grade": skill_info.get("character_skill_grade", "정보 없음"),
+        "skills": []
+    }
+
+        # 스킬 정보 추가
+        
+    for skill in skill_info.get("character_skill", []):
+        character_skill_data["skills"].append({
+            "skill_name": skill.get("skill_name", "정보 없음"),
+            "skill_description": skill.get("skill_description", "정보 없음"),
+            "skill_level": skill.get("skill_level", 0),
+            "skill_effect": skill.get("skill_effect", "정보 없음"),
+            "skill_effect_next": skill.get("skill_effect_next", "정보 없음"),
+            "skill_icon": skill.get("skill_icon", "정보 없음")
+        })
+
+    return character_skill_data
 
 def extract_vmatrix(vmatrix_info):
     if not isinstance(vmatrix_info, dict):
@@ -424,14 +500,9 @@ def extract_character_skills(skill_info):
         }
     return extracted_skills
 
-def character_info_view(request):
-    character_name = request.GET.get('character_name') 
-
-
 from asgiref.sync import sync_to_async
 
 FAISS_INDEX_PATH = r'C:\Users\ccg70\OneDrive\desktop\nexon_project\chatbot_project\character_faiss'
-
 
 def vectorize_character_data(character_info):
     """
@@ -478,6 +549,8 @@ def vectorize_character_data(character_info):
 
 import hashlib
 
+def character_info_view(request):
+    character_name = request.GET.get('character_name')
 
 def remove_image_links(data, keep_basic_info_image=False):
     """
@@ -495,6 +568,7 @@ def remove_image_links(data, keep_basic_info_image=False):
         return [remove_image_links(item) for item in data]
     else:
         return data
+
 
 def save_to_faiss(character_name, character_info):
     """
@@ -550,8 +624,7 @@ def save_to_faiss(character_name, character_info):
         print(f"Saved {character_name} to {faiss_file_path} and {metadata_file_path}")
 
     except Exception as e:
-        print(f"Error saving to FAISS for {character_name}: {str(e)}")
-    
+        print(f"Error saving to FAISS for {character_name}: {str(e)}") 
 
 async def character_info_view(request, character_name):
     # URL에서 받은 character_name 인수 사용
@@ -561,7 +634,7 @@ async def character_info_view(request, character_name):
         # 각 데이터를 추출하는 함수들
         final_stats = await sync_to_async(extract_final_stats)(character_info.get('stat_info', {}))
         equipment_data = await sync_to_async(extract_item_equipment)(character_info.get('item_equipment_info', []))
-        ability_data = await sync_to_async(extract_ability_info)(character_info.get('ability_info', {}))
+        ability_data = await sync_to_async(extract_ability_presets)(character_info.get('ability_info', {}))
         set_effect_data = await sync_to_async(extract_set_effect)(character_info.get('set_effect_info', []))
         link_skill_data = await sync_to_async(extract_link_skills)(character_info.get('link_skill_info', []))
         hexa_stats = await sync_to_async(extract_hexa_stats)(character_info.get('hexamatrix_stat_info', []))
@@ -595,22 +668,9 @@ async def character_info_view(request, character_name):
         return render(request, 'character_info/info.html', context)
     else:
         return render(request, 'character_info/error.html', {'error': '캐릭터 정보를 찾을 수 없습니다.'})
-
-##여기는 장비템위에 마우스 갖다대면 띄우는 툴팁을 위해 장비 정보를 안전하게 json파일로 보내기 위한 함수
-def character_equipment_view(request):
-    item_equipment_info = {
-        "preset_no": 1,
-        "item_equipment": [
-            {"item_equipment_slot": "반지1", "item_name": "파워링", "item_icon": "path/to/ring1_icon.png"},
-            {"item_equipment_slot": "반지2", "item_name": "매직링", "item_icon": "path/to/ring2_icon.png"},
-            {"item_equipment_slot": "무기", "item_name": "불멸의 검", "item_icon": "path/to/weapon_icon.png"},
-        ]
-    }
-
-    equipment_data = extract_item_equipment(item_equipment_info)
     
-    # JSON으로 변환하여 템플릿에 전달
-    equipment_data_json = mark_safe(json.dumps(equipment_data["item_equipment"]))  # JSON으로 변환하고 안전하게 마크
-    
-    return render(request, "character_equipment.html", {"equipment_data": equipment_data, "equipment_data_json": equipment_data_json})
+
+def chatbot_view(request):
+    return render(request, 'character_info/info.html')  # 챗봇 템플릿 경로
+
 
