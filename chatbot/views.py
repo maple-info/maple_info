@@ -8,14 +8,26 @@ import hashlib
 from django.conf import settings
 from django.shortcuts import render
 from django.http import JsonResponse
-from openai import OpenAI
+from langchain.chat_models import ChatOpenAI
+from langchain.prompts import PromptTemplate
+from langchain.embeddings import OpenAIEmbeddings
 from django.views.decorators.http import require_http_methods
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-client = OpenAI(api_key=settings.OPENAI_API_KEY)
+# 임베딩 클라이언트 초기화
+embeddings = OpenAIEmbeddings(
+    openai_api_key=settings.OPENAI_API_KEY,
+    model="text-embedding-ada-002"
+)
+
+# ChatOpenAI 클라이언트 초기화 시 특정 모델 지정
+chat = ChatOpenAI(
+    openai_api_key=settings.OPENAI_API_KEY,
+    model_name="ft:gpt-4o-2024-08-06:personal::ASKX7WaZ"  # 채팅 모델로 설정
+)
 
 FAISS_INDEX_PATH = r'C:\Users\ccg70\OneDrive\desktop\nexon_project\chatbot_project\character_faiss'
 
@@ -30,8 +42,8 @@ def truncate_text(text, max_tokens=8000):
 def get_embedding(text):
     try:
         truncated_text = truncate_text(text)
-        response = client.embeddings.create(input=[truncated_text], model="text-embedding-ada-002")
-        return response.data[0].embedding
+        embedding = embeddings.embed_query(truncated_text)
+        return embedding
     except Exception as e:
         logger.error(f"Error in get_embedding: {str(e)}")
         return None
@@ -44,10 +56,15 @@ def search_all_indices(query, indices, k=5):
     results = []
     for index, metadata in indices:
         try:
+            # FAISS 인덱스의 차원 확인
+            if len(query_embedding) != index.d:
+                logger.error(f"Embedding dimension {len(query_embedding)} does not match FAISS index dimension {index.d}")
+                continue
+
             D, I = index.search(np.array([query_embedding]).astype('float32'), k)
             results.extend([(metadata[i], D[0][j]) for j, i in enumerate(I[0]) if i < len(metadata)])
         except Exception as e:
-            logger.error(f"Error searching index: {str(e)}")
+            logger.exception("Error searching index: ")
     
     return sorted(results, key=lambda x: x[1])[:k]
 
@@ -89,7 +106,6 @@ def search_character(request):
             'message': '캐릭터 정보를 찾을 수 없습니다.'
         })
 
-
 def load_faiss_indices(folders):
     indices = []
     for folder in folders:
@@ -104,10 +120,20 @@ def load_faiss_indices(folders):
                     metadata_path = index_path.replace('.faiss', '_metadata.json')
                     with open(metadata_path, 'r', encoding='utf-8') as f:
                         metadata = json.load(f)
+                    logger.info(f"Loaded FAISS index from {index_path} with dimension {index.d}")
                     indices.append((index, metadata))
                 except Exception as e:
-                    logger.error(f"Error reading FAISS index {index_path}: {str(e)}")
+                    logger.exception(f"Error reading FAISS index {index_path}: {str(e)}")
     return indices
+
+def create_faiss_index(embeddings, metadata, index_path, metadata_path):
+    dimension = len(embeddings[0])
+    index = faiss.IndexFlatL2(dimension)
+    index.add(np.array(embeddings).astype('float32'))
+    faiss.write_index(index, index_path)
+    with open(metadata_path, 'w', encoding='utf-8') as f:
+        json.dump(metadata, f, ensure_ascii=False, indent=4)
+    logger.info(f"Created FAISS index at {index_path} with dimension {dimension}")
 
 def chatbot_view(request):
     if request.method == 'POST':
@@ -144,26 +170,24 @@ def chatbot_view(request):
                 "말투로는 '한담', '해야 한담', '된담', '이담'과 같이 어미에 'ㅁ'을 넣어 귀여운 말투로 말해주세요."
             )
 
-            user_message_with_context = f"Context: {context}\n\nQuestion: {user_message}"
-            user_message_with_context = truncate_text(user_message_with_context, max_tokens=8000)
+            # ChatOpenAI를 사용한 메시지 구성
+            messages = [
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": context + "\n\nQuestion: " + user_message}
+            ]
 
+            # 올바른 invoke 메서드 사용
             try:
-                response = client.chat.completions.create(
-                    model="ft:gpt-4o-2024-08-06:personal::ASKX7WaZ",
-                    messages=[
-                        {"role": "system", "content": system_message},
-                        {"role": "user", "content": user_message_with_context}
-                    ],
-                    max_tokens=300
-                )
-                response_text = response.choices[0].message.content.strip()
+                response = chat.invoke(input=messages, max_tokens=300)
+                # AIMessage 객체에서 content 추출
+                response_text = response.content.strip()
                 return JsonResponse({'response': response_text}, json_dumps_params={'ensure_ascii': False})
             except Exception as api_error:
-                logger.error(f"OpenAI API error: {str(api_error)}")
+                logger.exception(f"OpenAI API error: {str(api_error)}")
                 return JsonResponse({'error': "OpenAI API 호출 중 오류가 발생했습니다."}, status=500)
 
         except Exception as e:
-            logger.error(f"Unexpected error: {str(e)}")
+            logger.exception(f"Unexpected error: {str(e)}")
             return JsonResponse({'error': "예기치 못한 오류가 발생했습니다."}, status=500)
 
     character_info = request.session.get('character_info', {})
