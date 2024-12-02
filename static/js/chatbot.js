@@ -95,8 +95,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     characterSearchForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        const nickname = document.getElementById('nickname').value;
+        const nickname = document.getElementById('nickname').value.trim();
+        if (!nickname) {
+            showError("닉네임을 입력해주세요.");
+            return;
+        }
+
         const loadingElement = showLoading();
+        console.log(`Searching for nickname: ${nickname}`);
 
         try {
             const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -109,14 +115,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: 'nickname=' + encodeURIComponent(nickname)
             });
 
-
             loadingElement.remove();
 
+            if (!response.ok) {
+                throw new Error("서버 응답 오류");
+            }
+
             const data = await response.json();
-            if (data.success) {
-                displayCharacterInfo(data.character_info);
+            console.log('Received data:', data);
+
+            if (data.character_name) {
+                displayCharacterInfo(data);
             } else {
-                showError(data.message);
+                showError(data.error || "캐릭터를 찾을 수 없습니다.");
             }
         } catch (error) {
             console.error('Error:', error);
@@ -125,6 +136,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function displayCharacterInfo(info) {
+        console.log('Displaying character info:', info);
+
+        if (!info.character_name || !info.character_level || !info.world_name || !info.character_class || !info.character_image) {
+            showError("필수 캐릭터 정보가 누락되었습니다.");
+            return;
+        }
+        
         characterInfoDiv.style.display = 'block';
         characterInfoDiv.innerHTML = `
             <h3>${info.character_name}</h3>
@@ -135,7 +153,26 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
-
     // 초기 메시지 표시
     typeText("안녕하세요! 메이플스토리에 대해 무엇이든 물어보세요.");
 });
+
+// 사이드바 토글 함수
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggle-btn');
+    const isVisible = sidebar.style.left === '0px';
+  
+    if (isVisible) {
+      // 사이드바 닫기
+      sidebar.style.left = '-250px';
+      toggleBtn.classList.remove('hidden'); // 버튼 다시 보이기
+      toggleBtn.querySelector('img').src = '/static/image/sidebar1.png'; // 닫힌 상태의 버튼 이미지
+    } else {
+      // 사이드바 열기
+      sidebar.style.left = '0px';
+      toggleBtn.classList.add('hidden'); // 버튼 숨기기
+      // 필요하다면 열림 상태의 이미지를 설정할 수 있습니다.
+      // toggleBtn.querySelector('img').src = '/static/image/sidebar_open.png';
+    }
+}

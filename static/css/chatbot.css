@@ -59,7 +59,7 @@
 } 
  */
 
-/* 전역 스타일 초기화 */
+/* 전역 스타일 초기��� */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -231,4 +231,86 @@ body {
 /* 사이드바가 열릴 때 버튼 위치 조정 */
 .sidebar.open ~ .toggle-btn {
   left: 270px; /* 사이드바 너비 + 여유 공간 */
+}
+
+/* main-container Flex 설정 */
+#main-container {
+    display: flex;
+    height: 100vh; /* 전체 화면 높이 */
+    width: 100%;
+}
+
+/* 왼쪽 섹션: 채팅 영역 */
+#chat-section {
+    flex: 3; /* 75% 너비 */
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+/* 오른쪽 섹션: 캐릭터 검색 및 정보 */
+#character-section {
+    flex: 1; /* 25% 너비 */
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-left: 1px solid #ddd;
+    overflow-y: auto;
+}
+
+/* 캐릭터 검색 폼 스타일 */
+#character-search {
+    margin-bottom: 20px;
+}
+
+#character-search-form input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#character-search-form button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#character-search-form button:hover {
+    background-color: #0056b3;
+}
+
+/* 캐릭터 정보 스타일 */
+#character-info {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#character-info h3 {
+    margin-top: 0;
+}
+
+#character-info img {
+    max-width: 100px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    #main-container {
+        flex-direction: column;
+    }
+
+    #character-section {
+        border-left: none;
+        border-top: 1px solid #ddd;
+        width: 100%;
+    }
 }

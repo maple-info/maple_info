@@ -82,29 +82,35 @@ def find_character_info(nickname):
 
 @require_http_methods(["POST"])
 def search_character(request):
-    nickname = request.POST.get('nickname')
-    if not nickname:
-        return JsonResponse({'error': '닉네임을 입력해주세요.'}, status=400)
-    
-    character_info = find_character_info(nickname)
-    if character_info:
-        request.session['character_info'] = character_info
-        return JsonResponse({
-            'success': True,
-            'message': '캐릭터 정보를 찾았습니다.',
-            'character_info': {
-                'character_name': character_info.get('basic_info', {}).get('character_name', ''),
-                'character_level': character_info.get('basic_info', {}).get('character_level', ''),
-                'character_class': character_info.get('basic_info', {}).get('character_class', ''),
-                'world_name': character_info.get('basic_info', {}).get('world_name', ''),
-                'character_image': character_info.get('basic_info', {}).get('character_image', ''),
-            }
-        })
-    else:
-        return JsonResponse({
-            'success': False,
-            'message': '캐릭터 정보를 찾을 수 없습니다.'
-        })
+    if request.method == 'POST':
+        nickname = request.POST.get('nickname')
+        logger.debug(f"Received nickname: {nickname}")
+
+        # character_info를 가져오는 로직
+        character_info = find_character_info(nickname)
+        logger.debug(f"Raw character_info: {character_info}")
+
+        # character_info가 리스트인 경우 첫 번째 항목을 사용
+        if isinstance(character_info, list):
+            character_info = character_info[0] if character_info else {}
+            logger.debug(f"Processed character_info: {character_info}")
+
+        # 'basic_info'가 존재하는지 확인하고, 필요한 필드 추출
+        basic_info = character_info.get('basic_info', {}) if isinstance(character_info, dict) else {}
+        logger.debug(f"Basic info: {basic_info}")
+
+        context = {
+            'character_name': basic_info.get('character_name', ''),
+            'character_level': basic_info.get('character_level', ''),
+            'world_name': basic_info.get('world_name', ''),
+            'character_class': basic_info.get('character_class', ''),
+            'character_image': basic_info.get('character_image', ''),
+        }
+
+        logger.debug(f"Response context: {context}")
+        return JsonResponse(context)
+    logger.error("Invalid request method received.")
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 def load_faiss_indices(folders):
     indices = []
