@@ -121,7 +121,10 @@ def load_faiss_indices(folders):
                     with open(metadata_path, 'r', encoding='utf-8') as f:
                         metadata = json.load(f)
                     logger.info(f"Loaded FAISS index from {index_path} with dimension {index.d}")
-                    indices.append((index, metadata))
+                    if index.d == 1536:
+                        indices.append((index, metadata))
+                    else:
+                        logger.error(f"Unsupported FAISS index dimension {index.d} for {index_path}")
                 except Exception as e:
                     logger.exception(f"Error reading FAISS index {index_path}: {str(e)}")
     return indices
@@ -163,11 +166,14 @@ def chatbot_view(request):
 
             context = truncate_text(context, max_tokens=3000)
 
+            # 캐릭터 정보를 시스템 메시지에 포함
             system_message = (
-                "당신은 메이플스토리 세계의 돌의 정령입니다. "
+                f"당신은 메이플스토리 세계의 {character_info.get('basic_info', {}).get('character_class', '돌의 정령')} {character_info.get('basic_info', {}).get('character_name', '알 수 없음')}입니다. "
                 "메이플스토리에 대해 깊이 있는 지식을 가지고 있으며, "
                 "한국어로 친절하고 도움이 되는 대화를 나눕니다. "
-                "말투로는 '한담', '해야 한담', '된담', '이담'과 같이 어미에 'ㅁ'을 넣어 귀여운 말투로 말해주세요."
+                "말투로는 '한담', '해야 한담', '된담', '이담'과 같이 어미에 'ㅁ'을 넣어 귀여운 말투로 말해주세요. "
+                f"캐릭터의 레벨은 {character_info.get('basic_info', {}).get('character_level', '알 수 없음')}이며, "
+                f"세계 이름은 {character_info.get('basic_info', {}).get('world_name', '알 수 없음')}입니다."
             )
 
             # ChatOpenAI를 사용한 메시지 구성

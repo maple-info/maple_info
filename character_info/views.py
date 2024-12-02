@@ -11,11 +11,14 @@ import json
 import faiss
 import numpy as np
 import os
+import hashlib
 
 logger = logging.getLogger(__name__)
 BASE_URL = "https://open.api.nexon.com/maplestory/v1"
 API_KEY = settings.NEXON_API_KEY
 CACHE_DURATION = timedelta(hours=1)  # 캐시 유효 기간
+
+
 
 async def get_api_data(session, endpoint, params=None):
     headers = {"x-nxopen-api-key": API_KEY}
@@ -87,7 +90,7 @@ def extract_final_stats(stat_info):
     # final_stat에서 원하는 정보 추출
     final_stats = {}
     for stat in stat_info.get('final_stat', []):
-        # stat_name에서 띄어쓰기를 언더바로 변환
+        # stat_name에서 띄어쓰를 언더바 변환
         stat_name = stat['stat_name'].replace(' ', '_')
         final_stats[stat_name] = stat['stat_value']
     
@@ -129,7 +132,7 @@ def extract_item_equipment(item_equipment_info):
     # 기본 구조 생성
     equipment_data = {
         "preset_no": item_equipment_info.get("preset_no", "정보 없음"),
-        "item_equipment": {}  # 슬롯별로 저장할 딕셔너리로 변경
+        "item_equipment": {}  # 슬롯로 저장할 딕셔너리로 변경
     }
 
     # 각 장비 아이템을 슬롯별로 분류하여 저장
@@ -504,48 +507,6 @@ from asgiref.sync import sync_to_async
 
 FAISS_INDEX_PATH = r'C:\Users\ccg70\OneDrive\desktop\nexon_project\chatbot_project\character_faiss'
 
-def vectorize_character_data(character_info):
-    """
-    Convert character data to vector representation.
-    This example uses simple numerical representations for character attributes.
-    """
-    # 기본 벡터 초기화 (128차원)
-    vector = np.zeros(128)
-
-    # 캐릭터의 기본 정보에서 벡터화
-    basic_info = character_info.get('basic_info', {})
-    
-    # 예를 들어, 캐릭터 클래스와 레벨을 벡터에 매핑
-    character_class = basic_info.get('character_class', '정보 없음')
-    level = basic_info.get('level', 1)
-
-    # 캐릭터 클래스에 대한 간단한 매핑
-    class_mapping = {
-        '전사': 0,
-        '법사': 1,
-        '궁수': 2,
-        '도적': 3,
-        '해적': 4,
-    }
-
-    # 클래스에 따라 벡터의 특정 인덱스에 1을 설정
-    if character_class in class_mapping:
-        vector[class_mapping[character_class]] = 1
-
-    # 레벨을 0~1 범위로 정규화하여 벡터의 특정 위치에 저장
-    vector[5] = min(level / 100, 1)  # 레벨을 0~1 범위로 정규화하여 인덱스 5에 설정
-
-    # 스탯 정보를 가져와서 벡터에 추가 (예: 힘, 민첩성 등)
-    stats = character_info.get('stat_info', {})
-    
-    # 예시로 힘과 민첩성을 정규화하여 각각 인덱스 6과 7에 저장
-    vector[6] = min(stats.get('STR', 0) / 1000, 1)   # 힘
-    vector[7] = min(stats.get('DEX', 0) / 1000, 1) # 민첩성
-    vector[8] = min(stats.get('INT', 0) / 1000, 1)   # 힘
-    vector[9] = min(stats.get('LUK', 0) / 1000, 1) # 민첩성
-
-    return vector
-
 
 import hashlib
 
@@ -568,43 +529,237 @@ def remove_image_links(data, keep_basic_info_image=False):
         return [remove_image_links(item) for item in data]
     else:
         return data
+    
+
+def encode_class(vector, character_class):
+    class_mapping = {
+        '히어로': 0,
+        '아크메이지(불,독)': 1,
+        '팔라딘': 2,
+        '다크나이트': 3,
+        '아크메이지(썬,콜)': 4,
+        '비숍': 5,
+        '신궁': 6,
+        '보우마스터': 7,
+        '패스파인더': 8,
+        '듀얼블레이드': 9,
+        '나이트로드': 10,
+        '캡틴': 11,
+        '캐논슈터': 12,
+        '바이퍼': 13,
+        '데몬어벤져': 14,
+        '데몬슬레이어': 15,
+        '일리움': 16,
+        '섀도어': 17,
+        '소울마스터': 18,
+        '미하일': 19,
+        '플레임위자드': 20,
+        '윈드브레이커': 21,
+        '배틀메이지': 22,
+        '블래스터': 23,
+        '메카닉': 24,
+        '와일드헌터': 25,
+        '제논': 26,
+        '아란': 27,
+        '에반': 28,
+        '루미너스': 29,
+        '카이저': 30,
+        '호영': 31,
+        '팬텀': 32,
+        '메르세데스': 33,
+        '엔젤릭버스터': 34,
+        '카인': 35,
+        '카데나': 36,
+        '아델': 37,
+        '일리움': 38,
+        '아크': 39,
+        '칼리': 40,
+        '라라': 41,
+        '키네시스': 42,
+        '제로': 43,
+        '은월': 44,
+        '나이트워커': 45,
+        '스트라이커': 46,
+    }
+
+    index = class_mapping.get(character_class)
+    if index is not None:
+        vector[index] = 1
+    return vector
+
+def encode_stats_clipping(vector, stats):
+    stats_mapping = {
+        'STR': 47,
+        'DEX': 48,
+        'INT': 49,
+        'LUK': 50,
+        'HP': 51,
+        'MP': 52,
+        '보스 몬스터 데미지': 53,
+        '크리티컬 확률': 54,
+        '크리티컬 데미지': 55,
+        '방어율 무시': 56,
+        '최종 데미지': 57,
+        '메소 획득량': 58,
+        '아이템 드롭률': 59,
+        '재사용 대기시간 감소 (%)': 60,
+        '버프 지속시간': 61,
+        '공격력': 62,
+        '마력': 63,
+    }
+    
+    # 합리적인 상한선 설정
+    clipping_values = {
+        'STR': 200000,
+        'DEX': 200000,
+        'INT': 200000,
+        'LUK': 200000,
+        'HP': 10000000,
+        'MP': 10000000,
+        '보스 몬스터 데미지': 750,
+        '크리티컬 확률': 100,
+        '크리티컬 데미지': 150,
+        '방어율 무': 100,
+        '최종 데미지': 200,
+        '메소 획득량': 400,
+        '아이템 드롭률': 400,
+        '재사용 대기시간 감소 (%)': 20,
+        '버프 지속시간': 1000,
+        '공격력': 100000,
+        '마력': 100000,
+    }
+    
+    for stat, index in stats_mapping.items():
+        value = stats.get(stat, 0)
+        clipped = min(value, clipping_values.get(stat, 1))
+        normalized = clipped / clipping_values.get(stat, 1)
+        vector[index] = normalized
+    return vector
+
+def encode_equipment(vector, equipment):
+    equipment_mapping = {
+        '무기': 64,
+        '모자': 65,
+        '상의': 66,
+        '하의': 67,
+        '귀고리': 68,
+        '얼굴장식': 69,
+        '신발': 70,
+        '장갑': 22,
+        '벨트': 71,
+        '펜던트': 72,
+        '펜던트2': 73,
+        '망토': 74,
+        '반지1': 75,
+        '반지2': 76,
+        '반지3': 77,
+        '반지4': 78,
+        '포켓 아이템': 79,
+        '엠블렘': 80,
+        '보조무기': 81,
+        '뱃지': 82,
+        '훈장': 83,
+        '기계 심장': 84,
+
+    }
+    for equip_type, index in equipment_mapping.items():
+        if equipment.get(equip_type, {}).get('name'):
+            vector[index] = 1
+    return vector
+
+def encode_skills(vector, skills):
+    skill_count = len(skills.get('skills', []))
+    # 최대 스킬 수를 기준으로 정규화
+    vector[18] = min(skill_count / 50, 1)
+    # ���정 스킬 레벨이나 효과를 추가로 인코딩할 수 있음
+    return vector
+
+def vectorize_character_data(character_info):
+    vector = np.zeros(1536)  # 벡터 차원을 1536으로 설정
+
+    # 기본 정보 인코딩
+    basic_info = character_info.get('basic_info', {})
+    character_class = basic_info.get('character_class', '정보 없음')
+    level = basic_info.get('character_level', 1)
+    vector[20] = min(level / 300, 1)  # 최대 레벨 300 가정
+
+    vector = encode_class(vector, character_class)
+
+    # 스탯 인코딩 (클리핑 기반 정규화 사용)
+    stats = character_info.get('final_stats', {})
+    vector = encode_stats_clipping(vector, stats)
+
+    # 장비 인코딩 (세분화된 장비 유형 사용)
+    equipment = character_info.get('equipment_data', {})
+    vector = encode_equipment(vector, equipment)
+
+    # 스킬 인코딩
+    skills = character_info.get('skill_info', {})
+    vector = encode_skills(vector, skills)
+
+    # 추가적인 속성 인코딩 가능
+    # 예: hexa_stats, hexa_data, vmatrix_data 등
+
+    return vector
+
 
 
 def save_to_faiss(character_name, character_info):
-    """
-    Save filtered character data to FAISS index, using FAISS_INDEX_PATH and unique naming for each character.
-    """
     try:
-        # Ensure the FAISS index directory exists
+        # FAISS 인덱스 디렉토리가 존재하는지 확인하고, 없으면 생성
         if not os.path.exists(FAISS_INDEX_PATH):
             os.makedirs(FAISS_INDEX_PATH)
+            logger.info(f"Created FAISS index directory at {FAISS_INDEX_PATH}")
 
-        # Generate a unique filename using hash
+        # 캐릭터 이름을 해시하여 고유 파일 이름 생성
         hashed_name = hashlib.sha256(character_name.encode('utf-8')).hexdigest()[:8]
         faiss_file_name = f"{hashed_name}.faiss"
         metadata_file_name = f"{hashed_name}_metadata.json"
         faiss_file_path = os.path.join(FAISS_INDEX_PATH, faiss_file_name)
         metadata_file_path = os.path.join(FAISS_INDEX_PATH, metadata_file_name)
 
-        # FAISS index dimension
-        dimension = 128  # Adjust to match the vector embedding
+        # FAISS 인덱스 차원 설정 (128에서 1536으로 변경)
+        dimension = 1536  # 기존 인덱스 차원을 새로운 임베딩 차원에 맞춤
+        logger.info(f"Setting FAISS index dimension to {dimension}")
 
-        # Create or load a FAISS index for this character
+        # FAISS 인덱스 생성 또는 로드
         if os.path.exists(faiss_file_path):
             index = faiss.read_index(faiss_file_path)
+            logger.info(f"Loaded existing FAISS index from {faiss_file_path}")
+            if index.d != dimension:
+                logger.error(f"기존 FAISS 인덱스의 차원({index.d})이 새 벡터의 차원({dimension})과 일치하지 않습니다.")
+                return
         else:
             index = faiss.IndexFlatL2(dimension)
+            logger.info(f"Created new FAISS index with dimension {dimension}")
 
-        # Convert character data to vector (implement this function)
+        # 캐릭터 데이터를 벡터로 변환
         vector = vectorize_character_data(character_info)
-        vector = np.array([vector], dtype=np.float32)
+        logger.info(f"Vectorized character data for {character_name} 저장 완료")
 
-        # Add vector to the index and save
+        # 벡터 데이터 타입 변환 및 차원 맞추기
+        if vector.dtype != np.float32:
+            vector = vector.astype(np.float32)
+            logger.info("Converted vector to float32")
+
+        if vector.shape[0] > dimension:
+            vector = vector[:dimension]
+            logger.info(f"Truncated vector to {dimension} dimensions")
+        elif vector.shape[0] < dimension:
+            vector = np.pad(vector, (0, dimension - vector.shape[0]), 'constant')
+            logger.info(f"Padded vector to {dimension} dimensions")
+
+        # 벡터의 형상 확인
+        logger.info(f"Final vector shape: {vector.shape}, dtype: {vector.dtype}")
+
+        # FAISS 인덱스에 벡터 추가 및 저장
+        vector = np.array([vector], dtype=np.float32)
         index.add(vector)
         faiss.write_index(index, faiss_file_path)
+        logger.info(f"Added vector to FAISS index and saved to {faiss_file_path}")
 
-        # Filter data for metadata
-        filtered_data = {
+        # 메타데이터 필터링 및 리스트로 변환
+        filtered_data = [{
             'character_name': character_name,
             'basic_info': character_info.get('basic_info', {}),
             'final_stats': character_info.get('stat_info', {}),
@@ -612,19 +767,21 @@ def save_to_faiss(character_name, character_info):
             'hexa_stats': character_info.get('hexamatrix_stat_info', []),
             'hexa_data': character_info.get('hexamatrix_info', []),
             'vmatrix_data': character_info.get('vmatrix_info', {}),
-        }
+        }]
 
-        # Apply the modified remove_image_links function
+        # 이미지 링크 제거
         filtered_data = remove_image_links(filtered_data, keep_basic_info_image=True)
+        logger.info(f"Filtered metadata for {character_name}")
 
-        # Save metadata in a separate JSON file
+        # 메타데이터 저장
         with open(metadata_file_path, 'w', encoding='utf-8') as f:
-            json.dump(filtered_data, f, ensure_ascii=False)
+            json.dump(filtered_data, f, ensure_ascii=False, indent=4)
+            logger.info(f"Saved metadata to {metadata_file_path}")
 
-        print(f"Saved {character_name} to {faiss_file_path} and {metadata_file_path}")
+        logger.info(f"Saved {character_name} to FAISS 인덱스와 메타데이터 파일")
 
     except Exception as e:
-        print(f"Error saving to FAISS for {character_name}: {str(e)}") 
+        logger.exception(f"Error saving to FAISS for {character_name}: {str(e)}")
 
 async def character_info_view(request, character_name):
     # URL에서 받은 character_name 인수 사용
