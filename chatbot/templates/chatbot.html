@@ -6,16 +6,17 @@
     <link href="/static/css/chatbot.css" rel="stylesheet" />
 </head>
 <body>
-
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    
+    <button id="toggle-btn" class="toggle-btn" onclick="toggleSidebar()">
+        <img src="/static/image/sidebar1.png" alt="사이드바 열기" class="button-image" style="width: 30px; height: 30px;">
+    </button>
+
     <div id="sidebar" class="sidebar">
         <ul>
-            <li><a href="#">챗봇</a></li>
+            <li><a href="#" style="color: white; text-decoration: none; padding: 10px; display: block;">챗봇</a></li>
         </ul>
     </div>
-    <button id="toggle-btn" class="toggle-btn" onclick="toggleSidebar()">
-        <img src="/static/image/sidebar1.png" alt="" class="button-image">
-    </button>
 
     <div id="main-container">
         <!-- 왼쪽: 채팅 영역 -->
@@ -28,10 +29,6 @@
                         <div class="message-content"></div>          
                     </div>
                     <!-- 봇 메시지 템플릿 -->
-                    <div id="bot-template" class="message bot-message" style="display: none;">
-                        <div class="message-content"></div>
-                        <img src="/static/image/돌의정령 배경제거.png" alt="봇" class="message-icon" style='max-width: 50px; max-height: 50px;'>
-                    </div>
                 </div>
                 <div id="chat-input">
                     <input type="text" id="message" placeholder="메시지를 입력하세요." autocomplete="off">

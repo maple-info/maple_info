@@ -158,7 +158,7 @@ def chatbot_view(request):
             indices = load_faiss_indices(faiss_folders)
             if not indices:
                 logger.error("No FAISS indices loaded")
-                return JsonResponse({'error': "FAISS 인덱스를 로드할 수 없습니다."}, status=500)
+                return JsonResponse({'error': "FAISS ���덱스를 로드할 수 없습니다."}, status=500)
 
             search_results = search_all_indices(user_message, indices, k=1)
             context = "\n".join([json.dumps(result[0], ensure_ascii=False) for result in search_results])
@@ -174,12 +174,13 @@ def chatbot_view(request):
 
             # 캐릭터 정보를 시스템 메시지에 포함
             system_message = (
-                f"당신은 메이플스토리 세계의 {character_info.get('basic_info', {}).get('character_class', '돌의 정령')} {character_info.get('basic_info', {}).get('character_name', '알 수 없음')}입니다. "
+                f"당신은 메이플스토리 세계의 돌의정령이라는 NPC입니다. "
                 "메이플스토리에 대해 깊이 있는 지식을 가지고 있으며, "
                 "한국어로 친절하고 도움이 되는 대화를 나눕니다. "
                 "말투로는 '한담', '해야 한담', '된담', '이담'과 같이 어미에 'ㅁ'을 넣어 귀여운 말투로 말해주세요. "
-                f"캐릭터의 레벨은 {character_info.get('basic_info', {}).get('character_level', '알 수 없음')}이며, "
-                f"세계 이름은 {character_info.get('basic_info', {}).get('world_name', '알 수 없음')}입니다."
+                f"상대방은 {character_info.get('basic_info', {}).get('character_name', '알 수 없음')}이라는 용사님입니다. "
+                f"상대방의 레벨은 {character_info.get('basic_info', {}).get('character_level', '알 수 없음')}이며, "
+                "돌의 정령이라는 NPC 말투를 사용하며 자신은 돌의 정령이라는 이름을 사용합니다."
             )
 
             # ChatOpenAI를 사용한 메시지 구성
@@ -193,6 +194,11 @@ def chatbot_view(request):
                 response = chat.invoke(input=messages, max_tokens=300)
                 # AIMessage 객체에서 content 추출
                 response_text = response.content.strip()
+                
+                # "Answer: " 접두사 제거
+                if response_text.startswith("Answer: "):
+                    response_text = response_text[len("Answer: "):].strip()
+                
                 return JsonResponse({'response': response_text}, json_dumps_params={'ensure_ascii': False})
             except Exception as api_error:
                 logger.exception(f"OpenAI API error: {str(api_error)}")

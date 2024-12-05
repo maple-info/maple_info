@@ -25,6 +25,7 @@ const keyToKorean = {
     max_mp_rate: "최대 MP",
     // 필요한 다른 키들도 추가
 };
+
 const percentageKeys = [
     "boss_damage",
     "ignore_monster_armor",
@@ -34,6 +35,7 @@ const percentageKeys = [
     "max_hp_rate",
     "max_mp_rate",
 ];
+
 // 툴팁을 보여주는 함수
 function showTooltip(event, slot) {
     const item = equipmentData.item_equipment[slot];

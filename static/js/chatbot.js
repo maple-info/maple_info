@@ -9,14 +9,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const messageElement = document.createElement('div');
         messageElement.className = isBot ? 'message bot-message' : 'message user-message';
         messageElement.textContent = text;
-        chatContainer.appendChild(messageElement);
+        chatContainer.prepend(messageElement);
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
     function typeText(text) {
         const messageElement = document.createElement('div');
         messageElement.className = 'message bot-message';
-        chatContainer.appendChild(messageElement);
+        chatContainer.prepend(messageElement);
         
         let i = 0;
         function typing() {
