@@ -96,3 +96,20 @@ messageInput.addEventListener('keyup', (event) => {
         sendMessage();
     }
 });
+
+// 사이드바
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const toggleBtn = document.getElementById('toggle-btn').querySelector('img'); // 이미지 태그 가져오기
+  const isVisible = sidebar.style.left === '0px';
+
+  if (isVisible) {
+    // 사이드바 닫기
+    sidebar.style.left = '-250px';
+    toggleBtn.src = 'sidebar1.png'; // 닫힌 상태의 버튼 이미지
+  } else {
+    // 사이드바 열기
+    sidebar.style.left = '0px';
+    toggleBtn.src = 'sidebar2.png'; // 열린 상태의 버튼 이미지
+  }
+}

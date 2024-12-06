@@ -8,9 +8,21 @@
 <body>
 
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+      <div id="sidebar" class="sidebar">
+        <ul>
+          <li><a href="#">챗봇</a></li>
+          <li><a href="{% url 'info' %}">캐릭터정보</a></li>
+        </ul>
+      </div>
+      <button id="toggle-btn" class="toggle-btn" onclick="toggleSidebar()">
+        <img src="sidebar1.png" alt="" class="button-image">
+      </button>
+
     <div id="chat-container">
         <div id="chat-box">
-            <!-- 사용자 메시지 템플릿 -->
+            <!-- 사용자 메시지 템플릿. -->
             <div id="user-template" class="message user-message" style="display: none;">
                 <img src="/static/image/물의정령.png" alt="사용자" class="message-icon" style='max-width: 50px; max-height: 50px;'>
                 <div class="message-content"></div>          
@@ -22,7 +34,7 @@
             </div>
         </div>
         <div id="chat-input">
-            <input type="text" id="message" placeholder="메시지를 입력하세요" autocomplete="off">
+            <input type="text" id="message" placeholder="메시지를 입력하세요." autocomplete="off">
             <button id="send">
                 <img src="/static/image/돌의정령 배경제거.png" alt="전송" />
             </button>
