@@ -1,6 +1,6 @@
 import asyncio
 import aiohttp
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.cache import cache
 from asgiref.sync import async_to_sync
@@ -12,11 +12,19 @@ import faiss
 import numpy as np
 import os
 import hashlib
+from django.urls import reverse
 
 logger = logging.getLogger(__name__)
 BASE_URL = "https://open.api.nexon.com/maplestory/v1"
 API_KEY = settings.NEXON_API_KEY
 CACHE_DURATION = timedelta(hours=1)  # 캐시 유효 기간
+
+def home(request):
+    if request.method == 'POST':
+        character_name = request.POST.get('character_name')
+        if character_name:
+            return redirect(reverse('character_search') + f'?character_name={character_name}')
+    return render(request, 'home.html')
 
 
 
@@ -671,7 +679,7 @@ def encode_skills(vector, skills):
     skill_count = len(skills.get('skills', []))
     # 최대 스킬 수를 기준으로 정규화
     vector[18] = min(skill_count / 50, 1)
-    # ���정 스킬 레벨이나 효과를 추가로 인코딩할 수 있음
+    # 정 스킬 레벨이나 효과를 추가로 인코딩할 수 있음
     return vector
 
 def vectorize_character_data(character_info):
@@ -733,7 +741,7 @@ def save_to_faiss(character_name, character_info):
             index = faiss.IndexFlatL2(dimension)
             logger.info(f"Created new FAISS index with dimension {dimension}")
 
-        # 캐릭터 데이터를 벡터로 변환
+        # ���릭터 데이터를 벡터로 변환
         vector = vectorize_character_data(character_info)
         logger.info(f"Vectorized character data for {character_name} 저장 완료")
 
@@ -785,6 +793,7 @@ def save_to_faiss(character_name, character_info):
 
 async def character_info_view(request, character_name):
     # URL에서 받은 character_name 인수 사용
+    character_name = request.GET.get('character_name')  # 쿼리 파라미터에서 캐릭터 이름 가져오기
     character_info = await get_character_info(character_name)
 
     if character_info:

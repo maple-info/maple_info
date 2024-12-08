@@ -44,8 +44,8 @@ ROOT_URLCONF = "chatbot_project.urls"
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,  
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # 기본 템플릿 디렉토리
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',

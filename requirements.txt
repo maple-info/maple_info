@@ -2,7 +2,6 @@ aiohttp==3.10.0
 asgiref==3.7.2
 Django==4.2.2
 faiss_cpu==1.8.0
-langchain==0.3.9
 numpy>=1.21.0
 openai==1.55.3
 python-decouple==3.8
