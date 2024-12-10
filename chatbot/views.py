@@ -158,7 +158,7 @@ def chatbot_view(request):
             indices = load_faiss_indices(faiss_folders)
             if not indices:
                 logger.error("No FAISS indices loaded")
-                return JsonResponse({'error': "FAISS ���덱스를 로드할 수 없습니다."}, status=500)
+                return JsonResponse({'error': "FAISS 인덱스를 로드할 수 없습니다."}, status=500)
 
             search_results = search_all_indices(user_message, indices, k=1)
             context = "\n".join([json.dumps(result[0], ensure_ascii=False) for result in search_results])
