@@ -29,7 +29,10 @@ chat = ChatOpenAI(
     model_name="ft:gpt-4o-2024-08-06:personal::ASKX7WaZ"  # 채팅 모델로 설정
 )
 
-FAISS_INDEX_PATH = r'C:\Users\ccg70\OneDrive\desktop\nexon_project\chatbot_project\character_faiss'
+FAISS_FOLDERS = [
+    "C:/Users/ccg70/OneDrive/desktop/nexon_project/chatbot_project/character_faiss/",
+    "C:/Users/ccg70/OneDrive/desktop/nexon_project/maple_db/data/rag/indexes/"
+]
 
 def hash_nickname(nickname):
     return hashlib.sha256(nickname.encode('utf-8')).hexdigest()[:8]
@@ -123,9 +126,17 @@ def load_faiss_indices(folders):
                 try:
                     index_path = os.path.join(folder, file_name)
                     index = faiss.read_index(index_path)
-                    metadata_path = index_path.replace('.faiss', '_metadata.json')
+                    
+                    # 캐릭터 FAISS 폴더의 경우
+                    if 'character_faiss' in folder:
+                        metadata_path = os.path.join(folder, file_name.replace('.faiss', '_metadata.json'))
+                    # 일반 FAISS 폴더의 경우
+                    else:
+                        metadata_path = os.path.join("C:/Users/ccg70/OneDrive/desktop/nexon_project/maple_db/data/rag/metadata/", file_name.replace('.faiss', '_metadata.json'))
+                    
                     with open(metadata_path, 'r', encoding='utf-8') as f:
                         metadata = json.load(f)
+                    
                     logger.info(f"Loaded FAISS index from {index_path} with dimension {index.d}")
                     if index.d == 1536:
                         indices.append((index, metadata))
@@ -134,6 +145,7 @@ def load_faiss_indices(folders):
                 except Exception as e:
                     logger.exception(f"Error reading FAISS index {index_path}: {str(e)}")
     return indices
+
 
 def create_faiss_index(embeddings, metadata, index_path, metadata_path):
     dimension = len(embeddings[0])
@@ -152,7 +164,7 @@ def chatbot_view(request):
 
         try:
             faiss_folders = [
-                "C:/Users/ccg70/OneDrive/desktop/nexon_project/maple_db/faiss_index/",
+                "C:/Users/ccg70/OneDrive/desktop/nexon_project/maple_db/data/rag/indexes/",
                 "C:/Users/ccg70/OneDrive/desktop/nexon_project/chatbot_project/character_faiss/"
             ]
             indices = load_faiss_indices(faiss_folders)
