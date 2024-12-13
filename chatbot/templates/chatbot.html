@@ -6,41 +6,38 @@
     <link href="/static/css/chatbot.css" rel="stylesheet" />
 </head>
 <body>
-
-    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-
-    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-      <div id="sidebar" class="sidebar">
-        <ul>
-          <li><a href="#">챗봇</a></li>
-          <li><a href="{% url 'info' %}">캐릭터정보</a></li>
-        </ul>
+      <!-- 상단바 -->
+  <header class="navbar">
+    <img src="/static/image/m_logo.png" href="/" class="logo-image">
+    <div class="navbar-search">
+      <div class="search-container">
+          <input type="text" placeholder="캐릭터닉네임" class="search-input">
+          <img src="/static/image/돋보기.png" alt="Search" class="search-icon">
       </div>
-      <button id="toggle-btn" class="toggle-btn" onclick="toggleSidebar()">
-        <img src="sidebar1.png" alt="" class="button-image">
-      </button>
+  </div>
+  </header>
 
-    <div id="chat-container">
-        <div id="chat-box">
-            <!-- 사용자 메시지 템플릿. -->
-            <div id="user-template" class="message user-message" style="display: none;">
-                <img src="/static/image/물의정령.png" alt="사용자" class="message-icon" style='max-width: 50px; max-height: 50px;'>
-                <div class="message-content"></div>          
-            </div>
-            <!-- 봇 메시지 템플릿 -->
-            <div id="bot-template" class="message bot-message" style="display: none;">
-                <div class="message-content"></div>
-                <img src="/static/image/돌의정령 배경제거.png" alt="봇" class="message-icon" style='max-width: 50px; max-height: 50px;'>
-            </div>
-        </div>
-        <div id="chat-input">
-            <input type="text" id="message" placeholder="메시지를 입력하세요." autocomplete="off">
-            <button id="send">
-                <img src="/static/image/돌의정령 배경제거.png" alt="전송" />
-            </button>
+  <div id="chat-container">
+    <div id="chat-box">
+        <!-- 사용자 메시지 템플릿 -->
+        <div id="user-template" class="message user-message" style="display: none;">
+            <img src="/static/image/물의정령.png" alt="사용자" class="message-icon" style='max-width: 50px; max-height: 50px;'>
+            <div class="message-content"></div>          
         </div>
     </div>
+    <!-- 봇 메시지 고정 박스 -->
+    <div id="bot-template" class="message bot-message">
+        <div class="message-content"></div>
+        <img src="/static/image/chatbot_image.png" alt="봇" class="message-icon">
     </div>
+    <div id="chat-input">
+        <input type="text" id="message" placeholder="메이플에 관해서 궁금한게 있나요? 정령에게 메세지를 보내보세요!" autocomplete="off">
+        <button id="send">
+            <img src="/static/image/말풍선.png" alt="전송" />
+        </button>
+    </div>
+</div>
+
 
     <script src="/static/css/chatbot.js"></script>
 </body>
