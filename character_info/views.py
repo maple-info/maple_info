@@ -823,6 +823,12 @@ async def character_info_view(request, character_name):
         vmatrix_data = await sync_to_async(extract_vmatrix)(character_info.get('vmatrix_info', {}))
         character_skill_data = await sync_to_async(extract_character_skills)(character_info.get('skill_info', {}))
 
+        # 캐가된 데이터 추출
+        cash_item_data = await sync_to_async(extract_cash_item_equipment)(character_info.get('cashitem_info', {}))
+        android_data = await sync_to_async(extract_android_info)(character_info.get('android_info', {}))
+        pet_data = await sync_to_async(extract_pet_info)(character_info.get('pet_info', {}))
+        beauty_data = await sync_to_async(extract_beauty_info)(character_info.get('beauty_info', {}))
+
         # 캐시 저장
         cache.set(f'character_info_{character_name}', character_info, timeout=600)
 
@@ -843,6 +849,10 @@ async def character_info_view(request, character_name):
             'preset_range': range(1, 4),
             'vmatrix_data': vmatrix_data,
             'character_skill_data': character_skill_data,
+            'cash_item_data': cash_item_data,  # 추가된 캐시 아이템 데이터
+            'android_data': android_data,        # 추가된 안드로이드 데이터
+            'pet_data': pet_data,                # 추가된 펫 데이터
+            'beauty_data': beauty_data,          # 추가된 뷰티 데이터
         }
 
         return render(request, 'character_info/info.html', context)
@@ -911,66 +921,34 @@ def extract_cash_item_equipment(cash_item_info):
 
 def extract_beauty_info(beauty_info):
     """
-    뷰티 정보를 추출하여 캐릭터의 뷰티 관련 정보를 정리
+    캐릭터의 뷰티 정보를 추출
     """
     if not isinstance(beauty_info, dict):
         return {}
 
-    # 기본 뷰티 정보 추출
+    # 안전한 데이터 접근
+    additional_hair = beauty_info.get("additional_character_hair", {}) or {}
+    additional_face = beauty_info.get("additional_character_face", {}) or {}
+
     beauty_data = {
-        "date": beauty_info.get("date", "정보 없음"),
-        "character_gender": beauty_info.get("character_gender", "정보 없음"),
-        "character_class": beauty_info.get("character_class", "정보 없음"),
-        "character_hair": {
-            "hair_name": beauty_info.get("character_hair", {}).get("hair_name", "정보 없음"),
-            "base_color": beauty_info.get("character_hair", {}).get("base_color", "정보 없음"),
-            "mix_color": beauty_info.get("character_hair", {}).get("mix_color", "정보 없음"),
-            "mix_rate": beauty_info.get("character_hair", {}).get("mix_rate", "정보 없음"),
-        },
-        "character_face": {
-            "face_name": beauty_info.get("character_face", {}).get("face_name", "정보 없음"),
-            "base_color": beauty_info.get("character_face", {}).get("base_color", "정보 없음"),
-            "mix_color": beauty_info.get("character_face", {}).get("mix_color", "정보 없음"),
-            "mix_rate": beauty_info.get("character_face", {}).get("mix_rate", "정보 없음"),
-        },
-        "character_skin": {
-            "skin_name": beauty_info.get("character_skin", {}).get("skin_name", "정보 없음"),
-            "color_style": beauty_info.get("character_skin", {}).get("color_style", "정보 없음"),
-            "hue": beauty_info.get("character_skin", {}).get("hue", 0),
-            "saturation": beauty_info.get("character_skin", {}).get("saturation", 0),
-            "brightness": beauty_info.get("character_skin", {}).get("brightness", 0),
-        },
-        "additional_character_hair": {
-            "hair_name": beauty_info.get("additional_character_hair", {}).get("hair_name", "정보 없음"),
-            "base_color": beauty_info.get("additional_character_hair", {}).get("base_color", "정보 없음"),
-            "mix_color": beauty_info.get("additional_character_hair", {}).get("mix_color", "정보 없음"),
-            "mix_rate": beauty_info.get("additional_character_hair", {}).get("mix_rate", "정보 없음"),
-        },
-        "additional_character_face": {
-            "face_name": beauty_info.get("additional_character_face", {}).get("face_name", "정보 없음"),
-            "base_color": beauty_info.get("additional_character_face", {}).get("base_color", "정보 없음"),
-            "mix_color": beauty_info.get("additional_character_face", {}).get("mix_color", "정보 없음"),
-            "mix_rate": beauty_info.get("additional_character_face", {}).get("mix_rate", "정보 없음"),
-        },
-        "additional_character_skin": {
-            "skin_name": beauty_info.get("additional_character_skin", {}).get("skin_name", "정보 없음"),
-            "color_style": beauty_info.get("additional_character_skin", {}).get("color_style", "정보 없음"),
-            "hue": beauty_info.get("additional_character_skin", {}).get("hue", 0),
-            "saturation": beauty_info.get("additional_character_skin", {}).get("saturation", 0),
-            "brightness": beauty_info.get("additional_character_skin", {}).get("brightness", 0),
-        }
+        "hair_name": additional_hair.get("hair_name", "정보 없음"),
+        "hair_icon": additional_hair.get("hair_icon", "정보 없음"),
+        "face_name": additional_face.get("face_name", "정보 없음"),
+        "face_icon": additional_face.get("face_icon", "정보 없음"),
+        "skin": beauty_info.get("skin", "정보 없음"),
+        "skin_icon": beauty_info.get("skin_icon", "정보 없음"),
     }
 
     return beauty_data
+
 
 def extract_android_info(android_info):
     """
     안드로이드 정보를 추출하여 캐릭터의 안드로이드 관련 정보를 정리
     """
-    if not isinstance(android_info, dict):
+    if android_info is None or not isinstance(android_info, dict):
         return {}
 
-    # 기본 안드로이드 정보 추출
     android_data = {
         "date": android_info.get("date", "정보 없음"),
         "android_name": android_info.get("android_name", "정보 없음"),
@@ -983,80 +961,70 @@ def extract_android_info(android_info):
         "android_non_humanoid_flag": android_info.get("android_non_humanoid_flag", "정보 없음"),
         "android_shop_usable_flag": android_info.get("android_shop_usable_flag", "정보 없음"),
         "preset_no": android_info.get("preset_no", 0),
-        "android_hair": {
-            "hair_name": android_info.get("android_hair", {}).get("hair_name", "정보 없음"),
-            "base_color": android_info.get("android_hair", {}).get("base_color", "정보 없음"),
-            "mix_color": android_info.get("android_hair", {}).get("mix_color", "정보 없음"),
-            "mix_rate": android_info.get("android_hair", {}).get("mix_rate", "정보 없음"),
-        },
-        "android_face": {
-            "face_name": android_info.get("android_face", {}).get("face_name", "정보 없음"),
-            "base_color": android_info.get("android_face", {}).get("base_color", "정보 없음"),
-            "mix_color": android_info.get("android_face", {}).get("mix_color", "정보 없음"),
-            "mix_rate": android_info.get("android_face", {}).get("mix_rate", "정보 없음"),
-        },
-        "android_skin": {
-            "skin_name": android_info.get("android_skin", {}).get("skin_name", "정보 없음"),
-            "color_style": android_info.get("android_skin", {}).get("color_style", "정보 없음"),
-            "hue": android_info.get("android_skin", {}).get("hue", 0),
-            "saturation": android_info.get("android_skin", {}).get("saturation", 0),
-            "brightness": android_info.get("android_skin", {}).get("brightness", 0),
-        },
+        "android_hair": extract_nested_dict(android_info.get("android_hair")),
+        "android_face": extract_nested_dict(android_info.get("android_face")),
+        "android_skin": extract_nested_dict(android_info.get("android_skin")),
         "android_cash_item_equipment": [],
         "android_presets": {}
     }
 
-    # 기본 캐시 아이템 정보 추출
-    for item in android_info.get("android_cash_item_equipment", []):
-        android_data["android_cash_item_equipment"].append({
-            "part": item.get("cash_item_equipment_part", "정보 없음"),
-            "slot": item.get("cash_item_equipment_slot", "정보 없음"),
-            "name": item.get("cash_item_name", "정보 없음"),
-            "icon": item.get("cash_item_icon", "정보 없음"),
-            "description": item.get("cash_item_description", "정보 없음"),
-            "options": item.get("cash_item_option", []),
-            "date_expire": item.get("date_expire", "정보 없음"),
-            "date_option_expire": item.get("date_option_expire", "정보 없음"),
-            "label": item.get("cash_item_label", "정보 없음"),
-            "coloring_prism": item.get("cash_item_coloring_prism", {}),
-            "android_item_gender": item.get("android_item_gender", "정보 없음")
-        })
+    if "android_cash_item_equipment" in android_info and isinstance(android_info["android_cash_item_equipment"], list):
+        for item in android_info["android_cash_item_equipment"]:
+            android_data["android_cash_item_equipment"].append({
+                "part": item.get("cash_item_equipment_part", "정보 없음"),
+                "slot": item.get("cash_item_equipment_slot", "정보 없음"),
+                "name": item.get("cash_item_name", "정보 없음"),
+                "icon": item.get("cash_item_icon", "정보 없음"),
+                "description": item.get("cash_item_description", "정보 없음"),
+                "options": item.get("cash_item_option", []),
+                "date_expire": item.get("date_expire", "정보 없음"),
+                "date_option_expire": item.get("date_option_expire", "정보 없음"),
+                "label": item.get("cash_item_label", "정보 없음"),
+                "coloring_prism": item.get("cash_item_coloring_prism", {}),
+                "android_item_gender": item.get("android_item_gender", "정보 없음")
+            })
 
-    # 프리셋 정보 추출
     for i in range(1, 4):
         preset_key = f"android_preset_{i}"
-        android_data["android_presets"][f"preset_{i}"] = {
-            "android_name": android_info.get(preset_key, {}).get("android_name", "정보 없음"),
-            "android_nickname": android_info.get(preset_key, {}).get("android_nickname", "정보 없음"),
-            "android_icon": android_info.get(preset_key, {}).get("android_icon", "정보 없음"),
-            "android_description": android_info.get(preset_key, {}).get("android_description", "정보 없음"),
-            "android_gender": android_info.get(preset_key, {}).get("android_gender", "정보 없음"),
-            "android_grade": android_info.get(preset_key, {}).get("android_grade", "정보 없음"),
-            "android_hair": {
-                "hair_name": android_info.get(preset_key, {}).get("android_hair", {}).get("hair_name", "정보 없음"),
-                "base_color": android_info.get(preset_key, {}).get("android_hair", {}).get("base_color", "정보 없음"),
-                "mix_color": android_info.get(preset_key, {}).get("android_hair", {}).get("mix_color", "정보 없음"),
-                "mix_rate": android_info.get(preset_key, {}).get("android_hair", {}).get("mix_rate", "정보 없음"),
-            },
-            "android_face": {
-                "face_name": android_info.get(preset_key, {}).get("android_face", {}).get("face_name", "정보 없음"),
-                "base_color": android_info.get(preset_key, {}).get("android_face", {}).get("base_color", "정보 없음"),
-                "mix_color": android_info.get(preset_key, {}).get("android_face", {}).get("mix_color", "정보 없음"),
-                "mix_rate": android_info.get(preset_key, {}).get("android_face", {}).get("mix_rate", "정보 없음"),
-            },
-            "android_skin": {
-                "skin_name": android_info.get(preset_key, {}).get("android_skin", {}).get("skin_name", "정보 없음"),
-                "color_style": android_info.get(preset_key, {}).get("android_skin", {}).get("color_style", "정보 없음"),
-                "hue": android_info.get(preset_key, {}).get("android_skin", {}).get("hue", 0),
-                "saturation": android_info.get(preset_key, {}).get("android_skin", {}).get("saturation", 0),
-                "brightness": android_info.get(preset_key, {}).get("android_skin", {}).get("brightness", 0),
-            },
-            "android_ear_sensor_clip_flag": android_info.get(preset_key, {}).get("android_ear_sensor_clip_flag", "정보 없음"),
-            "android_non_humanoid_flag": android_info.get(preset_key, {}).get("android_non_humanoid_flag", "정보 없음"),
-            "android_shop_usable_flag": android_info.get(preset_key, {}).get("android_shop_usable_flag", "정보 없음"),
-        }
+        preset_data = android_info.get(preset_key)
+        if isinstance(preset_data, dict):
+            android_data["android_presets"][f"preset_{i}"] = {
+                "android_name": preset_data.get("android_name", "정보 없음"),
+                "android_nickname": preset_data.get("android_nickname", "정보 없음"),
+                "android_icon": preset_data.get("android_icon", "정보 없음"),
+                "android_description": preset_data.get("android_description", "정보 없음"),
+                "android_gender": preset_data.get("android_gender", "정보 없음"),
+                "android_grade": preset_data.get("android_grade", "정보 없음"),
+                "android_hair": extract_nested_dict(preset_data.get("android_hair")),
+                "android_face": extract_nested_dict(preset_data.get("android_face")),
+                "android_skin": extract_nested_dict(preset_data.get("android_skin")),
+                "android_ear_sensor_clip_flag": preset_data.get("android_ear_sensor_clip_flag", "정보 없음"),
+                "android_non_humanoid_flag": preset_data.get("android_non_humanoid_flag", "정보 없음"),
+                "android_shop_usable_flag": preset_data.get("android_shop_usable_flag", "정보 없음"),
+            }
+        else:
+            android_data["android_presets"][f"preset_{i}"] = {}
 
     return android_data
+
+
+def extract_nested_dict(data):
+    """ 중첩된 딕셔너리를 안전하게 처리 """
+    if not isinstance(data, dict):
+        return {
+            "hair_name": "정보 없음",
+            "base_color": "정보 없음",
+            "mix_color": "정보 없음",
+            "mix_rate": "정보 없음"
+        }
+    return {
+        "hair_name": data.get("hair_name", "정보 없음"),
+        "base_color": data.get("base_color", "정보 없음"),
+        "mix_color": data.get("mix_color", "정보 없음"),
+        "mix_rate": data.get("mix_rate", "정보 없음")
+    }
+
+
 
 def extract_pet_info(pet_info):
     """
@@ -1067,29 +1035,32 @@ def extract_pet_info(pet_info):
 
     pet_data = {}
 
-    # 펫 1 정보 추출
+    # 펫 1~3 정보 추출
     for i in range(1, 4):
         pet_key = f"pet_{i}"
+        equipment_info = pet_info.get(f"{pet_key}_equipment", {}) or {}  # None이면 빈 딕셔너리로 대체
+        auto_skill_info = pet_info.get(f"{pet_key}_auto_skill", {}) or {}  # None이면 빈 딕셔너리로 대체
+
         pet_data[pet_key] = {
             "name": pet_info.get(f"{pet_key}_name", "정보 없음"),
             "nickname": pet_info.get(f"{pet_key}_nickname", "정보 없음"),
             "icon": pet_info.get(f"{pet_key}_icon", "정보 없음"),
             "description": pet_info.get(f"{pet_key}_description", "정보 없음"),
             "equipment": {
-                "item_name": pet_info.get(f"{pet_key}_equipment", {}).get("item_name", "정보 없음"),
-                "item_icon": pet_info.get(f"{pet_key}_equipment", {}).get("item_icon", "정보 없음"),
-                "item_description": pet_info.get(f"{pet_key}_equipment", {}).get("item_description", "정보 없음"),
-                "item_option": pet_info.get(f"{pet_key}_equipment", {}).get("item_option", []),
-                "scroll_upgrade": pet_info.get(f"{pet_key}_equipment", {}).get("scroll_upgrade", 0),
-                "scroll_upgradable": pet_info.get(f"{pet_key}_equipment", {}).get("scroll_upgradable", 0),
-                "item_shape": pet_info.get(f"{pet_key}_equipment", {}).get("item_shape", "정보 없음"),
-                "item_shape_icon": pet_info.get(f"{pet_key}_equipment", {}).get("item_shape_icon", "정보 없음"),
+                "item_name": equipment_info.get("item_name", "정보 없음"),
+                "item_icon": equipment_info.get("item_icon", "정보 없음"),
+                "item_description": equipment_info.get("item_description", "정보 없음"),
+                "item_option": equipment_info.get("item_option", []),
+                "scroll_upgrade": equipment_info.get("scroll_upgrade", 0),
+                "scroll_upgradable": equipment_info.get("scroll_upgradable", 0),
+                "item_shape": equipment_info.get("item_shape", "정보 없음"),
+                "item_shape_icon": equipment_info.get("item_shape_icon", "정보 없음"),
             },
             "auto_skill": {
-                "skill_1": pet_info.get(f"{pet_key}_auto_skill", {}).get("skill_1", "정보 없음"),
-                "skill_1_icon": pet_info.get(f"{pet_key}_auto_skill", {}).get("skill_1_icon", "정보 없음"),
-                "skill_2": pet_info.get(f"{pet_key}_auto_skill", {}).get("skill_2", "정보 없음"),
-                "skill_2_icon": pet_info.get(f"{pet_key}_auto_skill", {}).get("skill_2_icon", "정보 없음"),
+                "skill_1": auto_skill_info.get("skill_1", "정보 없음"),
+                "skill_1_icon": auto_skill_info.get("skill_1_icon", "정보 없음"),
+                "skill_2": auto_skill_info.get("skill_2", "정보 없음"),
+                "skill_2_icon": auto_skill_info.get("skill_2_icon", "정보 없음"),
             },
             "pet_type": pet_info.get(f"{pet_key}_pet_type", "정보 없음"),
             "skills": pet_info.get(f"{pet_key}_skill", []),
@@ -1099,5 +1070,3 @@ def extract_pet_info(pet_info):
         }
 
     return pet_data
-
-
