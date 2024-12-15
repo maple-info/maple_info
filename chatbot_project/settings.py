@@ -3,6 +3,7 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SITE_ID = 1
 
 
 from decouple import config  # python-decouple 패키지에서 config 함수를 가져옴
@@ -25,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'character_info',
     'chatbot',
+    'allauth.socialaccount.providers.google',
 ]
 
 
@@ -43,7 +45,7 @@ ROOT_URLCONF = "chatbot_project.urls"
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # 기본 템플릿 디렉토리
+        'DIRS': [os.path.join(BASE_DIR, 'main_page', 'templates')],  # 템플릿 경로 수정
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -152,4 +154,21 @@ LOGGING = {
             'propagate': True,
         },
     },
+}
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # 기본 인증 백엔드
+    'allauth.account.auth_backends.AuthenticationBackend',  # allauth 인증 백엔드
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',  # 사용자 프로필 정보
+            'email',    # 사용자 이메일
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+    }
 }
