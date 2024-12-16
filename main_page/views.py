@@ -35,19 +35,20 @@ async def get_info():
     async with aiohttp.ClientSession() as session:
         # 추가된 API 경로에 대한 데이터 요청
         event_info = await get_api_data(session, "/notice-event")
-
-        event_info_detail = await get_api_data(session, "/notice-event/detail")
-
+        cashshop_info= await get_api_data(session, "/notice-cashshop")
 
         return {
             "event_info": event_info,
-            "event_info_detail": event_info_detail,
+            "cashshop_info": cashshop_info,
+
         }
 
 def google_login(request):
     if request.method == 'POST':
-        # Google OAuth2 인증을 위한 URL 생성
         redirect_uri = request.build_absolute_uri('/complete/google/')
         return redirect(f'https://accounts.google.com/o/oauth2/auth?client_id={settings.GOOGLE_CLIENT_ID}&redirect_uri={redirect_uri}&response_type=code&scope=email profile')
+    else:
+        # GET 요청에 대한 처리 (예: 로그인 페이지로 리디렉션)
+        return redirect('main_home')  # 또는 적절한 페이지로 리디렉션
 
 

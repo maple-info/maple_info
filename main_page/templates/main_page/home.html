@@ -2,12 +2,19 @@
 <html>
 <head>
     <title>Main Page</title>
+    <script>
+        function openPopup(url) {
+            window.open(url, '구글 로그인', 'width=600,height=600');
+        }
+    </script>
 </head>
 <body>
     <h1>Welcome to the Main Page</h1>
     {{ event_info }}
     {{ cashitem_info }}
-    {{ event_info_detail }}
-    {{ cashitem_info_detail }}
+
+    <div style="text-align: center;">
+        <button onclick="openPopup('{% url 'google_login' %}')">구글로 로그인</button>
+    </div>
 </body>
 </html>

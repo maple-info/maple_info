@@ -27,6 +27,10 @@ INSTALLED_APPS = [
     'character_info',
     'chatbot',
     'allauth.socialaccount.providers.google',
+    'django.contrib.sites',  # 추가
+    'allauth',  # 추가
+    'allauth.account',  # 추가
+    'allauth.socialaccount',  # 추가
 ]
 
 
@@ -38,6 +42,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = "chatbot_project.urls"
@@ -163,12 +168,16 @@ AUTHENTICATION_BACKENDS = [
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
+        'APP': {
+            'client_id': config('GOOGLE_CLIENT_ID'),  # .env 파일에서 클라이언트 ID 가져오기
+            'secret': config('GOOGLE_CLIENT_SECRET'),  # .env 파일에서 비밀 키 가져오기
+        },
         'SCOPE': [
-            'profile',  # 사용자 프로필 정보
-            'email',    # 사용자 이메일
+            'profile',
+            'email',
         ],
         'AUTH_PARAMS': {
             'access_type': 'online',
-        },
+        }
     }
 }
