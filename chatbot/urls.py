@@ -4,6 +4,5 @@ from . import views
 urlpatterns = [
     path('', views.chatbot_view, name='chatbot'),  # 루트 /chatbot/
     path('search_character/', views.search_character, name='search_character'),
-    path('chatbot_view/', views.chatbot_view, name='chatbot_view'),
-
+    # path('chatbot_view/', views.chatbot_view, name='chatbot_view'),  # 중복된 경로 제거
 ]

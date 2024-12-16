@@ -12,9 +12,16 @@
     <h1>Welcome to the Main Page</h1>
     {{ event_info }}
     {{ cashitem_info }}
+    {{ ranking_info }}
 
     <div style="text-align: center;">
         <button onclick="openPopup('{% url 'google_login' %}')">구글로 로그인</button>
     </div>
 </body>
+
+<!-- 사이드바 HTML 예시 -->
+<ul>
+    <li><a href="{% url 'chatbot' %}">챗봇</a></li>
+    <li><a href="{% url 'character_info' %}">캐릭터 정보</a></li>
+</ul>
 </html>
