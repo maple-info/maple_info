@@ -146,3 +146,30 @@ body {
     color: red;
     font-weight: bold;
 }
+
+#character-info {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#character-info h3 {
+    margin: 0 0 10px;
+    font-size: 24px;
+}
+
+#character-info p {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+#character-info img {
+    display: block;
+    margin-top: 10px;
+    max-width: 100px;
+    border-radius: 8px;
+}

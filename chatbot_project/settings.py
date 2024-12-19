@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'character_info',
     'chatbot',
+    'main_page',  # main_page 앱 추가
     'allauth.socialaccount.providers.google',
     'django.contrib.sites',  # 추가
     'allauth',  # 추가
@@ -51,9 +52,10 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'main_page', 'templates'),  # 기존 경로
-            os.path.join(BASE_DIR, 'chatbot', 'templates'),    # 새로운 경로 추가
-            os.path.join(BASE_DIR, 'character_info', 'templates'),  # 새로운 경로 추가
+            os.path.join(BASE_DIR, 'templates'),  # 전역 템플릿 디렉토리
+            os.path.join(BASE_DIR, 'chatbot', 'templates'),  # chatbot 앱의 템플릿 디렉토리
+            os.path.join(BASE_DIR, 'main_page', 'templates'),  # main_page 템플릿 경로 추가
+            os.path.join(BASE_DIR, 'character_info', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {

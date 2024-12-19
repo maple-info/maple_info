@@ -84,6 +84,7 @@ def find_character_info(nickname):
         logger.error(f"Invalid JSON in file: {json_file_path}")
         return None
 
+
 @require_http_methods(["POST"])
 def search_character(request):
     if request.method == 'POST':
@@ -163,24 +164,14 @@ def create_faiss_index(embeddings, metadata, index_path, metadata_path):
         json.dump(metadata, f, ensure_ascii=False, indent=4)
     logger.info(f"Created FAISS index at {index_path} with dimension {dimension}")
 
+
 def chatbot_view(request):
     if request.method == 'POST':
+        user_message = request.POST.get('message')
+        if not user_message:
+            return JsonResponse({'error': "메시지가 비어 있습니다."}, status=400)
+
         try:
-            # POST 데이터 처리 방식 변경
-            if request.content_type == 'application/json':
-                data = json.loads(request.body.decode('utf-8'))
-                user_message = data.get('message')
-            else:
-                user_message = request.POST.get('message')
-            
-            logger.info(f"Received message type: {request.content_type}")
-            logger.info(f"Received message: {user_message}")
-
-            if not user_message:
-                return JsonResponse({'error': "메시지가 비어 있습니다."}, status=400)
-
-            logger.info(f"Received message: {user_message}")  # 로깅 추가
-            
             faiss_folders = "C:/Users/ccg70/OneDrive/desktop/nexon_project/maple_db/data/rag/indexes/"
             indices = load_faiss_indices(faiss_folders)
             if not indices:
@@ -203,35 +194,23 @@ def chatbot_view(request):
                 {"role": "user", "content": context + "\n\nQuestion: " + user_message}
             ]
 
-            # OpenAI API 호출 전 메시지 구성 확인
-            logger.info(f"System message: {system_message}")
-            logger.info(f"Context: {context}")
-            logger.info(f"Final message to OpenAI: {messages}")
-
             # OpenAI API 호출
-            response = chat.invoke(messages)
+            response = chat.invoke(input=messages, max_tokens=300)
             response_text = response.content.strip()
-            
-            logger.info(f"Raw response from OpenAI: {response}")
-            logger.info(f"Processed response text: {response_text}")
 
-            # 응답 반환
-            return JsonResponse({
-                'response': response_text,
-                'status': 'success'
-            }, json_dumps_params={'ensure_ascii': False})
+            # "Answer: " 접두사 제거
+            if response_text.startswith("Answer: "):
+                response_text = response_text[len("Answer: "):].strip()
 
-        except json.JSONDecodeError as e:
-            logger.error(f"JSON decode error: {str(e)}")
-            return JsonResponse({'error': "잘못된 요청 형식입니다."}, status=400)
+            return JsonResponse({'response': response_text}, json_dumps_params={'ensure_ascii': False})
+
         except Exception as e:
             logger.exception(f"Unexpected error: {str(e)}")
-            return JsonResponse({'error': str(e)}, status=500)
+            return JsonResponse({'error': "예기치 못한 오류가 발생했습니다."}, status=500)
 
-    # GET 요청 처리
     character_info = request.session.get('character_info', {})
     character_image = character_info.get('basic_info', {}).get('character_image', '')
-    return render(request, 'chatbot/chatbot.html', {'character_image': character_image})
+    return render(request, 'chatbot.html', {'character_image': character_image})
 
 
 def determine_domain(user_message):

@@ -59,40 +59,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            console.log('Sending message:', userMessage);
-            console.log('CSRF token:', csrftoken);
-
-            const formData = new FormData();
-            formData.append('message', userMessage);
-
             const response = await fetch('/chatbot/', {
                 method: 'POST',
-                headers: {
+                headers: { 
+                    'Content-Type': 'application/x-www-form-urlencoded',
                     'X-CSRFToken': csrftoken
                 },
-                body: formData
+                body: new URLSearchParams({ 'message': userMessage })
             });
 
-            console.log('Response status:', response.status);
             loadingElement.remove();
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Server error:', errorText);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error("서버 응답 오류");
 
             const data = await response.json();
-            console.log('Received response:', data);
-
-            if (data.error) {
-                throw new Error(data.error);
+            if (!data || !data.response) {
+                throw new Error("유효하지 않은 서버 응답");
             }
 
             typeText(data.response);
         } catch (error) {
-            console.error('Error:', error);
-            showError(error.message || "오류가 발생했습니다. 다시 시도해주세요.");
+            console.error("메시지 전송 오류:", error);
+            showError("오류가 발생했습니다. 다시 시도해주세요.");
         } finally {
             sendButton.disabled = false;
         }
