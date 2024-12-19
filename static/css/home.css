@@ -111,21 +111,24 @@ main {
   top: 0; /* 화면의 상단에 위치 */
   left: 0; /* 화면의 왼쪽 경계에 맞춤 */
   z-index: 1000; /* 다른 요소보다 위에 표시 */
-  background-color: #EEB36D; /* 상단바 배경색 */
+  background-color: #E5A12C; /* 상단바 배경색 */
   color: white;
   width: 100%; /* 부모 너비를 초과하지 않도록 설정 */
   max-width: 100%; /* 최대 너비 제한 */
-  height: 80px;
+  height: 64px;
   overflow-x: hidden; /* 초과되는 내용을 숨김 */
   box-sizing: border-box; /* padding과 border를 포함한 너비 계산 */
   padding: 10px 20px;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  
+  overflow: hidden; /* 스크롤 방지 */
+}
+.navbar a{
+  margin-left: 340px;
 }
 .logo-image{
-  height: 55px;
-  margin-left: 340px;
+  height: 44px;
 }
 /* 검색창 컨테이너 */
 .navbar-search {
@@ -143,7 +146,7 @@ main {
 
 .search-container .search-input {
   width: 100%;
-  padding: 9px 11px 9px 19px; /* 오른쪽 패딩 추가 (버튼 공간 확보) */
+  padding: 4px 4px 4px 10px; /* 오른쪽 패딩 추가 (버튼 공간 확보) */
   border: 5px solid #FAE0BD;
   border-radius: 20px; /* 양쪽 끝 둥글게 */
   font-size: 14px;
@@ -160,7 +163,7 @@ main {
   background: none;
   border: none;
   color: #00bcd4;
-  font-size: 16px;
+  font-size: 10px;
   cursor: pointer;
 }
 .search-container .search-icon {
@@ -168,11 +171,40 @@ main {
   top: 68%;
   right: 10px; /* 입력 박스 오른쪽 안쪽에 위치 */
   transform: translateY(-50%);
-  width: 25px; /* 이미지 크기 */
-  height: 25px;
+  width: 20px; /* 이미지 크기 */
+  height: 20px;
   cursor: pointer; /* 클릭 가능 표시 */
 }
+.second-navbar { 
+  display: flex; 
+  justify-content: center; 
+  background-color: #F4D5B1;
+  height: 40px;
+  position: relative; /* 부모 요소에 상대적 위치 지정 */
+} 
+.second-navbar ul { list-style: none; display: flex; padding: 0; margin: 0; /* 상하 여백 제거 */ gap: 60px; } 
+.second-navbar li { 
+  margin: 0;/* 좌우 여백 적용 */
+  padding-top: 5px; 
+} 
 
+  .second-navbar a { 
+  color: #000;
+  font-family: Pretendard;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.48px;
+  text-decoration: none; /* 밑줄 제거 */
+  margin-top: 10px;
+  margin: 0 30px;/* 좌우 여백 적용 */
+} 
+.second-navbar .active { 
+  font-weight: bold; /* 현재 페이지 메뉴 진하게 */ 
+  border-bottom: 3px solid #E5A12C;
+  background-color: rgba(229, 161, 44, 0.30); /* 선택된 메뉴 배경 색상 변경 */ 
+}
 /* 화면 어두워지는 오버레이 */
 #overlay {
   position: fixed;
@@ -381,4 +413,65 @@ main {
   border-radius: 8px; /* 모서리 둥글게 */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
   font-size: 16px;
+}
+
+
+/* 로그인/로그아웃 */
+.second-navbar .login form{
+  position: absolute; /* 폼에 절대적 위치 지정 */
+  right: 0; /* 오른쪽 끝으로 정렬 */
+  margin-right: 350px; /* 오른쪽 여백 조정 */
+  margin-top: -2px;
+}
+.second-navbar .login form button{
+  background-color: #F4D5B1;
+  border: none; /* 경계선 제거 */ 
+  color: #000;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.48px;
+  text-decoration: none; /* 밑줄 제거 */
+  margin-top: 10px;
+  margin: 0 0 20px 10px;
+}
+
+.second-navbar .logout form {
+  position: absolute; /* 폼에 절대적 위치 지정 */
+  right: 0; /* 오른쪽 끝으로 정렬 */
+  margin-right: 350px; /* 오른쪽 여백 조정 */
+}
+
+.second-navbar .logout a{
+  margin-top: 20px;
+  margin: 0 0 20px 0;
+}
+.second-navbar .logout-button{
+  background-color: #F4D5B1;
+  border: none; /* 경계선 제거 */ 
+  color: #000;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.48px;
+  text-decoration: none; /* 밑줄 제거 */
+}
+/* 내정보 토글 */
+.second-navbar .toggle-button{
+  background-color: #F4D5B1;
+  border: none; /* 경계선 제거 */ 
+  color: #000;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.48px;
+  text-decoration: none; /* 밑줄 제거 */
+  border-right: solid 4px #E5A12C;
+  padding-right: 12px;
 }

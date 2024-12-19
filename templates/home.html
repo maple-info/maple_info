@@ -2,28 +2,31 @@
 <html>
 <head>
     <title>Main Page</title>
-    <script>
-        function openPopup(url) {
-            window.open(url, '구글 로그인', 'width=600,height=600');
-        }
 
-        function closePopupAndReload() {
-            window.opener.location.reload();
-            window.close();
-        }
-    </script>
     
     <link href="/static/css/home.css" rel="stylesheet" />
+    <script>
+        
+function openPopup(url) {
+    window.open(url, '구글 로그인', 'width=600,height=600');
+}
+
+function closePopupAndReload() {
+    window.opener.location.reload();
+    window.close();
+}
+
+</script>
 </head>
 <body>
     <!-- <h1>Welcome to the Main Page</h1>
     {{ event_info }}
     {{ cashitem_info }}
     {{ ranking_info }}
-
-    <div style="text-align: center;">
+-->
+    {% comment %} <div style="text-align: center;">
         <button onclick="openPopup({% url 'google_login' %})">구글로 로그인</button>
-    </div> -->
+    </div>  {% endcomment %}
 
     <!-- 캐릭터 검색 창 수정 -->
     <!-- <div id="background" class="d-flex justify-content-center align-items-center vh-100">
@@ -56,6 +59,34 @@
         </div>
     </div>
   </header>
+  <div class="second-navbar"> 
+    <ul class="navbar-menu"> 
+        <li class="nav-link active"><a href="#home">홈</a></li> 
+        <li><a href="#about">CHAT BOT</a></li> 
+        <li><a href="#services">캐릭터검색</a></li> 
+        <li><a href="#contact">랭킹</a></li> 
+        {% if is_authenticated %}
+        <li class="logout">
+            <form method="post" action="{% url 'google_logout' %}">
+                {% csrf_token %}
+                <a href="#" class="toggle-button">내정보</a>
+                <a href="#" onclick="this.closest('form').submit(); return false;">
+                    <button class="logout-button" type="button">로그아웃</button>
+                </a>
+            </form>
+        </li>
+    {% else %}
+        <li class="login">
+            <form method="post" action="{% url 'google_login' %}">
+                {% csrf_token %}
+                <a href="#" onclick="this.closest('form').submit(); return false;">
+                    <button type="button">로그인</button>
+                </a>
+            </form>
+        </li>
+    {% endif %}
+    </ul> 
+</div>
 <main>
   <div id="left-box">
 </div>
