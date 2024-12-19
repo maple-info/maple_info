@@ -50,7 +50,11 @@ ROOT_URLCONF = "chatbot_project.urls"
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'main_page', 'templates')],  # 템플릿 경로 수정
+        'DIRS': [
+            os.path.join(BASE_DIR, 'main_page', 'templates'),  # 기존 경로
+            os.path.join(BASE_DIR, 'chatbot', 'templates'),    # 새로운 경로 추가
+            os.path.join(BASE_DIR, 'character_info', 'templates'),  # 새로운 경로 추가
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -113,9 +117,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

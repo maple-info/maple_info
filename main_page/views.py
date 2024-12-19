@@ -36,13 +36,13 @@ async def get_info():
         # 추가된 API 경로에 대한 데이터 요청
         event_info = await get_api_data(session, "/notice-event")
         cashshop_info= await get_api_data(session, "/notice-cashshop")
-        ranking_info= await get_api_data(session, "ranking/overall")
+        # ranking_info= await get_api_data(session, "ranking/overall")
 
 
         return {
             "event_info": event_info,
             "cashshop_info": cashshop_info,
-            "ranking_info" : ranking_info,
+            # "ranking_info" : ranking_info,
 
         }
 
