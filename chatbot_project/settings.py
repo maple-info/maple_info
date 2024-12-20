@@ -15,8 +15,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,7 +31,6 @@ INSTALLED_APPS = [
     'allauth.account',  # 추가
     'allauth.socialaccount',  # 추가
 ]
-
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -52,10 +49,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates'),  # 전역 템플릿 디렉토리
-            os.path.join(BASE_DIR, 'chatbot', 'templates'),  # chatbot 앱의 템플릿 디렉토리
-            os.path.join(BASE_DIR, 'main_page', 'templates'),  # main_page 템플릿 경로 추가
-            os.path.join(BASE_DIR, 'character_info', 'templates'),
+            os.path.join(BASE_DIR, 'templates'),  # 프로젝트 루트 디렉토리의 템플릿 경로
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -71,7 +65,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "chatbot_project.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -81,7 +74,6 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -101,7 +93,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -112,7 +103,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -125,7 +115,6 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
 
 LOGGING = {
     'version': 1,

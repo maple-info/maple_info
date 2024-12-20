@@ -697,7 +697,7 @@ def encode_skills(vector, skills):
     return vector
 
 def vectorize_character_data(character_info):
-    vector = np.zeros(768)  # 벡터 차원을 768으로 설정
+    vector = np.zeros(1536)  # 벡터 차원을 768으로 설정
 
     # 기본 정보 인코딩
     basic_info = character_info.get('basic_info', {})
@@ -740,8 +740,8 @@ def save_to_faiss(character_name, character_info):
         faiss_file_path = os.path.join(FAISS_INDEX_PATH, faiss_file_name)
         metadata_file_path = os.path.join(FAISS_INDEX_PATH, metadata_file_name)
 
-        # FAISS 인덱스 차원 설정 (128에서 1536으로 변경)
-        dimension = 768  # 기존 인덱스 차원을 새로운 임베딩 차원에 맞춤
+        # FAISS 인덱스 차원 설정
+        dimension = 1536  # 기존 인덱스 차원을 새로운 임베딩 차원에 맞춤
         logger.info(f"Setting FAISS index dimension to {dimension}")
 
         # FAISS 인덱스 생성 또는 로드

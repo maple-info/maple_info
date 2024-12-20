@@ -172,21 +172,37 @@ def chatbot_view(request):
             return JsonResponse({'error': "메시지가 비어 있습니다."}, status=400)
 
         try:
-            faiss_folders = "C:/Users/ccg70/OneDrive/desktop/nexon_project/maple_db/data/rag/indexes/"
+            faiss_folders = [
+                "C:/Users/ccg70/OneDrive/desktop/nexon_project/maple_db/faiss_index/",
+                "C:/Users/ccg70/OneDrive/desktop/nexon_project/chatbot_project/character_faiss/"
+            ]
             indices = load_faiss_indices(faiss_folders)
             if not indices:
                 logger.error("No FAISS indices loaded")
                 return JsonResponse({'error': "FAISS 인덱스를 로드할 수 없습니다."}, status=500)
 
-            # AI 에이전트를 사용하여 질문의 도메인 파악
-            domain = determine_domain(user_message)  # 도메인 결정 함수 추가
-            relevant_indices = filter_indices_by_domain(indices, domain)  # 도메인에 따라 인덱스 필터링
-
-            search_results = search_all_indices(user_message, relevant_indices, k=1)
+            search_results = search_all_indices(user_message, indices, k=1)
             context = "\n".join([json.dumps(result[0], ensure_ascii=False) for result in search_results])
 
+            character_info = request.session.get('character_info', {})
+            if character_info:
+                character_query = " ".join(str(v) for v in character_info.values())
+                character_results = search_all_indices(character_query, indices, k=1)
+                character_context = "\n".join([json.dumps(result[0], ensure_ascii=False) for result in character_results])
+                context += f"\n{character_context}"
+
+            context = truncate_text(context, max_tokens=3000)
+
             # 캐릭터 정보를 시스템 메시지에 포함
-            system_message = create_system_message(request.session.get('character_info', {}))
+            system_message = (
+                f"당신은 메이플스토리 세계의 돌의정령이라는 NPC입니다. "
+                "메이플스토리에 대해 깊이 있는 지식을 가지고 있으며, "
+                "한국어로 친절하고 도움이 되는 대화를 나눕니다. "
+                "말투로는 '한담', '해야 한담', '된담', '이담'과 같이 어미에 'ㅁ'을 넣어 귀여운 말투로 말해주세요. "
+                f"상대방은 {character_info.get('basic_info', {}).get('character_name', '알 수 없음')}이라는 용사님입니다. "
+                f"상대방의 레벨은 {character_info.get('basic_info', {}).get('character_level', '알 수 없음')}이며, "
+                "돌의 정령이라는 NPC 말투를 사용하며 자신은 돌의 정령이라는 이름을 사용합니다."
+            )
 
             # ChatOpenAI를 사용한 메시지 구성
             messages = [
@@ -194,15 +210,20 @@ def chatbot_view(request):
                 {"role": "user", "content": context + "\n\nQuestion: " + user_message}
             ]
 
-            # OpenAI API 호출
-            response = chat.invoke(input=messages, max_tokens=300)
-            response_text = response.content.strip()
-
-            # "Answer: " 접두사 제거
-            if response_text.startswith("Answer: "):
-                response_text = response_text[len("Answer: "):].strip()
-
-            return JsonResponse({'response': response_text}, json_dumps_params={'ensure_ascii': False})
+            # 올바른 invoke 메서드 사용
+            try:
+                response = chat.invoke(input=messages, max_tokens=300)
+                # AIMessage 객체에서 content 추출
+                response_text = response.content.strip()
+                
+                # "Answer: " 접두사 제거
+                if response_text.startswith("Answer: "):
+                    response_text = response_text[len("Answer: "):].strip()
+                
+                return JsonResponse({'response': response_text}, json_dumps_params={'ensure_ascii': False})
+            except Exception as api_error:
+                logger.exception(f"OpenAI API error: {str(api_error)}")
+                return JsonResponse({'error': "OpenAI API 호출 중 오류가 발생했습니다."}, status=500)
 
         except Exception as e:
             logger.exception(f"Unexpected error: {str(e)}")
