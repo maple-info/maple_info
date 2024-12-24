@@ -24,12 +24,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'character_info',
     'chatbot',
+<<<<<<< HEAD
     'main_page',  # main_page 앱 추가
     'allauth.socialaccount.providers.google',
     'django.contrib.sites',  # 추가
     'allauth',  # 추가
     'allauth.account',  # 추가
     'allauth.socialaccount',  # 추가
+=======
+    'django.contrib.humanize',
+>>>>>>> f63aceba76d8c381433c38f5735fc2ebd7f3fa3c
 ]
 
 MIDDLEWARE = [
