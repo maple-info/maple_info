@@ -7,19 +7,21 @@
             window.open(url, '구글 로그인', 'width=600,height=600');
         }
     </script>
+    
+    <link href="/static/css/home.css" rel="stylesheet" />
 </head>
 <body>
-    <h1>Welcome to the Main Page</h1>
+    <!-- <h1>Welcome to the Main Page</h1>
     {{ event_info }}
     {{ cashitem_info }}
     {{ ranking_info }}
 
     <div style="text-align: center;">
         <button onclick="openPopup({% url 'google_login' %})">구글로 로그인</button>
-    </div>
+    </div> -->
 
     <!-- 캐릭터 검색 창 수정 -->
-    <div id="background" class="d-flex justify-content-center align-items-center vh-100">
+    <!-- <div id="background" class="d-flex justify-content-center align-items-center vh-100">
         <div id="container">
             <form action="{% url 'character_info:info' character_name='dummy' %}" method="GET">
                 <input
@@ -32,11 +34,77 @@
                 </button>
             </form>
         </div>
+    </div> -->
+          <!-- 상단바 -->
+  <header class="navbar">
+    <img src="/static/image/m_logo.png" href="/" class="logo-image">
+    <div class="navbar-search">
+      <div class="search-container">
+          <input type="text" placeholder="캐릭터닉네임" class="search-input">
+          <img src="/static/image/돋보기.png" alt="Search" class="search-icon">
+      </div>
+  </div>
+  </header>
+<main>
+  <div id="left-box">
+</div>
+
+  <div id="main-box">
+    <!-- 사이드바 -->
+    <div id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- 사이드바 -->
+    <div id="sidebar" class="hidden">
+        <ul class="sidebar-menu">
+            <li><a href="#">CHAT BOT</a></li>
+            <li><a href="#">캐릭터검색</a></li>
+            <li><a href="#">길드검색</a></li>
+            <li><a href="#">랭킹</a></li>
+            <li><a href="#">아이템검색</a></li>
+        </ul>
     </div>
+    <!-- 사이드바 토글 버튼 -->
+    <button id="sidebar-toggle" onclick="toggleSidebar()">
+        <img src="/static/image/side_bar.png" alt="Toggle Sidebar" id="toggle-image">
+    </button>
+
+    <div class="title-box">
+        <div class="child-box">
+            메이플 스토리
+        </div>
+        <div class="child-box">
+            정보탐색 CHAT BOT
+        </div>
+    </div>
+    <div id="main-box1">
+        <div id="chat-input">
+            <input type="text" id="message" placeholder="메이플에 관해서 궁금한게 있나요? 정령에게 메세지를 보내보세요!" autocomplete="off">
+            <button id="send">
+                <img src="/static/image/말풍선.png" alt="전송" />
+            </button>
+        </div>
+        <div id="main-box2">
+            <div id="recomend-search">
+
+            </div>
+            <div id="main_center_img">
+                <img src="/static/image/main_center_img.png" alt="Sample Image">
+            </div>
+        </div>
+    </div>
+    <div id="main-box3">
+        <div id="event" class="box"></div>
+        <div id="cash_shop" class="box"></div>
+        <div id="rank_total" class="box"></div>
+        <div id="rank_final_stats" class="box"></div>
+    </div>
+</div>
+    <div id="right-box">
+    <!-- Right Box Content -->
+    </div>
+</main>
+    <script src="/static/js/home.js"></script>
 </body>
 
-<!-- 사이드바 HTML 예시 -->
-<ul>
-    <li><a href="{% url 'chatbot' %}">챗봇</a></li>
-</ul>
+
 </html>

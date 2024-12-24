@@ -23,7 +23,6 @@ main {
     height: 100%; /* 부모 높이(100vh) 채우기 */
     background-color: #ffffff; /* 임의 배경색 */
     /* padding: 50px; */
-    
 }
 .title-box{
     padding: 0px 10px;
@@ -81,6 +80,7 @@ main {
     color: white;
     width: 100%; /* 부모 너비를 초과하지 않도록 설정 */
     max-width: 100%; /* 최대 너비 제한 */
+    height: 80px;
     overflow-x: hidden; /* 초과되는 내용을 숨김 */
     box-sizing: border-box; /* padding과 border를 포함한 너비 계산 */
     padding: 10px 20px;
@@ -100,22 +100,25 @@ main {
 }
 
 /* 입력 박스와 버튼을 감싸는 컨테이너 */
+/* 입력 박스와 버튼을 감싸는 컨테이너 */
 .search-container {
     position: relative;
-    width: 200px; /* 검색창 너비 */
-}
-
-.search-container .search-input {
+    width: 225px;
+    height: 37px;
+  }
+  
+  .search-container .search-input {
     width: 100%;
-    padding: 5px 40px 5px 15px; /* 오른쪽 패딩 추가 (버튼 공간 확보) */
+    padding: 9px 11px 9px 19px; /* 오른쪽 패딩 추가 (버튼 공간 확보) */
     border: 5px solid #FAE0BD;
     border-radius: 20px; /* 양쪽 끝 둥글게 */
     font-size: 14px;
     outline: none;
     box-sizing: border-box;
-}
-
-.search-container .search-button {
+    margin: 4px;
+  }
+  
+  .search-container .search-button {
     position: absolute;
     top: 50%;
     right: 10px; /* 입력 박스 오른쪽 안쪽에 위치 */
@@ -125,16 +128,17 @@ main {
     color: #00bcd4;
     font-size: 16px;
     cursor: pointer;
-}
-.search-container .search-icon {
+  }
+  .search-container .search-icon {
     position: absolute;
-    top: 50%;
+    top: 68%;
     right: 10px; /* 입력 박스 오른쪽 안쪽에 위치 */
     transform: translateY(-50%);
-    width: 20px; /* 이미지 크기 */
-    height: 20px;
+    width: 25px; /* 이미지 크기 */
+    height: 25px;
     cursor: pointer; /* 클릭 가능 표시 */
-}
+  }
+  
 /* 전체 채팅 컨테이너 */
 
 /* 전체 화면 컨테이너 */
@@ -338,7 +342,6 @@ main {
     transition: transform 0.3s ease; /* 애니메이션 효과 */
 }
 .sidebar-menu li {
-    margin: 20px;
     border-top: 1px solid #EEB36D;
 }
 
