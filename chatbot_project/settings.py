@@ -33,6 +33,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -43,15 +44,14 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 ]
 
+
 ROOT_URLCONF = "chatbot_project.urls"
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'templates'),  # 프로젝트 루트 디렉토리의 템플릿 경로
-        ],
-        'APP_DIRS': True,
+        'DIRS': [BASE_DIR / 'templates'],  # 프로젝트 루트의 templates 디렉토리
+        'APP_DIRS': True,  # 앱별 templates 디렉토리 지원
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -63,7 +63,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "chatbot_project.wsgi.application"
+
+WSGI_APPLICATION = 'chatbot_project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

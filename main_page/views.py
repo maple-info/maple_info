@@ -12,7 +12,7 @@ CACHE_DURATION = timedelta(hours=1)  # 캐시 유효 기간
 
 async def main_home(request):
     info = await get_info()  # API에서 공지 정보를 가져옴
-    return render(request, 'main_page/home.html', info)  # 공지 정보를 템플릿에 전달
+    return render(request, 'home.html', info)  # 공지 정보를 템플릿에 전달
 
 async def get_api_data(session, endpoint, params=None):
     headers = {"x-nxopen-api-key": API_KEY}
@@ -55,10 +55,10 @@ def google_login(request):
         return redirect('main_home')  # 또는 적절한 페이지로 리디렉션
 
 async def chatbot_view(request):
-    return render(request, 'chatbot/chatbot.html')  # chatbot 앱의 템플릿 경로
+    return render(request, 'chatbot.html')  # chatbot 앱의 템플릿 경로
 
 async def character_info_view(request):
     # 챗봇 페이지에 대한 처리 로직 추가
-    return render(request, 'character_info/info.html')  # 챗봇 템플릿 렌더링
+    return render(request, 'info.html')  # 챗봇 템플릿 렌더링
 
 
