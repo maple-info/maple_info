@@ -1,20 +1,19 @@
-
 from pathlib import Path
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SITE_ID = 1
 
 
-SECRET_KEY = "django-insecure-pjgvix$#didu%=w@^h5daf5iomo5*=td6=(-y&jv_6shp$nw5u"
+from decouple import config  # python-decouple 패키지에서 config 함수를 가져옴
 
-NEXON_API_KEY = "test_c3a1c9dd9898748983795717d4054a73bb5713044ca4fec851806bea3c3a419aefe8d04e6d233bd35cf2fabdeb93fb0d"
+NEXON_API_KEY = config('NEXON_API_KEY')  # .env 파일에서 API 키를 불러옴
+SECRET_KEY = config('DJANGO_SECRET_KEY') # .env 파일에서 시크릿 키 호출
+OPENAI_API_KEY = config('OPENAI_API_KEY') # .env 파일에서 open ai 키 호출
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -23,12 +22,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'character_search',
     'character_info',
+    'chatbot',
+    'main_page',  # main_page 앱 추가
+    'allauth.socialaccount.providers.google',
+    'django.contrib.sites',  # 추가
+    'allauth',  # 추가
+    'allauth.account',  # 추가
+    'allauth.socialaccount',  # 추가
 ]
 
-
 MIDDLEWARE = [
+
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -36,15 +41,17 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'allauth.account.middleware.AccountMiddleware',
 ]
+
 
 ROOT_URLCONF = "chatbot_project.urls"
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,  
+        'DIRS': [BASE_DIR / 'templates'],  # 프로젝트 루트의 templates 디렉토리
+        'APP_DIRS': True,  # 앱별 templates 디렉토리 지원
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -56,8 +63,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "chatbot_project.wsgi.application"
 
+WSGI_APPLICATION = 'chatbot_project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -68,7 +75,6 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -88,7 +94,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -100,17 +105,17 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
 
 LOGGING = {
     'version': 1,
@@ -149,4 +154,25 @@ LOGGING = {
             'propagate': True,
         },
     },
+}
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # 기본 인증 백엔드
+    'allauth.account.auth_backends.AuthenticationBackend',  # allauth 인증 백엔드
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': config('GOOGLE_CLIENT_ID'),  # .env 파일에서 클라이언트 ID 가져오기
+            'secret': config('GOOGLE_CLIENT_SECRET'),  # .env 파일에서 비밀 키 가져오기
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
 }

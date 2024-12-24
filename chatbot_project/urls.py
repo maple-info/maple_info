@@ -1,11 +1,10 @@
+# chatbot_project/urls.py
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('character_search.urls')),
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
-    path('character/', include('character_info.urls')),
-    
+    path('', include('main_page.urls')),  # main_page 앱
+    path('character/', include('character_info.urls')), # character_info 앱
+    path('chatbot/', include('chatbot.urls')), # chatbot 앱
 ]

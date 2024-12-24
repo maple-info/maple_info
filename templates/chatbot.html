@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>메이플스토리 챗봇</title>
+    <link href="/static/css/chatbot.css" rel="stylesheet" />
+</head>
+<body>
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+      <!-- 상단바 -->
+  <header class="navbar">
+    <img src="/static/image/m_logo.png" href="/" class="logo-image">
+    <div class="navbar-search">
+      <div class="search-container">
+          <input type="text" placeholder="캐릭터닉네임" class="search-input">
+          <img src="/static/image/돋보기.png" alt="Search" class="search-icon">
+      </div>
+  </div>
+  </header>
+<main>
+  <div id="left-box">
+    <div class="title-box">
+        <h1 class="title-text">CHAT BOT HISTORY</h1>
+    </div>
+    <div id="history">
+        <!-- History Content -->
+    </div>
+    <div id="charcter-info">
+        <!-- Character Info Content -->
+    </div>
+</div>
+
+  <div id="chat-container">
+    <div id="chat-box">
+        <!-- 사용자 메시지 템플릿 -->
+        <div id="user-template" class="message user-message" style="display: none;">
+            <img src="/static/image/물의정령.png" alt="사용자" class="message-icon" style='max-width: 50px; max-height: 50px;'>
+            <div class="message-content"></div>          
+        </div>
+        <!-- 봇 메시지 템플릿 -->
+        <div id="bot-template" class="message bot-message" style="display: none;">
+            <div class="message-content"></div>
+            <img src="/static/image/chatbot_image.png" alt="봇" class="message-icon">
+        </div>
+    </div>
+    <div id="chat-input">
+        <input type="text" id="message" placeholder="메이플에 관해서 궁금한게 있나요? 정령에게 메세지를 보내보세요!" autocomplete="off">
+        <button id="send">
+            <img src="/static/image/말풍선.png" alt="전송" />
+        </button>
+    </div>
+</div>
+    <div id="right-box">
+    <!-- Right Box Content -->
+    </div>
+</main>
+    <script src="/static/js/chatbot.js"></script>
+</body>
+</html>

@@ -1,16 +1,42 @@
-<!-- chatbot_project/chatbot/templates/home.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>캐릭터 검색</title>
+    <title>Main Page</title>
+    <script>
+        function openPopup(url) {
+            window.open(url, '구글 로그인', 'width=600,height=600');
+        }
+    </script>
 </head>
 <body>
-    <h1>캐릭터 정보 검색</h1>
-    <form action="{% url 'character_search' %}" method="GET">
-        <input type="text" name="q" placeholder="캐릭터 이름 입력">
-        <button type="submit">검색</button>
-      </form>
+    <h1>Welcome to the Main Page</h1>
+    {{ event_info }}
+    {{ cashitem_info }}
+    {{ ranking_info }}
+
+    <div style="text-align: center;">
+        <button onclick="openPopup({% url 'google_login' %})">구글로 로그인</button>
+    </div>
+
+    <!-- 캐릭터 검색 창 수정 -->
+    <div id="background" class="d-flex justify-content-center align-items-center vh-100">
+        <div id="container">
+            <form action="{% url 'character_info:info' character_name='dummy' %}" method="GET">
+                <input
+                    id="input"
+                    type="text"
+                    name="character_name"
+                    placeholder=" 캐릭터 이름을 입력하세요"
+                />
+                <button type="submit">
+                </button>
+            </form>
+        </div>
+    </div>
 </body>
+
+<!-- 사이드바 HTML 예시 -->
+<ul>
+    <li><a href="{% url 'chatbot' %}">챗봇</a></li>
+</ul>
 </html>
