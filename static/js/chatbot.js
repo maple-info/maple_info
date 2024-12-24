@@ -1,189 +1,152 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const chatContainer = document.getElementById('chat-container');
-    const messageInput = document.getElementById('message');
-    const sendButton = document.getElementById('send');
-    const characterSearchForm = document.getElementById('character-search-form');
-    const characterInfoDiv = document.getElementById('character-info');
+const chatBox = document.getElementById('chat-box');
+const messageInput = document.getElementById('message');
+const sendButton = document.getElementById('send');
 
-    function addMessage(text, isBot) {
-        const messageElement = document.createElement('div');
-        messageElement.className = isBot ? 'message bot-message' : 'message user-message';
-        messageElement.textContent = text;
-        chatContainer.prepend(messageElement);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
+// 봇 템플릿 (하단 고정)
+const botTemplate = document.getElementById('bot-template');
+const botMessageContent = botTemplate.querySelector('.message-content');
 
-    function typeText(text) {
-        const messageElement = document.createElement('div');
-        messageElement.className = 'message bot-message';
-        chatContainer.prepend(messageElement);
-        
-        let i = 0;
-        function typing() {
-            if (i < text.length) {
-                messageElement.textContent += text[i];
-                i++;
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-                setTimeout(typing, 30);
-            }
-        }
-        typing();
-    }
+// 메시지를 채팅 창에 추가하는 함수 (사용자 메시지만 추가)
+function addUserMessage(text) {
+    const userTemplate = document.getElementById('user-template');
+    const messageElement = userTemplate.cloneNode(true);
 
-    function showLoading() {
-        const loadingElement = document.createElement('div');
-        loadingElement.className = 'loading';
-        loadingElement.textContent = '처리 중...';
-        chatContainer.appendChild(loadingElement);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-        return loadingElement;
-    }
+    // 텍스트 업데이트
+    messageElement.querySelector('.message-content').textContent = text;
+    messageElement.style.display = 'flex'; // 숨겨진 템플릿을 표시
 
-    function showError(message) {
-        const errorElement = document.createElement('div');
-        errorElement.className = 'error';
-        errorElement.textContent = message;
-        chatContainer.appendChild(errorElement);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
+    // 채팅창에 추가
+    chatBox.appendChild(messageElement);
+    chatBox.scrollTop = chatBox.scrollHeight; // 스크롤을 최하단으로 이동
+}
 
-    async function sendMessage() {
-        const userMessage = messageInput.value.trim();
-        if (!userMessage) return;
+// 글이 생성되는 것처럼 텍스트를 하나씩 표시하는 함수 (봇 메시지 업데이트)
+function typeBotText(text) {
+    let i = 0;
+    botMessageContent.textContent = ''; // 기존 텍스트 초기화
 
-        addMessage(userMessage, false);
-        messageInput.value = '';
-        sendButton.disabled = true;
-
-        const loadingElement = showLoading();
-
-        try {
-            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            const response = await fetch('/chatbot/', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': csrftoken
-                },
-                body: new URLSearchParams({ 'message': userMessage })
-            });
-
-            loadingElement.remove();
-
-            if (!response.ok) throw new Error("서버 응답 오류");
-
-            const data = await response.json();
-            if (!data || !data.response) {
-                throw new Error("유효하지 않은 서버 응답");
-            }
-
-            typeText(data.response);
-        } catch (error) {
-            console.error("메시지 전송 오류:", error);
-            showError("오류가 발생했습니다. 다시 시도해주세요.");
-        } finally {
-            sendButton.disabled = false;
+    function typing() {
+        if (i < text.length) {
+            botMessageContent.textContent += text[i];
+            i++;
+            setTimeout(typing, 50); // 50ms마다 한 글자씩 추가
         }
     }
+    typing();
+}
 
-    sendButton.addEventListener('click', sendMessage);
-    messageInput.addEventListener('keyup', (event) => {
-        if (event.key === 'Enter') {
-            sendMessage();
-        }
-    });
+// 서버에 메시지를 전송하고 응답받기
+async function sendMessage() {
+    const userMessage = messageInput.value.trim();
+    if (!userMessage) return;
 
-
-
-    characterSearchForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const nickname = document.getElementById('nickname').value.trim();
-        if (!nickname) {
-            showError("닉네임을 입력해주세요.");
-            return;
-        }
-
-        const loadingElement = showLoading();
-        console.log(`Searching for nickname: ${nickname}`);
-
-        try {
-            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            const response = await fetch('/chatbot/search_character/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': csrftoken
-                },
-                body: 'nickname=' + encodeURIComponent(nickname)
-            });
-
-            loadingElement.remove();
-
-            if (!response.ok) {
-                throw new Error("서버 응답 오류");
-            }
-
-            const data = await response.json();
-            console.log('Received data:', data);
-
-            if (data.character_name) {
-                displayCharacterInfo(data);
-            } else {
-                showError(data.error || "캐릭터를 찾을 수 없습니다.");
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            showError("캐릭터 검색 중 오류가 발생했습니다.");
-        }
-    });
-
-    function displayCharacterInfo(info) {
-        console.log('Displaying character info:', info);
-
-        if (!info.character_name || !info.character_level || !info.world_name || !info.character_class || !info.character_image) {
-            showError("필수 캐릭터 정보가 누락되었습니다.");
-            return;
-        }
-        
-        characterInfoDiv.style.display = 'block';
-        characterInfoDiv.innerHTML = `
-            <h3>${info.character_name}</h3>
-            <p>레벨: ${info.character_level}</p>
-            <p>서버: ${info.world_name}</p>
-            <p>직업: ${info.character_class}</p>
-            <img src="${info.character_image}" alt="${info.character_name}" style="max-width: 100px; border-radius: 8px;">
-        `;
-    }
-
-    // 초기 메시지 표시
-    typeText("안녕하세요! 메이플스토리에 대해 무엇이든 물어보세요.");
-});
-
-
-
-async function searchCharacter(nickname) {
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    // 사용자 메시지 추가
+    addUserMessage(userMessage);
+    messageInput.value = ''; // 입력창 초기화
 
     try {
-        const response = await fetch('/chatbot/search_character/', {
+        // CSRF 토큰 가져오기
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+
+        if (!csrftoken) {
+            throw new Error("CSRF 토큰을 찾을 수 없습니다.");
+        }
+
+        // 서버로 요청 전송
+        const response = await fetch('/chat/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-CSRFToken': csrftoken,
             },
-            body: new URLSearchParams({ 'nickname': nickname }),
+            body: new URLSearchParams({ message: userMessage }),
         });
 
-        if (!response.ok) throw new Error('서버 응답 오류');
+        if (!response.ok) {
+            throw new Error(`서버 응답 오류: ${response.statusText}`);
+        }
 
         const data = await response.json();
-        if (data.character_name) {
-            displayCharacterInfo(data);
-        } else {
-            showError(data.error || '캐릭터를 찾을 수 없습니다.');
+
+        if (!data || !data.response) {
+            throw new Error("유효하지 않은 서버 응답");
         }
+
+        // 봇 메시지 업데이트
+        typeBotText(data.response);
     } catch (error) {
-        console.error('캐릭터 검색 오류:', error);
-        showError('캐릭터 검색 중 문제가 발생했습니다.');
+        console.error("메시지 전송 오류:", error);
+        typeBotText("서버 오류가 발생했습니다. 다시 시도해주세요.");
     }
 }
+
+// 이벤트 리스너 설정
+sendButton.addEventListener('click', sendMessage);
+
+messageInput.addEventListener('keyup', (event) => {
+    if (event.key === 'Enter') {
+        sendMessage();
+    }
+});
+
+
+
+// 사이드바
+let isSidebarOpen = false;
+
+function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+
+    if (isSidebarOpen) {
+        // 닫기
+        sidebar.style.right = "-500px"; // 화면 밖으로 숨김
+        overlay.style.display = "none"; // 오버레이 숨김
+    } else {
+        // 열기
+        sidebar.style.right = "0"; // 화면 안으로 보임
+        overlay.style.display = "block"; // 오버레이 표시
+    }
+
+    isSidebarOpen = !isSidebarOpen;
+}
+
+
+// 캐릭터 정보
+// $(document).ready(function () {
+//     const csrfToken = '{{ csrf_token }}'; // CSRF 토큰 설정
+
+//     $('#search-form').on('submit', function (e) {
+//         e.preventDefault(); // 기본 폼 제출 방지
+
+//         const nickname = $('#nickname').val(); // 닉네임 가져오기
+
+//         $.ajax({
+//             url: '/chatbot/search_character/', // Django URL 매핑과 일치하도록 수정
+//             type: 'POST',
+//             data: {
+//                 nickname: nickname,
+//                 csrfmiddlewaretoken: csrfToken, // CSRF 토큰 전달
+//             },
+//             success: function (response) {
+//                 // 성공적으로 응답을 받은 경우 데이터를 HTML에 렌더링
+//                 $('#character-name').text('Name: ' + response.character_name);
+//                 $('#character-level').text('Level: ' + response.character_level);
+//                 $('#world-name').text('World: ' + response.world_name);
+//                 $('#character-class').text('Class: ' + response.character_class);
+
+//                 // 캐릭터 이미지 표시
+//                 if (response.character_image) {
+//                     $('#character-image').attr('src', response.character_image).show();
+//                 } else {
+//                     $('#character-image').hide();
+//                 }
+//             },
+//             error: function (xhr) {
+//                 // 에러 처리
+//                 const errorMessage = xhr.responseJSON?.error || 'An error occurred';
+//                 alert('Error: ' + errorMessage);
+//             },
+//         });
+//     });
+// });

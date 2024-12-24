@@ -82,12 +82,9 @@ async def get_character_info(character_name, date=None):
         hexamatrix_stat_info = await get_api_data(session, "/character/hexamatrix-stat", params)
         symbol_equipment_info = await get_api_data(session, "/character/symbol-equipment", params)
         vmatrix_info = await get_api_data(session, "/character/vmatrix", params)
-<<<<<<< HEAD
-        
-=======
         hyper_stat_info = await get_api_data(session, "/character/hyper-stat", params)
         skill_info = await get_api_data(session, "/character/skill", params)
->>>>>>> f63aceba76d8c381433c38f5735fc2ebd7f3fa3c
+
         return {
             "basic_info": basic_info,
             "stat_info": stat_info,
@@ -96,7 +93,6 @@ async def get_character_info(character_name, date=None):
             "set_effect_info": set_effect_info,
             "link_skill_info": link_skill_info,
             "hexamatrix_info": hexamatrix_info,
-<<<<<<< HEAD
             "hexamatrix_stat_info": hexamatrix_stat_info,
             "symbol_equipment_info": symbol_equipment_info,
             "vmatrix_info": vmatrix_info,
@@ -105,13 +101,6 @@ async def get_character_info(character_name, date=None):
             "beauty_info": beauty_info,        # 추가된 뷰티 아이템 정보
             "android_info": android_info,      # 추가된 안드로이드 정보
             "pet_info": pet_info                # 추가된 펫 정보
-=======
-            "hexamatrix_stat_info" : hexamatrix_stat_info,
-            "symbol_equipment_info" : symbol_equipment_info,
-            "vmatrix_info": vmatrix_info,
-            "hyper_stat_info":hyper_stat_info,
-            "skill_info":skill_info
->>>>>>> f63aceba76d8c381433c38f5735fc2ebd7f3fa3c
         }
 
 
@@ -231,13 +220,11 @@ def extract_ability_presets(ability_data):
             preset_number = preset_key.split('_')[-1]
 
             # 각 프리셋의 데이터 추출
-<<<<<<< HEAD
+
             if preset_value is None:  # None 체크 추가
                 logger.warning(f"프리셋 값이 None입니다: {preset_key}")
                 continue  # None인 경우 건너뛰기
 
-=======
->>>>>>> f63aceba76d8c381433c38f5735fc2ebd7f3fa3c
             preset_data = {
                 "description": preset_value.get("description", "정보 없음"),
                 "grade": preset_value.get("ability_preset_grade", "정보 없음"),
@@ -582,7 +569,6 @@ async def character_info_view(request, character_name):
 
     if character_info:
         # 각 데이터를 추출하는 함수들
-<<<<<<< HEAD
         final_stats = await sync_to_async(extract_final_stats)(character_info.get('stat_info', {}))
         equipment_data = await sync_to_async(extract_item_equipment)(character_info.get('item_equipment_info', []))
         ability_data = await sync_to_async(extract_ability_presets)(character_info.get('ability_info', {}))
@@ -603,8 +589,6 @@ async def character_info_view(request, character_name):
         # 캐시 저장
         cache.set(f'character_info_{character_name}', character_info, timeout=600)
 
-
-=======
         final_stats = extract_final_stats(character_info.get('stat_info', {}))
         equipment_data = extract_item_equipment(character_info.get('item_equipment_info', []))
         ability_data = extract_ability_presets(character_info.get('ability_info', {}))
@@ -616,7 +600,7 @@ async def character_info_view(request, character_name):
         vmatrix_data = extract_vmatrix(character_info.get('vmatrix_info', {}))
         hyper_stat_data = extract_hyper_stats(character_info.get('hyper_stat_info', []))
         character_skill_data = extract_character_skills(character_info.get('skill_info', []))
->>>>>>> f63aceba76d8c381433c38f5735fc2ebd7f3fa3c
+
         # 템플릿으로 전달할 컨텍스트
         context = {
             'character_name': character_name,
@@ -630,16 +614,14 @@ async def character_info_view(request, character_name):
             'symbol_data': symbol_data,
             'preset_range': range(1, 4),
             'vmatrix_data': vmatrix_data,
-<<<<<<< HEAD
             'character_skill_data': character_skill_data,
             'cash_item_data': cash_item_data,  # 추가된 캐시 아이템 데이터
             'android_data': android_data,        # 추가된 안드로이드 데이터
             'pet_data': pet_data,                # 추가된 펫 데이터
             'beauty_data': beauty_data,          # 추가된 뷰티 데이터
-=======
+
             'hyper_stat_data': hyper_stat_data,
             'character_skill_data': character_skill_data,
->>>>>>> f63aceba76d8c381433c38f5735fc2ebd7f3fa3c
         }
 
         return render(request, 'character_info/info.html', context)
@@ -654,7 +636,6 @@ def extract_cash_item_equipment(cash_item_info):
     if not isinstance(cash_item_info, dict):
         return {}
 
-<<<<<<< HEAD
     # 기본 정보 추출
     cash_item_data = {
         "date": cash_item_info.get("date", "정보 없음"),
@@ -855,6 +836,3 @@ def extract_pet_info(pet_info):
         }
 
     return pet_data
-=======
-
->>>>>>> f63aceba76d8c381433c38f5735fc2ebd7f3fa3c
