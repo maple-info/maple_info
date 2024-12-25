@@ -6,10 +6,7 @@ from django.core.cache import cache
 from asgiref.sync import async_to_sync
 import logging
 from datetime import timedelta
-from django.utils.safestring import mark_safe 
 import json
-import faiss
-import numpy as np
 import os
 import hashlib
 from django.urls import reverse
@@ -26,8 +23,6 @@ def home(request):
             return redirect(reverse('character_search') + f'?character_name={character_name}')
     return render(request, 'home.html')
 
-
-
 async def get_api_data(session, endpoint, params=None):
     headers = {"x-nxopen-api-key": API_KEY}
     url = f"{BASE_URL}{endpoint}"
@@ -40,10 +35,7 @@ async def get_api_data(session, endpoint, params=None):
                 return None
     except Exception as e:
         logger.error(f"API 요청 중 오류 발생: {url}, 오류: {str(e)}")
-    async with session.get(url, headers=headers, params=params) as response:
-        if response.status == 200:
-            return await response.json()
-        return None
+    return None
 
 async def get_character_info(character_name, date=None):
     async with aiohttp.ClientSession() as session:
@@ -56,126 +48,69 @@ async def get_character_info(character_name, date=None):
         if date:
             params["date"] = date
 
-        # 스킬 정보 요청
-        skill_grades = ["0", "1", "1.5", "2", "2.5", "3", "4", "hyperpassive", "hyperactive", "5", "6"]
-        skill_info = {}
-        for grade in skill_grades:
-            skill_params = params.copy()
-            skill_params["character_skill_grade"] = grade
-            grade_skill_info = await get_api_data(session, "/character/skill", skill_params)
-            if grade_skill_info:
-                skill_info[grade] = grade_skill_info
+        # API 경로에 대한 데이터 요청
+        endpoints = [
+            "/character/basic", "/character/stat", "/character/item-equipment", 
+            "/character/ability", "/character/set-effect", "/character/link-skill", 
+            "/character/hexamatrix", "/character/hexamatrix-stat", "/character/symbol-equipment", 
+            "/character/vmatrix", "/character/hyper-stat", "/character/skill", 
+            "/character/cashitem-equipment", "/character/beauty-equipment", 
+            "/character/android-equipment", "/character/pet-equipment"
+        ]
         
-        # 추가된 API 경로에 대한 데이터 요청
-        cashitem_info = await get_api_data(session, "/character/cashitem-equipment", params)
-        beauty_info = await get_api_data(session, "/character/beauty-equipment", params)
-        android_info = await get_api_data(session, "/character/android-equipment", params)
-        pet_info = await get_api_data(session, "/character/pet-equipment", params)
-
-        basic_info = await get_api_data(session, "/character/basic", params)
-        stat_info = await get_api_data(session, "/character/stat", params)
-        item_equipment_info = await get_api_data(session, "/character/item-equipment", params)
-        ability_info = await get_api_data(session, "/character/ability", params)
-        set_effect_info = await get_api_data(session, "/character/set-effect", params)
-        link_skill_info = await get_api_data(session, "/character/link-skill", params)
-        hexamatrix_info = await get_api_data(session, "/character/hexamatrix", params)
-        hexamatrix_stat_info = await get_api_data(session, "/character/hexamatrix-stat", params)
-        symbol_equipment_info = await get_api_data(session, "/character/symbol-equipment", params)
-        vmatrix_info = await get_api_data(session, "/character/vmatrix", params)
-<<<<<<< HEAD
+        results = await asyncio.gather(*[get_api_data(session, endpoint, params) for endpoint in endpoints])
         
-=======
-        hyper_stat_info = await get_api_data(session, "/character/hyper-stat", params)
-        skill_info = await get_api_data(session, "/character/skill", params)
->>>>>>> f63aceba76d8c381433c38f5735fc2ebd7f3fa3c
         return {
-            "basic_info": basic_info,
-            "stat_info": stat_info,
-            "item_equipment_info": item_equipment_info,
-            "ability_info": ability_info,
-            "set_effect_info": set_effect_info,
-            "link_skill_info": link_skill_info,
-            "hexamatrix_info": hexamatrix_info,
-<<<<<<< HEAD
-            "hexamatrix_stat_info": hexamatrix_stat_info,
-            "symbol_equipment_info": symbol_equipment_info,
-            "vmatrix_info": vmatrix_info,
-            "skill_info": skill_info,
-            "cashitem_info": cashitem_info,  # 추가된 캐시 아이템 정보
-            "beauty_info": beauty_info,        # 추가된 뷰티 아이템 정보
-            "android_info": android_info,      # 추가된 안드로이드 정보
-            "pet_info": pet_info                # 추가된 펫 정보
-=======
-            "hexamatrix_stat_info" : hexamatrix_stat_info,
-            "symbol_equipment_info" : symbol_equipment_info,
-            "vmatrix_info": vmatrix_info,
-            "hyper_stat_info":hyper_stat_info,
-            "skill_info":skill_info
->>>>>>> f63aceba76d8c381433c38f5735fc2ebd7f3fa3c
+            "basic_info": results[0],
+            "stat_info": results[1],
+            "item_equipment_info": results[2],
+            "ability_info": results[3],
+            "set_effect_info": results[4],
+            "link_skill_info": results[5],
+            "hexamatrix_info": results[6],
+            "hexamatrix_stat_info": results[7],
+            "symbol_equipment_info": results[8],
+            "vmatrix_info": results[9],
+            "hyper_stat_info": results[10],
+            "skill_info": results[11],
+            "cashitem_info": results[12],
+            "beauty_info": results[13],
+            "android_info": results[14],
+            "pet_info": results[15]
         }
 
-
-
-    
 def extract_final_stats(stat_info):
-    # final_stat에서 원하는 정보 추출
     final_stats = {}
     for stat in stat_info.get('final_stat', []):
-        # stat_name에서 띄어쓰를 언더바 변환
         stat_name = stat['stat_name'].replace(' ', '_')
         final_stats[stat_name] = stat['stat_value']
-    
     return final_stats
 
-##### 아이템 슬롯명 매핑 테이블
 SLOT_MAPPING = {
-    "반지1": "ring1",
-    "반지2": "ring2",
-    "반지3": "ring3",
-    "반지4": "ring4",
-    "펜던트": "pendant1",
-    "펜던트2": "pendant2",
-    "무기": "weapon",
-    "모자": "hat",
-    "상의": "top",
-    "하의": "bottom",
-    "신발": "shoes",
-    "장갑": "gloves",
-    "망토": "cape",
-    "벨트": "belt",
-    "어깨장식": "shoulder",
-    "얼굴장식": "face",
-    "눈장식": "eyes",
-    "귀고리": "earring",
-    "뱃지": "badge",
-    "훈장": "medal",
-    "보조무기": "secondary",
-    "엠블렘": "emblem",
-    "기계 심장": "heart",
-    "안드로이드": "android",
-    "포켓 아이템": "poket",
+    "반지1": "ring1", "반지2": "ring2", "반지3": "ring3", "반지4": "ring4",
+    "펜던트": "pendant1", "펜던트2": "pendant2", "무기": "weapon", "모자": "hat",
+    "상의": "top", "하의": "bottom", "신발": "shoes", "장갑": "gloves",
+    "망토": "cape", "벨트": "belt", "어깨장식": "shoulder", "얼굴장식": "face",
+    "눈장식": "eyes", "귀고리": "earring", "뱃지": "badge", "훈장": "medal",
+    "보조무기": "secondary", "엠블렘": "emblem", "기계 심장": "heart", "안드로이드": "android",
+    "포켓 아이템": "poket"
 }
+
 def extract_item_equipment(item_equipment_info):
-    # 유효성 검사
     if not isinstance(item_equipment_info, dict) or 'item_equipment' not in item_equipment_info:
         return {}
     
-    # 기본 구조 생성
     equipment_data = {
         "preset_no": item_equipment_info.get("preset_no", "정보 없음"),
-        "item_equipment": {}  # 슬롯로 저장할 딕셔너리로 변경
+        "item_equipment": {}
     }
 
-    # 각 장비 아이템을 슬롯별로 분류하여 저장
     for item in item_equipment_info.get('item_equipment', []):
-        # 한글 슬롯 이름을 가져오고 매핑 테이블을 통해 영어 이름으로 변환
         korean_slot = item.get("item_equipment_slot", "정보 없음")
-        slot = SLOT_MAPPING.get(korean_slot, korean_slot)  # 매핑이 없을 경우 한글 이름 그대로 사용
-
-        # 슬롯 이름을 키로 하여 데이터 저장
+        slot = SLOT_MAPPING.get(korean_slot, korean_slot)
         equipment_data["item_equipment"][slot] = {
-            "en_slot":item.get("item_equipment_slot", "정보 없음"),
-            "slot": slot,  # 슬롯 이름 저장
+            "en_slot": item.get("item_equipment_slot", "정보 없음"),
+            "slot": slot,
             "part": item.get("item_equipment_part", "정보 없음"),
             "name": item.get("item_name", "정보 없음"),
             "icon": item.get("item_icon", "정보 없음"),
@@ -215,36 +150,23 @@ def extract_item_equipment(item_equipment_info):
     return equipment_data
 
 def extract_ability_presets(ability_data):
-    """
-    어빌리티 프리셋 정보를 추출하여 프리셋별로 정리
-    """
     if not isinstance(ability_data, dict):
         return {}
 
     extracted_presets = {}
-
-    # 프리셋 데이터를 반복
     for preset_key, preset_value in ability_data.items():
-        # 프리셋 키가 'ability_preset_'으로 시작하는 경우만 처리
         if preset_key.startswith('ability_preset_'):
-            # 프리셋 번호 추출
             preset_number = preset_key.split('_')[-1]
-
-            # 각 프리셋의 데이터 추출
-<<<<<<< HEAD
-            if preset_value is None:  # None 체크 추가
+            if preset_value is None:
                 logger.warning(f"프리셋 값이 None입니다: {preset_key}")
-                continue  # None인 경우 건너뛰기
+                continue
 
-=======
->>>>>>> f63aceba76d8c381433c38f5735fc2ebd7f3fa3c
             preset_data = {
                 "description": preset_value.get("description", "정보 없음"),
                 "grade": preset_value.get("ability_preset_grade", "정보 없음"),
                 "abilities": []
             }
 
-            # 어빌리티 상세 정보를 abilities 리스트에 추가
             for ability in preset_value.get("ability_info", []):
                 ability_data = {
                     "no": ability.get("ability_no", "정보 없음"),
@@ -253,28 +175,17 @@ def extract_ability_presets(ability_data):
                 }
                 preset_data["abilities"].append(ability_data)
 
-            # 프리셋 데이터를 저장
             extracted_presets[f"preset_{preset_number}"] = preset_data
 
     return extracted_presets
 
 def extract_set_effect(set_effect_info):
-    # set_effect_info가 딕셔너리인지 확인하고 'set_effect' 필드를 가져옴
     if not isinstance(set_effect_info, dict) or 'set_effect' not in set_effect_info:
-        print("set_effect_info의 구조가 잘못되었습니다:", set_effect_info)
+        logger.error("set_effect_info의 구조가 잘못되었습니다:", set_effect_info)
         return {}
 
-    # 'set_effect' 리스트를 추출
-    set_effects_list = set_effect_info.get('set_effect', [])
-    if not isinstance(set_effects_list, list):
-        return {}
-
-    set_effect_data = {
-        "set_effects": []
-    }
-
-
-    for set_effect in set_effects_list:
+    set_effect_data = {"set_effects": []}
+    for set_effect in set_effect_info.get('set_effect', []):
         set_data = {
             "set_name": set_effect.get("set_name", "정보 없음"),
             "total_set_count": set_effect.get("total_set_count", "정보 없음"),
@@ -282,7 +193,6 @@ def extract_set_effect(set_effect_info):
             "set_option_full": []
         }
 
-        # 세트 효과 정보 (set_effect_info)
         for effect in set_effect.get("set_effect_info", []):
             effect_data = {
                 "set_count": effect.get("set_count", "정보 없음"),
@@ -290,7 +200,6 @@ def extract_set_effect(set_effect_info):
             }
             set_data["set_effects"].append(effect_data)
 
-        # 전체 세트 옵션 정보 (set_option_full)
         for full_effect in set_effect.get("set_option_full", []):
             full_effect_data = {
                 "set_count": full_effect.get("set_count", "정보 없음"),
@@ -300,52 +209,22 @@ def extract_set_effect(set_effect_info):
 
         set_effect_data["set_effects"].append(set_data)
 
-
     return set_effect_data
 
-
 def extract_hyper_stats(hyper_stat_info):
     if not isinstance(hyper_stat_info, dict):
         return {}
 
     extracted_hyper_stats = {}
-
     for preset_key, stats in hyper_stat_info.items():
         if preset_key.startswith('hyper_stat_preset_'):
             preset_number = preset_key.split('_')[-1]
-            # stats가 리스트가 아닌 경우 강제로 리스트로 변환
             if not isinstance(stats, list):
                 stats = []
             extracted_hyper_stats[f'preset_{preset_number}'] = []
 
             for stat in stats:
-                if isinstance(stat, dict):  # stat이 딕셔너리인지 확인
-                    stat_data = {
-                        "type": stat.get("stat_type", "정보 없음"),
-                        "points": stat.get("stat_point", 0),
-                        "level": stat.get("stat_level", 0),
-                        "increase": stat.get("stat_increase", "정보 없음")
-                    }
-                    extracted_hyper_stats[f'preset_{preset_number}'].append(stat_data)
-    return extracted_hyper_stats
-
-
-def extract_hyper_stats(hyper_stat_info):
-    if not isinstance(hyper_stat_info, dict):
-        return {}
-
-    extracted_hyper_stats = {}
-
-    for preset_key, stats in hyper_stat_info.items():
-        if preset_key.startswith('hyper_stat_preset_'):
-            preset_number = preset_key.split('_')[-1]
-            # stats가 리스트가 아닌 경우 강제로 리스트로 변환
-            if not isinstance(stats, list):
-                stats = []
-            extracted_hyper_stats[f'preset_{preset_number}'] = []
-
-            for stat in stats:
-                if isinstance(stat, dict):  # stat이 딕셔너리인지 확인
+                if isinstance(stat, dict):
                     stat_data = {
                         "type": stat.get("stat_type", "정보 없음"),
                         "points": stat.get("stat_point", 0),
@@ -360,12 +239,11 @@ def extract_link_skills(link_skill_info):
         return {}
 
     extracted_skills = {}
-    
     for preset_key, skills in link_skill_info.items():
         if preset_key.startswith('character_link_skill_preset_'):
             preset_number = preset_key.split('_')[-1]
             extracted_skills[f'preset_{preset_number}'] = []
-            
+
             for skill in skills:
                 skill_data = {
                     "name": skill.get("skill_name", "정보 없음"),
@@ -375,14 +253,13 @@ def extract_link_skills(link_skill_info):
                     "icon": skill.get("skill_icon", "정보 없음")
                 }
                 extracted_skills[f'preset_{preset_number}'].append(skill_data)
-    
+
     return extracted_skills
 
 def extract_hexa_stats(hexamatrix_stat_info):
     if not isinstance(hexamatrix_stat_info, dict) or not hexamatrix_stat_info:
         return None
 
-    # 헥사 스탯 정보를 담을 기본 구조
     hexa_stat_data = {
         "character_hexa_stat_core": [],
         "preset_hexa_stat_core": []
@@ -420,9 +297,8 @@ def extract_hexa(hexamatrix_info):
     if not isinstance(hexamatrix_info, dict) or not hexamatrix_info:
         return None
     
-    # 헥사 스킬 정보를 담을 기본 구조
     hexa_data = {
-        "character_hexa_core_equipment" : []
+        "character_hexa_core_equipment": []
     }
 
     if hexamatrix_info.get("character_hexa_core_equipment"):
@@ -434,112 +310,6 @@ def extract_hexa(hexamatrix_info):
             })
 
     return hexa_data if hexa_data["character_hexa_core_equipment"] else None
-
-def extract_character_skills(skill_info):
-
-    # 데이터 검증
-    if not isinstance(skill_info, dict):
-        return {"error": "유효하지 않은 데이터 형식입니다."}
-
-    # 기본 데이터 구조 생성
-    character_skill_data = {
-        "character_class": skill_info.get("character_class", "정보 없음"),
-        "skill_grade": skill_info.get("character_skill_grade", "정보 없음"),
-        "skills": []
-    }
-
-        # 스킬 정보 추가
-        
-    for skill in skill_info.get("character_skill", []):
-        character_skill_data["skills"].append({
-            "skill_name": skill.get("skill_name", "정보 없음"),
-            "skill_description": skill.get("skill_description", "정보 없음"),
-            "skill_level": skill.get("skill_level", 0),
-            "skill_effect": skill.get("skill_effect", "정보 없음"),
-            "skill_effect_next": skill.get("skill_effect_next", "정보 없음"),
-            "skill_icon": skill.get("skill_icon", "정보 없음")
-        })
-
-    return character_skill_data
-
-def extract_vmatrix(vmatrix_info):
-    if not isinstance(vmatrix_info, dict):
-        return {}
-    
-    vmatrix_data = {
-        "character_class": vmatrix_info.get("character_class", "정보 없음"),
-        "v_cores": [],
-        "remain_slot_upgrade_point": vmatrix_info.get("character_v_matrix_remain_slot_upgrade_point", 0)
-    }
-
-    for core in vmatrix_info.get("character_v_core_equipment", []):
-        vmatrix_data["v_cores"].append({
-            "slot_id": core.get("slot_id", "정보 없음"),
-            "slot_level": core.get("slot_level", 0),
-            "name": core.get("v_core_name", "정보 없음"),
-            "type": core.get("v_core_type", "정보 없음"),
-            "level": core.get("v_core_level", 0),
-            "skill_1": core.get("v_core_skill_1", "정보 없음"),
-            "skill_2": core.get("v_core_skill_2", "정보 없음"),
-            "skill_3": core.get("v_core_skill_3", "정보 없음")
-        })
-
-    return vmatrix_data
-
-
-def extract_symbols(symbol_equipment_info):
-    if not isinstance(symbol_equipment_info, dict):
-        return {}
-
-    # 심볼 정보를 담을 기본 구조
-    symbol_data = {
-        "authentic_symbols": [],
-        "arcane_symbols": []
-    }
-
-    # symbol 데이터가 존재할 때
-    for symbol in symbol_equipment_info.get("symbol", []):
-        symbol_name = symbol.get("symbol_name", "")
-
-        # 어센틱 심볼 추출
-        if "어센틱" in symbol_name:
-            symbol_data["authentic_symbols"].append({
-                "name": symbol_name,
-                "icon": symbol.get("symbol_icon"),
-                "description": symbol.get("symbol_description"),
-                "force": symbol.get("symbol_force"),
-                "level": symbol.get("symbol_level"),
-                "stats": {
-                    "str": symbol.get("symbol_str"),
-                    "dex": symbol.get("symbol_dex"),
-                    "int": symbol.get("symbol_int"),
-                    "luk": symbol.get("symbol_luk"),
-                    "hp": symbol.get("symbol_hp"),
-                },
-                "growth_count": symbol.get("symbol_growth_count"),
-                "require_growth_count": symbol.get("symbol_require_growth_count")
-            })
-
-        # 아케인 심볼 추출
-        elif "아케인" in symbol_name:
-            symbol_data["arcane_symbols"].append({
-                "name": symbol_name,
-                "icon": symbol.get("symbol_icon"),
-                "description": symbol.get("symbol_description"),
-                "force": symbol.get("symbol_force"),
-                "level": symbol.get("symbol_level"),
-                "stats": {
-                    "str": symbol.get("symbol_str"),
-                    "dex": symbol.get("symbol_dex"),
-                    "int": symbol.get("symbol_int"),
-                    "luk": symbol.get("symbol_luk"),
-                    "hp": symbol.get("symbol_hp"),
-                },
-                "growth_count": symbol.get("symbol_growth_count"),
-                "require_growth_count": symbol.get("symbol_require_growth_count")
-            })
-
-    return symbol_data
 
 def extract_character_skills(skill_info):
     if not isinstance(skill_info, dict):
@@ -565,15 +335,83 @@ def extract_character_skills(skill_info):
         }
     return extracted_skills
 
+def extract_vmatrix(vmatrix_info):
+    if not isinstance(vmatrix_info, dict):
+        return {}
+    
+    vmatrix_data = {
+        "character_class": vmatrix_info.get("character_class", "정보 없음"),
+        "v_cores": [],
+        "remain_slot_upgrade_point": vmatrix_info.get("character_v_matrix_remain_slot_upgrade_point", 0)
+    }
+
+    for core in vmatrix_info.get("character_v_core_equipment", []):
+        vmatrix_data["v_cores"].append({
+            "slot_id": core.get("slot_id", "정보 없음"),
+            "slot_level": core.get("slot_level", 0),
+            "name": core.get("v_core_name", "정보 없음"),
+            "type": core.get("v_core_type", "정보 없음"),
+            "level": core.get("v_core_level", 0),
+            "skill_1": core.get("v_core_skill_1", "정보 없음"),
+            "skill_2": core.get("v_core_skill_2", "정보 없음"),
+            "skill_3": core.get("v_core_skill_3", "정보 없음")
+        })
+
+    return vmatrix_data
+
+def extract_symbols(symbol_equipment_info):
+    if not isinstance(symbol_equipment_info, dict):
+        return {}
+
+    symbol_data = {
+        "authentic_symbols": [],
+        "arcane_symbols": []
+    }
+
+    for symbol in symbol_equipment_info.get("symbol", []):
+        symbol_name = symbol.get("symbol_name", "")
+
+        if "어센틱" in symbol_name:
+            symbol_data["authentic_symbols"].append({
+                "name": symbol_name,
+                "icon": symbol.get("symbol_icon"),
+                "description": symbol.get("symbol_description"),
+                "force": symbol.get("symbol_force"),
+                "level": symbol.get("symbol_level"),
+                "stats": {
+                    "str": symbol.get("symbol_str"),
+                    "dex": symbol.get("symbol_dex"),
+                    "int": symbol.get("symbol_int"),
+                    "luk": symbol.get("symbol_luk"),
+                    "hp": symbol.get("symbol_hp"),
+                },
+                "growth_count": symbol.get("symbol_growth_count"),
+                "require_growth_count": symbol.get("symbol_require_growth_count")
+            })
+
+        elif "아케인" in symbol_name:
+            symbol_data["arcane_symbols"].append({
+                "name": symbol_name,
+                "icon": symbol.get("symbol_icon"),
+                "description": symbol.get("symbol_description"),
+                "force": symbol.get("symbol_force"),
+                "level": symbol.get("symbol_level"),
+                "stats": {
+                    "str": symbol.get("symbol_str"),
+                    "dex": symbol.get("symbol_dex"),
+                    "int": symbol.get("symbol_int"),
+                    "luk": symbol.get("symbol_luk"),
+                    "hp": symbol.get("symbol_hp"),
+                },
+                "growth_count": symbol.get("symbol_growth_count"),
+                "require_growth_count": symbol.get("symbol_require_growth_count")
+            })
+
+    return symbol_data
+
 from asgiref.sync import sync_to_async
 
-
 import hashlib
-
-def character_info_view(request):
-    character_name = request.GET.get('character_name')
-
-
 
 async def character_info_view(request, character_name):
     # URL에서 받은 character_name 인수 사용
@@ -582,7 +420,6 @@ async def character_info_view(request, character_name):
 
     if character_info:
         # 각 데이터를 추출하는 함수들
-<<<<<<< HEAD
         final_stats = await sync_to_async(extract_final_stats)(character_info.get('stat_info', {}))
         equipment_data = await sync_to_async(extract_item_equipment)(character_info.get('item_equipment_info', []))
         ability_data = await sync_to_async(extract_ability_presets)(character_info.get('ability_info', {}))
@@ -603,8 +440,6 @@ async def character_info_view(request, character_name):
         # 캐시 저장
         cache.set(f'character_info_{character_name}', character_info, timeout=600)
 
-
-=======
         final_stats = extract_final_stats(character_info.get('stat_info', {}))
         equipment_data = extract_item_equipment(character_info.get('item_equipment_info', []))
         ability_data = extract_ability_presets(character_info.get('ability_info', {}))
@@ -616,7 +451,6 @@ async def character_info_view(request, character_name):
         vmatrix_data = extract_vmatrix(character_info.get('vmatrix_info', {}))
         hyper_stat_data = extract_hyper_stats(character_info.get('hyper_stat_info', []))
         character_skill_data = extract_character_skills(character_info.get('skill_info', []))
->>>>>>> f63aceba76d8c381433c38f5735fc2ebd7f3fa3c
         # 템플릿으로 전달할 컨텍스트
         context = {
             'character_name': character_name,
@@ -630,23 +464,19 @@ async def character_info_view(request, character_name):
             'symbol_data': symbol_data,
             'preset_range': range(1, 4),
             'vmatrix_data': vmatrix_data,
-<<<<<<< HEAD
             'character_skill_data': character_skill_data,
             'cash_item_data': cash_item_data,  # 추가된 캐시 아이템 데이터
             'android_data': android_data,        # 추가된 안드로이드 데이터
             'pet_data': pet_data,                # 추가된 펫 데이터
             'beauty_data': beauty_data,          # 추가된 뷰티 데이터
-=======
             'hyper_stat_data': hyper_stat_data,
             'character_skill_data': character_skill_data,
->>>>>>> f63aceba76d8c381433c38f5735fc2ebd7f3fa3c
         }
 
         return render(request, 'character_info/info.html', context)
     else:
         return render(request, 'character_info/error.html', {'error': '캐릭터 정보를 찾을 수 없습니다.'})
     
-
 def extract_cash_item_equipment(cash_item_info):
     """
     캐시 아이템 정보를 추출하여 기본 정보와 프리셋 정보를 정리
@@ -654,7 +484,6 @@ def extract_cash_item_equipment(cash_item_info):
     if not isinstance(cash_item_info, dict):
         return {}
 
-<<<<<<< HEAD
     # 기본 정보 추출
     cash_item_data = {
         "date": cash_item_info.get("date", "정보 없음"),
@@ -726,7 +555,6 @@ def extract_beauty_info(beauty_info):
 
     return beauty_data
 
-
 def extract_android_info(android_info):
     """
     안드로이드 정보를 추출하여 캐릭터의 안드로이드 관련 정보를 정리
@@ -792,7 +620,6 @@ def extract_android_info(android_info):
 
     return android_data
 
-
 def extract_nested_dict(data):
     """ 중첩된 딕셔너리를 안전하게 처리 """
     if not isinstance(data, dict):
@@ -808,8 +635,6 @@ def extract_nested_dict(data):
         "mix_color": data.get("mix_color", "정보 없음"),
         "mix_rate": data.get("mix_rate", "정보 없음")
     }
-
-
 
 def extract_pet_info(pet_info):
     """
@@ -855,6 +680,4 @@ def extract_pet_info(pet_info):
         }
 
     return pet_data
-=======
 
->>>>>>> f63aceba76d8c381433c38f5735fc2ebd7f3fa3c

@@ -74,6 +74,7 @@ def search_all_indices(query, indices, k=5):
     return sorted(results, key=lambda x: x[1])[:k]
 
 
+
 @require_http_methods(["POST"])
 def search_character(request):
     if request.method == 'POST':
