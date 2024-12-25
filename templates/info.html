@@ -436,7 +436,13 @@
                                     <strong>포스:</strong> {{ symbol.force }} <br>
                                     <strong>설명:</strong> {{ symbol.description }} <br>
                                     <strong>스탯:</strong>
-            
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>어센틱 심볼이 없습니다.</p>
+                        {% endif %}
+                    </div>
+                                
                 <!-- 헥사 매트릭스 스탯 정보 -->
                 <div class="row">
                     <h2>헥사 스텟 정보</h2>
@@ -492,145 +498,147 @@
 
                 
             <!-- 장비 -->
-            <div class="col" id="col2">
-                {% comment %} <div class="equipment-container">
-                    <!-- 반지1 슬롯 -->
-                    {% if equipment_data.item_equipment.ring1 %}
-                    <div class="slot ring1" onmouseenter="showTooltip(event, 'ring1')" onmouseleave="hideTooltip()">
-                        <img src="{{ equipment_data.item_equipment.ring1.icon }}">
-                    </div>
-                    {% endif %}
+        <div class="col" id="col2">
+            {% comment %} 
+            <div class="equipment-container">
+                <!-- 반지1 슬롯 -->
+                {% if equipment_data.item_equipment.ring1 %}
+                <div class="slot ring1" onmouseenter="showTooltip(event, 'ring1')" onmouseleave="hideTooltip()">
+                    <img src="{{ equipment_data.item_equipment.ring1.icon }}">
+                </div>
+                {% endif %}
+            
+                <!-- 반지2 슬롯 -->
+                {% if equipment_data.item_equipment.ring2 %}
+                <div class="slot ring2">
+                    <img src="{{ equipment_data.item_equipment.ring2.icon }}">
+                </div>
+                {% endif %}
+            
+                <!-- 무기 슬롯 -->
+                {% if equipment_data.item_equipment.ring3 %}
+                <div class="slot ring3">
+                    <img src="{{ equipment_data.item_equipment.ring3.icon }}">
+                </div>
+                {% endif %}
                 
-                    <!-- 반지2 슬롯 -->
-                    {% if equipment_data.item_equipment.ring2 %}
-                    <div class="slot ring2">
-                        <img src="{{ equipment_data.item_equipment.ring2.icon }}">
-                    </div>
-                    {% endif %}
-                
-                    <!-- 무기 슬롯 -->
-                    {% if equipment_data.item_equipment.ring3 %}
-                    <div class="slot ring3">
-                        <img src="{{ equipment_data.item_equipment.ring3.icon }}">
-                    </div>
-                    {% endif %}
-                    
-                    {% if equipment_data.item_equipment.ring4 %}
-                    <div class="slot ring4">
-                        <img src="{{ equipment_data.item_equipment.ring4.icon }}">
-                    </div>
-                    {% endif %}
+                {% if equipment_data.item_equipment.ring4 %}
+                <div class="slot ring4">
+                    <img src="{{ equipment_data.item_equipment.ring4.icon }}">
+                </div>
+                {% endif %}
 
-                    {% if equipment_data.item_equipment.poket %}
-                    <div class="slot poket">
-                        <img src="{{ equipment_data.item_equipment.poket.icon }}">
-                    </div>
-                    {% endif %}
+                {% if equipment_data.item_equipment.poket %}
+                <div class="slot poket">
+                    <img src="{{ equipment_data.item_equipment.poket.icon }}">
+                </div>
+                {% endif %}
 
-                    {% if equipment_data.item_equipment.pendant1 %}
-                    <div class="slot pendant1">
-                        <img src="{{ equipment_data.item_equipment.pendant1.icon }}">
-                    </div>
-                    {% endif %}
-                    <!-- sssssssssssssssssssssssss -->
-                    {% if equipment_data.item_equipment.pendant2 %}
-                    <div class="slot pendant2">
-                        <img src="{{ equipment_data.item_equipment.pendant2.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.weapon %}
-                    <div class="slot weapon">
-                        <img src="{{ equipment_data.item_equipment.weapon.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.belt %}
-                    <div class="slot belt">
-                        <img src="{{ equipment_data.item_equipment.belt.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.hat %}
-                    <div class="slot hat">
-                        <img src="{{ equipment_data.item_equipment.hat.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.face %}
-                    <div class="slot face">
-                        <img src="{{ equipment_data.item_equipment.face.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.eyes %}
-                    <div class="slot eyes">
-                        <img src="{{ equipment_data.item_equipment.eyes.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.top %}
-                    <div class="slot top">
-                        <img src="{{ equipment_data.item_equipment.top.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.bottom %}
-                    <div class="slot bottom">
-                        <img src="{{ equipment_data.item_equipment.bottom.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.shoes %}
-                    <div class="slot shoes">
-                        <img src="{{ equipment_data.item_equipment.shoes.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.earring %}
-                    <div class="slot earring">
-                        <img src="{{ equipment_data.item_equipment.earring.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.shoulder %}
-                    <div class="slot shoulder">
-                        <img src="{{ equipment_data.item_equipment.shoulder.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.gloves %}
-                    <div class="slot gloves">
-                        <img src="{{ equipment_data.item_equipment.gloves.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.android %}
-                    <div class="slot android">
-                        <img src="{{ equipment_data.item_equipment.android.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.emblem %}
-                    <div class="slot emblem">
-                        <img src="{{ equipment_data.item_equipment.emblem.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.badge %}
-                    <div class="slot badge">
-                        <img src="{{ equipment_data.item_equipment.badge.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.medal %}
-                    <div class="slot medal">
-                        <img src="{{ equipment_data.item_equipment.medal.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.secondary %}
-                    <div class="slot secondary">
-                        <img src="{{ equipment_data.item_equipment.secondary.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.cape %}
-                    <div class="slot cape">
-                        <img src="{{ equipment_data.item_equipment.cape.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.heart %}
-                    <div class="slot heart">
-                        <img src="{{ equipment_data.item_equipment.heart.icon }}">
-                    </div>
+                {% if equipment_data.item_equipment.pendant1 %}
+                <div class="slot pendant1">
+                    <img src="{{ equipment_data.item_equipment.pendant1.icon }}">
+                </div>
+                {% endif %}
+                <!-- sssssssssssssssssssssssss -->
+                {% if equipment_data.item_equipment.pendant2 %}
+                <div class="slot pendant2">
+                    <img src="{{ equipment_data.item_equipment.pendant2.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.weapon %}
+                <div class="slot weapon">
+                    <img src="{{ equipment_data.item_equipment.weapon.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.belt %}
+                <div class="slot belt">
+                    <img src="{{ equipment_data.item_equipment.belt.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.hat %}
+                <div class="slot hat">
+                    <img src="{{ equipment_data.item_equipment.hat.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.face %}
+                <div class="slot face">
+                    <img src="{{ equipment_data.item_equipment.face.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.eyes %}
+                <div class="slot eyes">
+                    <img src="{{ equipment_data.item_equipment.eyes.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.top %}
+                <div class="slot top">
+                    <img src="{{ equipment_data.item_equipment.top.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.bottom %}
+                <div class="slot bottom">
+                    <img src="{{ equipment_data.item_equipment.bottom.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.shoes %}
+                <div class="slot shoes">
+                    <img src="{{ equipment_data.item_equipment.shoes.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.earring %}
+                <div class="slot earring">
+                    <img src="{{ equipment_data.item_equipment.earring.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.shoulder %}
+                <div class="slot shoulder">
+                    <img src="{{ equipment_data.item_equipment.shoulder.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.gloves %}
+                <div class="slot gloves">
+                    <img src="{{ equipment_data.item_equipment.gloves.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.android %}
+                <div class="slot android">
+                    <img src="{{ equipment_data.item_equipment.android.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.emblem %}
+                <div class="slot emblem">
+                    <img src="{{ equipment_data.item_equipment.emblem.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.badge %}
+                <div class="slot badge">
+                    <img src="{{ equipment_data.item_equipment.badge.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.medal %}
+                <div class="slot medal">
+                    <img src="{{ equipment_data.item_equipment.medal.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.secondary %}
+                <div class="slot secondary">
+                    <img src="{{ equipment_data.item_equipment.secondary.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.cape %}
+                <div class="slot cape">
+                    <img src="{{ equipment_data.item_equipment.cape.icon }}">
+                </div>
+                {% endif %}
+                {% if equipment_data.item_equipment.heart %}
+                <div class="slot heart">
+                    <img src="{{ equipment_data.item_equipment.heart.icon }}">
                 </div>
             </div>
-        </div>  
-    </main> 
+            {% endcomment %}
+    </div>
+    </div>  
+</main>
     
     
 <script src="/static/css/info.js"></script>
