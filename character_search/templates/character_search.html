@@ -1,20 +1,95 @@
-<h2>"{{ query }}" 검색 결과</h2>
-{% if character_info.basic_info %}
-  <div class="character-info">
-    <h3>
-      <a href="{% url 'character_info:info' character_name=query %}">{{ query }} 상세 정보.</a>
-        {{ character_info.basic_info.character_name }}
-      </a>
-    </h3>
-    <ul>
-      <li>레벨: {{ character_info.basic_info.character_level }}</li>
-      <li>직업: {{ character_info.basic_info.character_class }}</li>
-      <li>서버: {{ character_info.basic_info.world_name }}</li>
-      <li>성별: {{ character_info.basic_info.character_gender }}</li>
-      <li>인기도: {{ character_info.popularity_info.popularity }}</li>
-      <li>길드: {% if character_info.basic_info.character_guild_name %}{{ character_info.basic_info.character_guild_name }}{% else %}X{% endif %}</li>
-    </ul>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Main Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="/static/css/character_search.css" rel="stylesheet" />
+</head>
+<body>
+   
+          <!-- 상단바 -->
+  <header class="navbar">
+    <img src="/static/image/m_logo.png" href="/" class="logo-image">
+    <div class="navbar-search">
+      <div class="search-container">
+          <input type="text" placeholder="캐릭터닉네임" class="search-input">
+          <img src="/static/image/돋보기.png" alt="Search" class="search-icon">
+      </div>
   </div>
-{% else %}
-  <p>검색 결과가 없습니다..</p>
-{% endif %}
+  </header>
+
+<main>
+
+  <div id="left-box">
+  </div>
+  <div id="main-box">
+    <!-- 사이드바 -->
+    <div id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- 사이드바 -->
+    <div id="sidebar" class="hidden">
+        <ul class="sidebar-menu">
+            <li><a href="#">CHAT BOT</a></li>
+            <li><a href="#">캐릭터검색</a></li>
+            <li><a href="#">길드검색</a></li>
+            <li><a href="#">랭킹</a></li>
+            <li><a href="#">아이템검색</a></li>
+        </ul>
+    </div>
+    <!-- 사이드바 토글 버튼 -->
+    <button id="sidebar-toggle" onclick="toggleSidebar()">
+        <img src="/static/image/side_bar.png" alt="Toggle Sidebar" id="toggle-image">
+    </button>
+    <div class="wrapper">
+
+      <div class="basic">
+        <div class="title">캐릭터</div>
+        <div class="character-img">Row 2
+          <a href="{% url 'character_info:info' character_name=query %}">{{ query }} 상세 정보.</a>
+          {{ character_info.basic_info.character_name }}
+        </a>
+        </div>
+        <div class="basic-info">Row 3</div>
+      </div>
+
+      <div class="two"></div>
+
+      <div class="ability">Ability</div>
+
+      <div class="final_stat">
+        <div class="title">스탯</div>
+        <div class="stat-container">
+          <div class="stat-box">Row 1</div>
+          <div class="stat-box">Row 2</div>
+          <div class="stat-box">Row 3</div>
+          <div class="stat-box">Row 4</div>
+          <div class="stat-box">Row 5</div>
+        </div>
+      </div>
+
+      <div class="equipment">
+        <div class="title">장비창</div>
+        <div class="equipment-container"></div>
+      </div>
+
+      <div class="cash">
+        <div class="title">캐시</div>
+        <div class="cash-container"></div>
+      </div>
+
+    </div>
+
+  </div>
+  <div id="right-box">
+    <!-- Right Box Content -->
+  </div>
+</main>
+    <script src="/static/css/character_search.js"></script>
+</body>
+
+
+</html>
+<!-- 
+
+<div class="sub-box sub-box1">Two - Part 1</div>
+<div class="sub-box sub-box2">Two - Part 2</div> -->
