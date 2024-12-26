@@ -37,12 +37,20 @@
     </div> -->
           <!-- 상단바 -->
   <header class="navbar">
-    <img src="/static/image/m_logo.png" href="/" class="logo-image">
+    <a href="/">
+        <img src="/static/image/m_logo.png" alt="Logo" class="logo-image">
+    </a>
     <div class="navbar-search">
-      <div class="search-container">
-          <input type="text" placeholder="캐릭터닉네임" class="search-input">
-          <img src="/static/image/돋보기.png" alt="Search" class="search-icon">
-      </div>
+        <div class="search-container">
+            <form action="{% url 'character_info:info' character_name='dummy' %}" method="GET">
+                <input id="input" name="character_name" type="text" placeholder="캐릭터닉네임" class="search-input">
+                <button type="submit" class="search-button">
+                    <img src="/static/image/돋보기.png" alt="Search" class="search-icon">
+                </button>
+            </form>
+        </div>
+    </form>
+    </div>
   </div>
   </header>
 <main>
@@ -56,7 +64,10 @@
     <!-- 사이드바 -->
     <div id="sidebar" class="hidden">
         <ul class="sidebar-menu">
-            <li><a href="#">CHAT BOT</a></li>
+            <!-- 구글 로그인 -->
+            <li><a href="#">
+                <button onclick="openPopup({% url 'google_login' %})">로그인</button>
+            </a></li>
             <li><a href="#">캐릭터검색</a></li>
             <li><a href="#">길드검색</a></li>
             <li><a href="#">랭킹</a></li>
@@ -93,9 +104,15 @@
         </div>
     </div>
     <div id="main-box3">
-        <div id="event" class="box"></div>
-        <div id="cash_shop" class="box"></div>
-        <div id="rank_total" class="box"></div>
+        <div id="event" class="box">
+            {{ event_info }}
+        </div>
+        <div id="cash_shop" class="box">
+            {{ cashitem_info }}
+        </div>
+        <div id="rank_total" class="box">
+            {{ ranking_info }}
+        </div>
         <div id="rank_final_stats" class="box"></div>
     </div>
 </div>

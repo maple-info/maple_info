@@ -19,7 +19,7 @@ main {
 #left-box {
     display: flex; /* Flexbox 활성화 */
     flex-direction: column; /* 세로로 정렬 */
-    width: 30%; /* 전체 화면의 25% */
+    width: 20%; /* 전체 화면의 25% */
     height: 100%; /* 부모 높이(100vh) 채우기 */
     background-color: #ffffff; /* 임의 배경색 */
     /* padding: 50px; */
@@ -72,72 +72,72 @@ main {
     overflow-y: auto; /* 내용이 길면 스크롤 */
 }
 .navbar {
-    display: flex;
-    top: 0; /* 화면의 상단에 위치 */
-    left: 0; /* 화면의 왼쪽 경계에 맞춤 */
-    z-index: 1000; /* 다른 요소보다 위에 표시 */
-    background-color: #F5A335; /* 상단바 배경색 */
-    color: white;
-    width: 100%; /* 부모 너비를 초과하지 않도록 설정 */
-    max-width: 100%; /* 최대 너비 제한 */
-    height: 80px;
-    overflow-x: hidden; /* 초과되는 내용을 숨김 */
-    box-sizing: border-box; /* padding과 border를 포함한 너비 계산 */
-    padding: 10px 20px;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  top: 0; /* 화면의 상단에 위치 */
+  left: 0; /* 화면의 왼쪽 경계에 맞춤 */
+  z-index: 1000; /* 다른 요소보다 위에 표시 */
+  background-color: #EEB36D; /* 상단바 배경색 */
+  color: white;
+  width: 100%; /* 부모 너비를 초과하지 않도록 설정 */
+  max-width: 100%; /* 최대 너비 제한 */
+  height: 80px;
+  overflow-x: hidden; /* 초과되는 내용을 숨김 */
+  box-sizing: border-box; /* padding과 border를 포함한 너비 계산 */
+  padding: 10px 20px;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 .logo-image{
-    height: 30px;
-    margin-left: 30px;
+  height: 55px;
+  margin-left: 340px;
 }
 /* 검색창 컨테이너 */
 .navbar-search {
-    display: flex;
-    align-items: center; /* 세로 가운데 정렬 */
-    margin-right: 50px;
+  display: flex;
+  align-items: center; /* 세로 가운데 정렬 */
+  margin-right: 340px;
 }
 
 /* 입력 박스와 버튼을 감싸는 컨테이너 */
-/* 입력 박스와 버튼을 감싸는 컨테이너 */
 .search-container {
-    position: relative;
-    width: 225px;
-    height: 37px;
-  }
-  
-  .search-container .search-input {
-    width: 100%;
-    padding: 9px 11px 9px 19px; /* 오른쪽 패딩 추가 (버튼 공간 확보) */
-    border: 5px solid #FAE0BD;
-    border-radius: 20px; /* 양쪽 끝 둥글게 */
-    font-size: 14px;
-    outline: none;
-    box-sizing: border-box;
-    margin: 4px;
-  }
-  
-  .search-container .search-button {
-    position: absolute;
-    top: 50%;
-    right: 10px; /* 입력 박스 오른쪽 안쪽에 위치 */
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: #00bcd4;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  .search-container .search-icon {
-    position: absolute;
-    top: 68%;
-    right: 10px; /* 입력 박스 오른쪽 안쪽에 위치 */
-    transform: translateY(-50%);
-    width: 25px; /* 이미지 크기 */
-    height: 25px;
-    cursor: pointer; /* 클릭 가능 표시 */
-  }
+  position: relative;
+  width: 225px;
+  height: 37px;
+}
+
+.search-container .search-input {
+  width: 100%;
+  padding: 9px 11px 9px 19px; /* 오른쪽 패딩 추가 (버튼 공간 확보) */
+  border: 5px solid #FAE0BD;
+  border-radius: 20px; /* 양쪽 끝 둥글게 */
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+  margin: 4px;
+}
+
+.search-container .search-button {
+  position: absolute;
+  top: 60%;
+  right: 10px; /* 입력 박스 오른쪽 안쪽에 위치 */
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #00bcd4;
+  font-size: 16px;
+  cursor: pointer;
+}
+.search-container .search-icon {
+  position: absolute;
+  top: 68%;
+  right: 10px; /* 입력 박스 오른쪽 안쪽에 위치 */
+  transform: translateY(-50%);
+  width: 25px; /* 이미지 크기 */
+  height: 25px;
+  cursor: pointer; /* 클릭 가능 표시 */
+}
+
   
 /* 전체 채팅 컨테이너 */
 
@@ -153,7 +153,7 @@ main {
     flex: 1; /* 남은 공간 차지 */
     flex-direction: column;
     background-color: #ffffff;
-    border-left: 3px solid #F5A335;
+    border-left: 3px solid #EEB36D;
     /* overflow: hidden; */
 }
 /* 채팅 메시지 박스 */

@@ -8,631 +8,102 @@
     <title>{{ character_info.basic_info.character_name }}의 정보</title>
     <link href="/static/css/info.css" rel="stylesheet" />
 </head>
-<form action="{% url 'chatbot' %}" method="get">
-    <button type="submit">챗봇으로 상담하기</button>
-</form> 
 
 <body>
+   
+    <!-- 상단바 -->
+<header class="navbar">
+    <a href="/">
+        <img src="/static/image/m_logo.png" alt="Logo" class="logo-image">
+    </a>
+    <div class="navbar-search">
+        <div class="search-container">
+            <form action="{% url 'character_info:info' character_name='dummy' %}" method="GET">
+                <input id="input" name="character_name" type="text" placeholder="캐릭터닉네임" class="search-input">
+                <button type="submit" class="search-button">
+                    <img src="/static/image/돋보기.png" alt="Search" class="search-icon">
+                </button>
+            </form>
+        </div>
+    </form>
+    </div>
+  </div>
+  </header>
 
-    <main>
-        <div class="container" style="margin: 0 auto; max-width: 1300px;">
-            <div class="col" id="col1">
-                <!-- 기본 정보 -->
-                {% load humanize %} 
-                <div class='stat-container'>
-                    <div class="row">
-                        <div class="info-box">
-                            <div class="character-info-container">
-                                <img  class="character-image" src="{{ character_info.basic_info.character_image|default:'정보 없음' }}" alt="Character Image">
-                                <div class="character-details">
-                                    <div class="info-row">
-                                        <span>{{ character_info.basic_info.character_name }}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span> Lv.{{ character_info.basic_info.character_level|default:"정보 없음" }}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span>{{ character_info.basic_info.character_class|default:"정보 없음" }}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span>{{ character_info.basic_info.world_name|default:"정보 없음" }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 전투 스탯 -->
-                    <div class="row">
-                        <div class="stats-container">
-                            <div class="stat-block">
-                                <div class="stat-content">
-                                    <span class="stat-title">전투력</span>
-                                    <span class="stat-number" id="battle-power">{{ final_stats.전투력|default:"N/A"|intcomma }}</span>
-                                </div>
-                            </div>
-                            <div class="stat-block divider">
-                                <div class="stat-content">
-                                    <span class="stat-title">스공</span>
-                                    <span class="stat-number" id="attack-power">
-                                        {{ final_stats.최소_스탯공격력|default:"N/A"|intcomma }}~
-                                        {{ final_stats.최대_스탯공격력|default:"N/A"|intcomma }}
-                                    </span>
-                                </div>
-                            </div>
-                            <hr></hr>
-                            <div class="stat-row">
-                                <span class="stat-label">데미지</span>
-                                <span class="stat-value">{{ final_stats.데미지|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">최종 데미지</span>
-                                <span class="stat-value">{{ final_stats.최종_데미지|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">보스 몬스터 데미지</span>
-                                <span class="stat-value">{{ final_stats.보스_몬스터_데미지|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row stat-divider">
-                                <span class="stat-label">일반 몬스터 데미지</span>
-                                <span class="stat-value">{{ final_stats.일반_몬스터_데미지|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">공격력</span>
-                                <span class="stat-value">{{ final_stats.공격력|default:"N/A"|intcomma }}</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">마력</span>
-                                <span class="stat-value">{{ final_stats.마력|default:"N/A" }}</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">방어율 무시</span>
-                                <span class="stat-value">{{ final_stats.방어율_무시|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">크리티컬 확률</span>
-                                <span class="stat-value">{{ final_stats.크리티컬_확률|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row stat-divider">
-                                <span class="stat-label">크리티컬 데미지</span>
-                                <span class="stat-value">{{ final_stats.크리티컬_데미지|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">재사용 대기시간 감소</span>
-                                <span class="stat-value">{{ final_stats.재사용_대기시간_감소|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">버프 지속시간</span>
-                                <span class="stat-value">{{ final_stats.버프_지속시간|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">재사용 대기시간 미적용</span>
-                                <span class="stat-value">{{ final_stats.재사용_대기시간_미적용|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">속성 내성 무시</span>
-                                <span class="stat-value">{{ final_stats.속성_내성_무시|default:"N/A" }}%</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">상태이상 추가 데미지</span>
-                                <span class="stat-value">{{ final_stats.상태이상_추가_데미지|default:"N/A" }}%</span>
-                            </div>
-                            <!-- 접기/펼치기 버튼 -->
-                            <button id="toggle-more-stats" class="toggle-button">더보기</button>
-                            <!-- 접히는 내용 -->
-                            <div id="more-stats" class="hidden-content">
-                                <div class="stat-row stat-divider">
-                                    <span class="stat-label">소환수 지속시간 증가</span>
-                                    <span class="stat-value">{{ final_stats.소환수_지속시간_증가|default:"N/A" }}%</span>
-                                </div>
-                                <div class="stat-row">
-                                    <span class="stat-label">메소 획득량</span>
-                                    <span class="stat-value">{{ final_stats.메소_획득량|default:"N/A" }}%</span>
-                                </div>
-                                <div class="stat-row">
-                                    <span class="stat-label">아이템 드롭률</span>
-                                    <span class="stat-value">{{ final_stats.아이템_드롭률|default:"N/A" }}%</span>
-                                </div>
-                                <div class="stat-row">
-                                    <span class="stat-label">추가 경험치 획득</span>
-                                    <span class="stat-value">{{ final_stats.추가_경험치_획득|default:"N/A" }}%</span>
-                                </div>
+<main>
 
-                                <div class="stat-row">
-                                    <span class="stat-label">스타포스</span>
-                                    <span class="stat-value">{{ final_stats.스타포스|default:"N/A" }}</span>
-                                </div>
-                                <div class="stat-row">
-                                    <span class="stat-label">아케인포스</span>
-                                    <span class="stat-value">{{ final_stats.아케인포스|default:"N/A" }}</span>
-                                </div>
-                                <div class="stat-row stat-divider">
-                                    <span class="stat-label">어센틱포스</span>
-                                    <span class="stat-value">{{ final_stats.어센틱포스|default:"N/A" }}</span>
-                                </div>
-                                <div class="stat-row">
-                                    <span class="stat-label">방어력</span>
-                                    <span class="stat-value">{{ final_stats.방어력|default:"N/A"|intcomma }}</span>
-                                </div>
-                                <div class="stat-row">
-                                    <span class="stat-label">상태이상 내성</span>
-                                    <span class="stat-value">{{ final_stats.상태이상_내성|default:"N/A" }}</span>
-                                </div>
-                                <div class="stat-row stat-divider">
-                                    <span class="stat-label">스탠스</span>
-                                    <span class="stat-value">{{ final_stats.스탠스|default:"N/A" }}%</span>
-                                </div>
-                                <div class="stat-row">
-                                    <span class="stat-label">이동속도</span>
-                                    <span class="stat-value">{{ final_stats.이동속도|default:"N/A" }}%</span>
-                                </div>
-                                <div class="stat-row">
-                                    <span class="stat-label">점프력</span>
-                                    <span class="stat-value">{{ final_stats.점프력|default:"N/A" }}%</span>
-                                </div>
-                                <div class="stat-row stat-divider">
-                                    <span class="stat-label">공격속도</span>
-                                    <span class="stat-value">{{ final_stats.공격_속도|default:"N/A" }}단계</span>
-                                </div>
-                                <div class="stat-row">
-                                    <span class="stat-label">STR</span>
-                                    <span class="stat-value">{{ final_stats.STR|default:"N/A"|intcomma }}</td>
-                                </div>
-                                <div class="stat-row">
-                                    <span class="stat-label">DEX</span>
-                                    <span class="stat-value">{{ final_stats.DEX|default:"N/A"|intcomma }}</td>
-                                </div>
-                                <div class="stat-row">
-                                    <span class="stat-label">INT</span>
-                                    <span class="stat-value">{{ final_stats.INT|default:"N/A"|intcomma }}</td>
-                                </div>
-                                <div class="stat-row">
-                                    <span class="stat-label">LUK</span>
-                                    <span class="stat-value">{{ final_stats.LUK|default:"N/A"|intcomma }}</td>
-                                </div>
-                                <div class="stat-row">
-                                    <span class="stat-label">HP</span>
-                                    <span class="stat-value">{{ final_stats.HP|default:"N/A"|intcomma }}</td>
-                                </div>
-                                <div class="stat-row">
-                                    <span class="stat-label">MP</span>
-                                    <span class="stat-value">{{ final_stats.MP|default:"N/A"|intcomma }}</td>
-                                </div>
-                                <!-- 하이퍼스탯 -->
-                                <div class='row hyper-stat-container'>
-                                    <p>하이퍼 스탯</p>
-                                    <div  class="hyper-tab-content active" id="preset-1">
-                                        <div class="row">
-                                            {% for preset_link, stats in hyper_stat_data.items %}
-                                                {% if preset_link == "preset_1" %}
-                                                    {% if stats %}
-                                                        {% for stat in stats %}
-                                                            <div class="hyperstat-row">
-                                                                <span>{{ stat.type }}</span>
-                                                                <span>Lv. {{ stat.level }}</span>
-                                                            </div>
-                                                        {% endfor %}
-                                                    {% else %}
-                                                        <p>이 프리셋에 하이퍼 스탯 정보가 없습니다.</p>
-                                                    {% endif %}
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    </div>
+<div id="left-box">
+</div>
+<div id="main-box">
+    <!-- 사이드바 -->
+    <div id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- 사이드바 -->
+    <div id="sidebar" class="hidden">
+        <ul class="sidebar-menu">
+            <li><a href="#">CHAT BOT</a></li>
+            <li><a href="#">캐릭터검색</a></li>
+            <li><a href="#">길드검색</a></li>
+            <li><a href="#">랭킹</a></li>
+            <li><a href="#">아이템검색</a></li>
+        </ul>
+    </div>
+    <!-- 사이드바 토글 버튼 -->
+    <button id="sidebar-toggle" onclick="toggleSidebar()">
+        <img src="/static/image/side_bar.png" alt="Toggle Sidebar" id="toggle-image">
+    </button>
+<div class="wrapper">
+
+<div class="basic">
+  <div class="title">캐릭터</div>
+  <div class="character-img">
+    <img  class="character-image" src="{{ character_info.basic_info.character_image|default:'정보 없음' }}" alt="Character Image">
                                 
-                                    <div class="hyper-tab-content" id="preset-2">
-                                        <div class="row">
-                                            {% for preset_link, stats in hyper_stat_data.items %}
-                                                {% if preset_link == "preset_2" %}
-                                                    {% if stats %}
-                                                        {% for stat in stats %}
-                                                            <div class="hyperstat-row">
-                                                                <span>{{ stat.type }}</span>
-                                                                <span>Lv. {{ stat.level }}</span>
-                                                            </div>
-                                                        {% endfor %}
-                                                    {% else %}
-                                                        <p>이 프리셋에 하이퍼 스탯 정보가 없습니다.</p>
-                                                    {% endif %}
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                
-                                    <div class="hyper-tab-content" id="preset-3">
-                                        <div class="row">
-                                            {% for preset_link, stats in hyper_stat_data.items %}
-                                                {% if preset_link == "preset_3" %}
-                                                    {% if stats %}
-                                                        {% for stat in stats %}
-                                                            <div class="hyperstat-row">
-                                                                <span>{{ stat.type }}</span>
-                                                                <span>Lv. {{ stat.level }}</span>
-                                                            </div>
-                                                        {% endfor %}
-                                                    {% else %}
-                                                        <p>이 프리셋에 하이퍼 스탯 정보가 없습니다.</p>
-                                                    {% endif %}
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                    <div class="hyper-tab-buttons">
-                                        <h2 class="hyper-tab-title">프리셋</h2>
-                                        <div class="hyper-tab-actions">
-                                            <button class="hyper-tab-button active" data-hyper-tab="preset-1">1</button>
-                                            <button class="hyper-tab-button" data-hyper-tab="preset-2">2</button>
-                                            <button class="hyper-tab-button" data-hyper-tab="preset-3">3</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- 어빌리티 -->
-                                <div class="row ability-container">
-                                    <p>어빌리티</p>
-                                    <div class="ability-tab-content active" id="ability-tab1">
-                                        <div class="row">
-                                            {% for preset_key, preset in ability_data.items %}
-                                                {% if preset_key == "preset_1" %}
-                                                <div class="preset-container">
-                                                    <div>
-                                                        {% for ability in preset.abilities %}
-                                                            <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
-                                                        {% empty %}
-                                                        <li>어빌리티 정보가 없습니다.</li>
-                                                        {% endfor %}
-                                                    </div>
-                                                </div>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                    <div class="ability-tab-content" id="ability-tab2">
-                                        <div class="row">
-                                            {% for preset_key, preset in ability_data.items %}
-                                                {% if preset_key == "preset_2" %}
-                                                <div class="preset-container">
-                                                    <div>
-                                                        {% for ability in preset.abilities %}
-                                                            <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
-                                                        {% empty %}
-                                                        <li>어빌리티 정보가 없습니다.</li>
-                                                        {% endfor %}
-                                                    </div>
-                                                </div>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                    <div class="ability-tab-content" id="ability-tab3">
-                                        {% for preset_key, preset in ability_data.items %}
-                                            {% if preset_key == "preset_3" %}
-                                            <div class="preset-container">
-                                                <div>
-                                                    {% for ability in preset.abilities %}
-                                                        <div class="ability-box grade-{{ ability.grade }}">{{ ability.value }}</div>
-                                                    {% empty %}
-                                                    <li>어빌리티 정보가 없습니다.</li>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                    <div class="ability-tab-buttons">
-                                        <h5 class="ability-tab-title">프리셋</h5>
-                                        <div class="ability-tab-actions">
-                                            <button class="ability-tab-button active" data-ability-tab="ability-tab1">1</button>
-                                            <button class="ability-tab-button" data-ability-tab="ability-tab2">2</button>
-                                            <button class="ability-tab-button" data-ability-tab="ability-tab3">3</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>  
-                </div>
-            </div>
-                
-            <!-- 장비 -->
-            <div class="col" id="col2">
-                <div class='col2-container'>
-                    {{ equipment_data|json_script:"equipment-data" }}
-                    
-                    <div class="equipment-container">
-                        {% for slot, item in equipment_data.item_equipment.items %}
-                            <div 
-                                class="slot {{ slot }} {{ item.potential_option_grade }}" 
-                                onmouseenter="showTooltip(event, '{{ slot }}')" 
-                                onmouseleave="hideTooltip()">
-                                <img src="{{ item.icon }}" alt="{{ item.name }}">
-                            </div>
-                        {% endfor %}
-                    </ul>
-                    {% comment %} <ul>
-                        <pre>{{ equipment_data|default_if_none:"데이터 없음" }}</pre>
-                    </ul> {% endcomment %}
-                    
-                </div>
-                <div class="row">
-                    <h3>링크 스킬 정보</h3>
-                    {% for preset_hexa_stat_core, skills in link_skill_data.items %}
-                        <h4>{{ preset_hexa_stat_core|title }}</h4>
-                        {% if skills %}
-                            {% for skill in skills %}
-                                <div class="skill">
-                                    <h5>{{ skill.name }} (레벨 {{ skill.level }})</h5>
-                                    <img src="{{ skill.icon }}" alt="{{ skill.name }}">
-                                    <p>{{ skill.description }}</p>
-                                    <p><strong>효과:</strong> {{ skill.effect }}</p>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <p>이 프리셋에 링크 스킬 정보가 없습니다.</p>
-                        {% endif %}
-                    {% empty %}
-                        <p>링크 스킬 정보가 없습니다.</p>
-                    {% endfor %}
-                </div>
-                <div class="row">
-                    {% if vmatrix_data %}
-                    <h2>V매트릭스 정보</h2>
-                    <p>직업: {{ vmatrix_data.character_class }}</p>
-                    <p>남은 슬롯 업그레이드 포인트: {{ vmatrix_data.remain_slot_upgrade_point }}</p>
-                    
-                    <h3>V코어 장비</h3>
-                    {% for core in vmatrix_data.v_cores %}
-                        <div>
-                            <p>슬롯 ID: {{ core.slot_id }}</p>
-                            <p>슬롯 레벨: {{ core.slot_level }}</p>
-                            <p>코어 이름: {{ core.name }}</p>
-                            <p>코어 타입: {{ core.type }}</p>
-                            <p>코어 레벨: {{ core.level }}</p>
-                            <p>스킬 1: {{ core.skill_1 }}</p>
-                            <p>스킬 2: {{ core.skill_2 }}</p>
-                            <p>스킬 3: {{ core.skill_3 }}</p>
-                        </div>
-                        <hr>
-                    {% endfor %}
-                {% endif %}
-                </div>
-                <!-- 심볼 장비 정보 -->
-                <div class="row">
-                    
-                    <!-- 아케인 심볼 -->
-                    <h2>아케인 심볼</h2>
-                    <div>
-                        {% if symbol_data.arcane_symbols %}
-                            {% for symbol in symbol_data.arcane_symbols %}
-                                <div class="symbol-item">
-                                    <strong>이름:</strong> {{ symbol.name }} <br>
-                                    <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
-                                    <strong>레벨:</strong> {{ symbol.level }} <br>
-                                    <strong>포스:</strong> {{ symbol.force }} <br>
-                                    <strong>설명:</strong> {{ symbol.description }} <br>
-                                    <strong>스탯:</strong>
-                                    <ul>
-                                        <li>힘: {{ symbol.stats.str }}</li>
-                                        <li>덱스: {{ symbol.stats.dex }}</li>
-                                        <li>인트: {{ symbol.stats.int }}</li>
-                                        <li>럭: {{ symbol.stats.luk }}</li>
-                                        <li>HP: {{ symbol.stats.hp }}</li>
-                                    </ul>
-                                    <strong>성장 횟수:</strong> {{ symbol.growth_count }} <br>
-                                    <strong>필요한 성장 횟수:</strong> {{ symbol.require_growth_count }} <br>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <p>아케인 심볼이 없습니다.</p>
-                        {% endif %}
-                    </div>
-                    <!-- 어센틱 심볼 -->
-                    <h2>어센틱 심볼</h2>
-                    <div>
-                        {% if symbol_data.authentic_symbols %}
-                            {% for symbol in symbol_data.authentic_symbols %}
-                                <div class="symbol-item">
-                                    <strong>이름:</strong> {{ symbol.name }} <br>
-                                    <img src="{{ symbol.icon }}" alt="{{ symbol.name }} 아이콘"><br>
-                                    <strong>레벨:</strong> {{ symbol.level }} <br>
-                                    <strong>포스:</strong> {{ symbol.force }} <br>
-                                    <strong>설명:</strong> {{ symbol.description }} <br>
-                                    <strong>스탯:</strong>
-            
-                <!-- 헥사 매트릭스 스탯 정보 -->
-                <div class="row">
-                    <h2>헥사 스텟 정보</h2>
-                    <ul>
-                        {% for stat in hexa_stats.character_hexa_stat_core %}
-                            <li>
-                                <strong>슬롯 ID:</strong> {{ stat.slot_id }}<br>
-                                <strong>주력 스탯 이름:</strong> {{ stat.main_stat_name }}<br>
-                                <strong>서브 스탯 1:</strong> {{ stat.sub_stat_name_1 }}<br>
-                                <strong>서브 스탯 2:</strong> {{ stat.sub_stat_name_2 }}<br>
-                                <strong>주력 스탯 레벨:</strong> {{ stat.main_stat_level }}<br>
-                                <strong>서브 스탯 1 레벨:</strong> {{ stat.sub_stat_level_1 }}<br>
-                                <strong>서브 스탯 2 레벨:</strong> {{ stat.sub_stat_level_2 }}<br>
-                                <strong>스탯 등급:</strong> {{ stat.stat_grade }}<br>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <h4>프리셋 헥사 스텟 코어</h4>
-                    <ul>
-                        {% for preset_stat in hexa_stats.preset_hexa_stat_core %}
-                            <li>
-                                <strong>슬롯 ID:</strong> {{ preset_stat.slot_id }}<br>
-                                <strong>주력 스탯 이름:</strong> {{ preset_stat.main_stat_name }}<br>
-                                <strong>서브 스탯 1:</strong> {{ preset_stat.sub_stat_name_1 }}<br>
-                                <strong>서브 스탯 2:</strong> {{ preset_stat.sub_stat_name_2 }}<br>
-                                <strong>주력 스탯 레벨:</strong> {{ preset_stat.main_stat_level }}<br>
-                                <strong>서브 스탯 1 레벨:</strong> {{ preset_stat.sub_stat_level_1 }}<br>
-                                <strong>서브 스탯 2 레벨:</strong> {{ preset_stat.sub_stat_level_2 }}<br>
-                                <strong>스탯 등급:</strong> {{ preset_stat.stat_grade }}<br>
-                            </li>
-                        {% endfor %}
-                    </ul>
-            
-            
-            
-            
-                </div>
-                <!-- 헥사 매트릭스 정보 -->
-                <div class="row">
-                    <h3>헥사 매트릭스 정보</h3>
-                    <ul>
-                        {% for stat in hexa_data.character_hexa_core_equipment %}
-                            <li>
-                                <strong>헥사 스킬 이름:</strong> {{ stat.hexa_core_name }}<br>
-                                <strong>헥사 스킬 레벨:</strong> {{ stat.hexa_core_level }}<br>
-                                <strong>헥사 스킬 타입:</strong> {{ stat.hexa_core_type }}<br>
-            
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
+  </div>
+  <div class="basic-info">
+      <span>{{ character_info.basic_info.character_name }}</span>
 
-                
-            <!-- 장비 -->
-            <div class="col" id="col2">
-                {% comment %} <div class="equipment-container">
-                    <!-- 반지1 슬롯 -->
-                    {% if equipment_data.item_equipment.ring1 %}
-                    <div class="slot ring1" onmouseenter="showTooltip(event, 'ring1')" onmouseleave="hideTooltip()">
-                        <img src="{{ equipment_data.item_equipment.ring1.icon }}">
-                    </div>
-                    {% endif %}
-                
-                    <!-- 반지2 슬롯 -->
-                    {% if equipment_data.item_equipment.ring2 %}
-                    <div class="slot ring2">
-                        <img src="{{ equipment_data.item_equipment.ring2.icon }}">
-                    </div>
-                    {% endif %}
-                
-                    <!-- 무기 슬롯 -->
-                    {% if equipment_data.item_equipment.ring3 %}
-                    <div class="slot ring3">
-                        <img src="{{ equipment_data.item_equipment.ring3.icon }}">
-                    </div>
-                    {% endif %}
-                    
-                    {% if equipment_data.item_equipment.ring4 %}
-                    <div class="slot ring4">
-                        <img src="{{ equipment_data.item_equipment.ring4.icon }}">
-                    </div>
-                    {% endif %}
+      <span> Lv.{{ character_info.basic_info.character_level|default:"정보 없음" }}</span>
 
-                    {% if equipment_data.item_equipment.poket %}
-                    <div class="slot poket">
-                        <img src="{{ equipment_data.item_equipment.poket.icon }}">
-                    </div>
-                    {% endif %}
+      <span>{{ character_info.basic_info.character_class|default:"정보 없음" }}</span>
 
-                    {% if equipment_data.item_equipment.pendant1 %}
-                    <div class="slot pendant1">
-                        <img src="{{ equipment_data.item_equipment.pendant1.icon }}">
-                    </div>
-                    {% endif %}
-                    <!-- sssssssssssssssssssssssss -->
-                    {% if equipment_data.item_equipment.pendant2 %}
-                    <div class="slot pendant2">
-                        <img src="{{ equipment_data.item_equipment.pendant2.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.weapon %}
-                    <div class="slot weapon">
-                        <img src="{{ equipment_data.item_equipment.weapon.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.belt %}
-                    <div class="slot belt">
-                        <img src="{{ equipment_data.item_equipment.belt.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.hat %}
-                    <div class="slot hat">
-                        <img src="{{ equipment_data.item_equipment.hat.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.face %}
-                    <div class="slot face">
-                        <img src="{{ equipment_data.item_equipment.face.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.eyes %}
-                    <div class="slot eyes">
-                        <img src="{{ equipment_data.item_equipment.eyes.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.top %}
-                    <div class="slot top">
-                        <img src="{{ equipment_data.item_equipment.top.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.bottom %}
-                    <div class="slot bottom">
-                        <img src="{{ equipment_data.item_equipment.bottom.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.shoes %}
-                    <div class="slot shoes">
-                        <img src="{{ equipment_data.item_equipment.shoes.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.earring %}
-                    <div class="slot earring">
-                        <img src="{{ equipment_data.item_equipment.earring.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.shoulder %}
-                    <div class="slot shoulder">
-                        <img src="{{ equipment_data.item_equipment.shoulder.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.gloves %}
-                    <div class="slot gloves">
-                        <img src="{{ equipment_data.item_equipment.gloves.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.android %}
-                    <div class="slot android">
-                        <img src="{{ equipment_data.item_equipment.android.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.emblem %}
-                    <div class="slot emblem">
-                        <img src="{{ equipment_data.item_equipment.emblem.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.badge %}
-                    <div class="slot badge">
-                        <img src="{{ equipment_data.item_equipment.badge.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.medal %}
-                    <div class="slot medal">
-                        <img src="{{ equipment_data.item_equipment.medal.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.secondary %}
-                    <div class="slot secondary">
-                        <img src="{{ equipment_data.item_equipment.secondary.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.cape %}
-                    <div class="slot cape">
-                        <img src="{{ equipment_data.item_equipment.cape.icon }}">
-                    </div>
-                    {% endif %}
-                    {% if equipment_data.item_equipment.heart %}
-                    <div class="slot heart">
-                        <img src="{{ equipment_data.item_equipment.heart.icon }}">
-                    </div>
-                </div>
-            </div>
-        </div>  
-    </main> 
-    
-    
-<script src="/static/css/info.js"></script>
-</body>     
+      <span>{{ character_info.basic_info.world_name|default:"정보 없음" }}</span>
+  </div>
+</div>
+
+<div class="two"></div>
+
+<div class="ability">Ability</div>
+
+<div class="final_stat">
+  <div class="title">스탯</div>
+  <div class="stat-container">
+    <div class="stat-box"></div>
+    <div class="stat-box">Row 2</div>
+    <div class="stat-box">Row 3</div>
+    <div class="stat-box">Row 4</div>
+    <div class="stat-box">Row 5</div>
+  </div>
+</div>
+
+<div class="equipment">
+  <div class="title">장비창</div>
+  <div class="equipment-container"></div>
+</div>
+
+<div class="cash">
+  <div class="title">캐시</div>
+  <div class="cash-container"></div>
+</div>
+
+</div>
+
+</div>
+<div id="right-box">
+<!-- Right Box Content -->
+</div>
+</main>
+<script src="/static/js/info.js"></script>
+</body>
+
 </html>

@@ -111,7 +111,7 @@ main {
   top: 0; /* 화면의 상단에 위치 */
   left: 0; /* 화면의 왼쪽 경계에 맞춤 */
   z-index: 1000; /* 다른 요소보다 위에 표시 */
-  background-color: #F5A335; /* 상단바 배경색 */
+  background-color: #EEB36D; /* 상단바 배경색 */
   color: white;
   width: 100%; /* 부모 너비를 초과하지 않도록 설정 */
   max-width: 100%; /* 최대 너비 제한 */
@@ -154,7 +154,7 @@ main {
 
 .search-container .search-button {
   position: absolute;
-  top: 50%;
+  top: 60%;
   right: 10px; /* 입력 박스 오른쪽 안쪽에 위치 */
   transform: translateY(-50%);
   background: none;

@@ -1,820 +1,326 @@
-/* 공통 스타일 */
-img {
-  vertical-align: middle;
-}
+/* 전역 스타일 초기화 */
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  width: 100%;
-}
-button {
-  background-color: #4CAF; /* 배경 색깔 */
-  color: white; /* 글자 색깔 */
-  padding: 10px 20px; /* 버튼 패딩 */
-  font-size: 16px; /* 글자 크기 */
-  border: none; /* 테두리 제거 */
-  border-radius: 5px; /* 둥근 모서리 */
-  cursor: pointer; /* 마우스 커서 */
-  transition: background-color 0.3s ease; /* 호버 효과 애니메이션 */
+  height: 100%; /* 화면 전체 높이 사용 */
+  display: flex;
+  flex-direction: column; /* 상하로 배치 */
 }
 
-/* 버튼 호버 스타일 */
-button:hover {
-  background-color: #fafafa; /* 호버 시 색 변경 */
-  color: black; 
-}
-
-/* 버튼 활성화 상태 */
-button:active {
-  background-color: #ffffff; /* 클릭 시 색 변경 */
-  color: black; 
-}
-header h1 {
-  color: black;
-}
-
+/* 전체 레이아웃 */
 main {
-  background-color: #ffffff;
-}
-/* info박스 */
-.character-info-container {
+  flex: 1; /* 나머지 공간을 모두 차지 */
   display: flex;
-  align-items: flex-start; /* 가로 정렬: 상단 정렬 */
+  flex-direction: row; /* main 내부 요소를 가로로 배치 */
+  /* overflow: hidden;  */
 }
 
-.character-image {
-  width: 100%; /* 이미지 너비 */
-  height: 100%; /* 이미지 높이 */
-  object-fit: cover; /* 이미지 비율 유지 */
-  border-radius: 10px; /* 이미지에 둥근 모서리 추가 */
+#left-box {
+  display: flex; /* Flexbox 활성화 */
+  flex-direction: column; /* 세로로 정렬 */
+  width: 16%; /* 전체 화면의 25% */
+  height: 100%; /* 부모 높이(100vh) 채우기 */
+  background-color: #ffffff; /* 임의 배경색 */
+  /* padding: 50px; */
 }
-
-.character-details {
-  display: flex;
-  flex-direction: column; /* 세로 정렬 */
-}
-
-.info-row {
-  display: flex;
-  justify-content: space-between; /* 제목과 값 간격 자동 조정 */
-  align-items: center; /* 텍스트 수직 정렬 */
-}
-/* 스탯박스 css */
-
-.stats-container {
-  width: 100%;
-}
-
-.stat-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-}
-
-/* .stat-label {
-  font-weight: bold;
-} */
-
-.stat-value {
-  text-align: right;
-}
-
-.stat-divider {
-  border-bottom: 1px solid #ddd; /* 밑줄 추가 */
-}
-.info-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 20px;
-}
-
-/* 이미지 스타일 */
-.info-box img {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 10px;
-}
-
-/* 텍스트 스타일 */
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin: 5px 0;
-  font-size: 16px;
-}
-
-/* 제목 스타일 */
-.info-box h2 {
-  font-size: 24px;
-  margin-bottom: 15px;
-}
-.container {
-  background-color: #ffffff63;
-  display: flex;
-  flex-direction: row;
-  gap: 30px;
-  padding: 20px;
-}
-
-.col {
-  /* border: 2px solid black; */
-  padding: 2px;
-}
-
-#col1 {
-  min-width: 300px;
-  max-width: 300px
-}
-.stat-container{
-  margin: 2px;
-  border-radius: 15px; /* 둥근 테두리 */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
-  border: 2px solid rgb(175, 175, 175);
-  padding: 0px 4px;
-  background-color: #e5e5e563;
-} 
-#col1>.row{
-  border-bottom: 0.6px solid rgba(0, 0, 0, 0.2);
-  padding-bottom: 8px;
-}
-#col2 > .row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-  padding: 20px;
-}
-
-.item{
-  display: flex;
-  border: 2px solid black;
-  background-color: #f9f9f9;
+#right-box {
+  display: flex; /* Flexbox 활성화 */
+  flex-direction: column; /* 필요 시 세로 정렬 */
+  width: 16%; /* 전체 화면의 20% */
+  height: 100%; /* 부모 높이 */
+  background-color: #ffffff; /* 임의 배경색 */
   padding: 10px;
-  border-radius: 8px;
-  text-align: center;
-  width: 46px; 
-  height: 46px;
+  overflow-y: auto; /* 내용이 길면 스크롤 */
 }
 
-/* 반응형 미디어 쿼리 */
-
-/* 태블릿 화면 (너비 768px 이하) */
-@media (max-width: 768px) {
-  main {
-    margin: 10px;
-  }
-  .container {
-    flex-direction: column; /* 컬럼 방향으로 변경 */
-    gap: 20px;
-  }
-  #col1 {
-    max-width: 100%; /* 전체 너비 사용 */
-  }
-  #col2{
-    display: grid;
-    place-items: center; /* 수평 및 수직 가운데 */
-  }
-  #col2 > .row {
-    grid-template-columns: repeat(2, 1fr); /* 2열로 나열 */
-  }
-}
-
-/* 모바일 화면 (너비 480px 이하) */
-@media (max-width: 480px) {
-  header {
-    font-size: 1.2em;
-    padding: 10px;
-  }
-
-  main {
-    margin: 10px;
-  }
-
-  #col1 {
-    max-width: 100%; /* 전체 너비 사용 */
-  }
-
-  .container {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  #col2 > .row {
-    grid-template-columns: 1fr; /* 1열로 나열 */
-  }
-
-  #col2 > .item {
-    padding: 10px;
-  }
-}
-
-#col3{
-  width: 100%
-}
-
-.col2-container{
-  margin: 2px;
-  border-radius: 15px; /* 둥근 테두리 */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
-  border: 2px solid rgb(175, 175, 175);
-  padding: 0px 4px;
-  background-color: #e5e5e563;
-} 
-
-/* 장비 css */
-.equipment-container {
-  margin-top: 15px;
+/* 전체 화면 컨테이너 */
+#main-box {
   position: relative;
-  border-radius: 15px; /* 둥근 테두리 */
-  width: 262px;  /* 전체 크기 조정 */
-  height: 315px;
-  background-color: #ffffff;
-}
-
-.slot {
-  background-color: rgba(194, 187, 187, 0.767);
-  position: absolute;
-  width: 46px;  /* 아이템 크기 */
-  height: 46px;
-  display: flex;
-  justify-content: center;  /* 가로 중앙 정렬 */
-  align-items: center;      /* 세로 중앙 정렬 */
-  border: 1px solid transparent; /* 기본 테두리는 투명 */
-  
-}
-
-.slot.레전드리 {
-  border: 1.3px solid rgb(0, 255, 0); /* 레전드리 등급 테두리 색 */
-  background-color: rgb(0, 255, 0,0.1);
-}
-
-.slot.유니크 {
-  border: 1.3px solid rgb(255, 204, 0); /* 유니크 등급 테두리 색 */
-  background-color: rgb(255, 204, 0,0.1); /* 유니크 등급 테두리 색 */
-}
-
-.slot.에픽 {
-  border: 1.3px solid rgb(204, 102, 255); /* 에픽 등급 테두리 색 */
-  background-color: rgb(204, 102, 255,0.1); /* 에픽 등급 테두리 색 */
-}
-
-.slot.레어 {
-  border: 1.3px solid rgb(85, 170, 255); /* 레어 등급 테두리 색 */
-  background-color: rgb(85, 170, 255,0.1); /* 레어 등급 테두리 색 */
-}
-/* 각 슬롯의 위치 지정 */
-
-.slot.ring1 { top: 10px; left: 10px; }
-.slot.ring2 { top: 60px; left: 10px; }
-.slot.ring3 { top: 110px; left: 10px; }
-.slot.ring4 { top: 160px; left: 10px; }
-.slot.poket { top: 210px; left: 10px; }
-
-/* 각 슬롯의 위치 지정 */
-.slot.pendant1 { top: 60px; left: 60px; }
-.slot.pendant2 { top: 110px; left: 60px; }
-.slot.weapon { top: 160px; left: 60px; }
-.slot.belt { top: 210px; left: 60px; }
-
-/* 각 슬롯의 위치 지정 */
-.slot.hat { top: 10px; left: 110px; }
-.slot.face { top: 60px; left: 110px; }
-.slot.eyes { top: 110px; left: 110px; }
-.slot.top { top: 160px; left: 110px; }
-.slot.bottom { top: 210px; left: 110px; }
-.slot.shoes { top: 260px; left: 110px; }
-
-/* 각 슬롯의 위치 지정 */
-.slot.earring { top: 110px; left: 160px; }
-.slot.shoulder { top: 160px; left: 160px; }
-.slot.gloves { top: 210px; left: 160px; }
-.slot.android { top: 260px; left: 160px; }
-
-/* 각 슬롯의 위치 지정 */
-.slot.emblem { top: 10px; left: 210px; }
-.slot.medal { top: 60px; left: 210px; }
-.slot.badge { top: 110px; left: 210px; }
-.slot.secondary { top: 160px; left: 210px; }
-.slot.cape { top: 210px; left: 210px; }
-.slot.heart { top: 260px; left: 210px; }
-
-/* 툴팁 기본 스타일 */
-.tooltip {
-  display: none;
-  position: absolute;
-  width: 250px;
-  background-color: #1c1c1c; /* 어두운 배경 */
-  color: #ffffff; /* 기본 글자색 */
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 13px;
-  line-height: 1.4;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  white-space: normal;
-}
-.item-starforce {
-  line-height: 1.5; /* 줄바꿈 간격 설정 */
-  font-size: 15px; /* 별 크기 설정 */
-  color: gold;     /* 별 색상 */
-  display: flex;
-  justify-content: center; /* 가운데 정렬 */
-}
-.tooltip .item-name{
-  display: flex;
-  justify-content: center;  /* 가로 중앙 정렬 */
-}
-.tooltip .item-grade{
-  display: flex;
-  justify-content: center;  /* 가로 중앙 정렬 */
-}
-.item-icon {
-  display: flex;
-  justify-content: center; /* 수평 가운데 정렬 */
-  align-items: center;    /* 수직 가운데 정렬 */
-  width: 100%;            /* 부모 컨테이너 너비만큼 차지 */
-  height: 55px;          /* 원하는 높이 지정 */
-}
-
-.item-icon img {
-  width: 50px;        /* 이미지 크기를 부모 영역에 맞춤 */
-  height: 50px;       /* 이미지 높이를 부모 영역에 맞춤 */
-  object-fit: contain;   /* 이미지 비율 유지 */
-}
-
-
-/* 구분선 */
-.tooltip hr {
-  border: 0;
-  border-top: 1px solid #555;
-  margin: 8px 0;
-}
-
-/* 툴팁 잠재 css */
-
-.item-equipmet-container .potential-grade-레전드리 {
-  color: rgb(204, 241, 20);
-}
-
-.item-equipmet-container .potential-grade-에픽 {
-  color: rgb(153, 91, 197);
-}
-
-.item-equipmet-container .potential-grade-유니크 {
-  color: rgb(255, 204, 0);
-}
-
-.item-equipmet-container .potential-grade-레어 {
-  color: rgb(102, 225, 225);
-}
-/* 세트효과 css */
-
-#set-effect {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* 수평 중앙 정렬 */
-  text-align: center; /* 텍스트 중앙 정렬 */
-  padding: 10px;
-  /* border: 1px solid #ccc; */
-  border-radius: 8px;
-  max-width: 300px;
-  margin: 0 auto; /* 전체 박스 중앙 정렬 */
-}
-
-/* 제목 스타일 */
-#set-effect h4 {
-  margin-bottom: 15px;
-}
-
-/* 세트 이름 스타일 */
-#set-effect p {
-  margin: 5px 0;
-}
-
-/* 어빌리티 css */
-    /* 등급에 따른 색상 */
-    .grade-레전드리 {
-      background-color: rgb(164, 199, 0); 
-      color: rgb(255, 255, 255);
-  }
-
-  .grade-유니크 {
-      background-color: rgb(232, 156, 9); 
-      color: rgb(255, 255, 255);
-  }
-
-  .grade-레어 {
-      background-color: rgb(54, 184, 208); 
-      color: white;
-  }
-
-  .grade-에픽 {
-      background-color: rgb(127, 102, 211); 
-      color: rgb(255, 255, 255);
-  }
-  /* .ability-box {
-    padding: 5px; 
-    margin-bottom: 5px;
-    border-radius: 5px;
-    font-size: 13px; 
-    text-align: center; 
-    max-height: 27px;
-    white-space: nowrap; 
-    text-overflow: ellipsis; 
-} */
-.ability-box {
-  padding: 5px; 
-  margin-bottom: 5px;
-  border-radius: 5px;
-  font-size: 13px; 
-  text-align: center; 
-  white-space: nowrap;
+  height: 100vh; /* 전체 화면 높이 */
   overflow: hidden;
-  text-overflow: ellipsis; 
-  width: 100%; /* 박스 고정 너비 */
-  box-sizing: border-box; /* 패딩과 테두리 포함하여 크기 계산 */
-}
-
-/* 심볼 css */
-.symbol-box p {
-  text-align: center; /* 텍스트 가운데 정렬 */
-  font-weight: bold; /* (선택 사항) 제목 강조 */
-  font-size: 1.1rem; /* (선택 사항) 제목 크기 조정 */
-  margin-bottom: 10px; /* (선택 사항) 아래쪽 간격 추가 */
-}
-#arcane-symbol {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* 수평 중앙 정렬 */
-  text-align: center; /* 텍스트 중앙 정렬 */
-  padding: 1px;
-  /* border: 1px solid #ccc; */
-  border-radius: 8px;
-  max-width: 300px;
-  margin: 0 auto; /* 전체 박스 중앙 정렬 */
-}
-#authentic-symbol {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* 수평 중앙 정렬 */
-  text-align: center; /* 텍스트 중앙 정렬 */
-  padding: 10px;
-  /* border: 1px solid #ccc; */
-  border-radius: 8px;
-  max-width: 300px;
-  margin: 0 auto; /* 전체 박스 중앙 정렬 */
-}
-.symbol-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3열 */
-  gap: 10px; /* 아이템 간의 간격 */
-  text-align: center;
-  padding: 5px;
-}
-
-/* 심볼 아이템 스타일 */
-.symbol-item {
-  border: 1px solid #ccc;
-  padding: 5px;
-  border-radius: 8px;
-}
-
-.symbol-item img {
-  width: 30px; /* 아이콘 크기 조정 */
-  height: 30px;
-  object-fit: cover;
-  margin-bottom: 5px;
-}
-
-#symbol h5{
-  text-align: center;
-  margin: 20px 0 10px;
-}
-/* 심볼 탭 */
-.symbol-box{
   margin-top: 20px;
-  height: 260px;
-}
-  /* 탭 버튼 스타일 */
-.symbol-tab-buttons {
-  display: flex;
-  justify-content: center; /* 가로 가운데 정렬 */
-  align-items: center; /* 세로 가운데 정렬 */
-  margin-top: 10px;
-}
-
-/* 왼쪽 제목 스타일 */
-.symbol-tab-title {
-  margin: 0; /* 기본 마진 제거 */
-  font-size: 15px; /* 원하는 크기로 설정 */
-}
-
-/* 오른쪽 버튼 컨테이너 */
-.symbol-tab-actions {
-  display: flex;
-}
-.symbol-tab-button { 
-  padding: 5px 10px; /* 버튼 안의 여백을 줄여서 크기를 작게 만듦 */
-  cursor: pointer;
-  text-align: center;
-  background-color: #464545;
-  border: none;
-  border-bottom: 2px solid transparent;
-  /* transition: all 0.3s; */
-}
-.symbol-tab-button.active {
-    font-weight: bold;
-    background-color: #6b6b6b;
-}
-/* 탭 내용 스타일 */
-.symbol-tab-content {
-    display: none;
-    border-top: none;
-}
-.symbol-tab-content.active {
-    display: block;
-}
-.symbol-tab-button:hover {
-  background-color: #919191;
-}
-
-/* 링크 스킬 css */
-.skill-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-auto-rows: auto;
-  gap: 10px;
-}
-.skill-text {
-  font-size: 14px; /* 텍스트 글씨 크기 */
-  display: block;
-  margin-top: 5px;
-  text-align: center;
-}
-.skill {
-  text-align: center;
-}
-.skill img {
-  width: 35px; /* 이미지 크기 조정 */
-  height: 35px;
-}
-
-
-/* 링크 css */
-
-  /* 탭 버튼 스타일 */
-  .link-tab-buttons {
-    display: flex;
-    align-items: center; /* 세로 가운데 정렬 */
-    justify-content: space-between; /* 왼쪽 끝과 오른쪽 끝 정렬 */
-    border-bottom: 2px solid #ddd;
-    margin-bottom: 10px;
-}
-
-/* 왼쪽 제목 스타일 */
-.link-tab-title {
-  margin: 0; /* 기본 마진 제거 */
-  font-size: 15px; /* 원하는 크기로 설정 */
-}
-
-/* 오른쪽 버튼 컨테이너 */
-.link-tab-actions {
-  display: flex;
-}
-.link-tab-button { 
-  padding: 5px 10px; /* 버튼 안의 여백을 줄여서 크기를 작게 만듦 */
-  cursor: pointer;
-  text-align: center;
-  background-color: #464545;
-  border: none;
-  border-bottom: 2px solid transparent;
-  /* transition: all 0.3s; */
-}
-.link-tab-button.active {
-    font-weight: bold;
-    background-color: #6b6b6b;
-}
-/* 탭 내용 스타일 */
-.link-tab-content {
-    display: none;
-    padding: 20px;
-    border-top: none;
-}
-.link-tab-content.active {
-    display: block;
-}
-
-
-
-/* 어빌리티 css */
-.ability-container{
-  background-color: #ffffff;
-  border-radius: 15px; /* 둥근 테두리 */
-}
-.ability-container p {
-  text-align: center; /* 텍스트 가운데 정렬 */
-  font-weight: bold; /* (선택 사항) 제목 강조 */
-  font-size: 1.1rem; /* (선택 사항) 제목 크기 조정 */
-  margin-bottom: 10px; /* (선택 사항) 아래쪽 간격 추가 */
-}
-  /* 탭 버튼 스타일 */
-  .ability-tab-buttons {
-    display: flex;
-    align-items: center; /* 세로 가운데 정렬 */
-    padding: 5px 10px;
-    border-radius: 5px; /* 모서리를 둥글게 */
-    color: #000000; /* 텍스트 색상 */
-    height: 30px;
-}
-
-/* 왼쪽 제목 스타일 */
-.ability-tab-title {
-    margin-right: 10px; /* 오른쪽 간격 */
-    font-size: 14px; /* 텍스트 크기 */
-    color: #000000; /* 제목 텍스트 색상 */
-}
-
-/* 오른쪽 버튼 컨테이너 */
-.ability-tab-actions {
-    display: flex;
-    gap: 5px; /* 버튼 사이 간격 */
-    flex-grow: 1; /* 버튼들이 공간을 나눔 */
-}
-.ability-tab-button { 
-  flex: 1; /* 버튼 너비를 동일하게 설정 */
-  padding: 1px 1px; /* 버튼 안의 여백을 줄여서 크기를 작게 만듦 */
-  cursor: pointer;
-  text-align: center;
-  background-color: #464545;
-  border: none;
-  border-bottom: 2px solid transparent;
-  width: 100%; /* 모든 버튼의 고정 너비 */
-
-  /* transition: all 0.3s; */
-}
-.ability-tab-button.active {
-    font-weight: bold;
-    background-color: #6b6b6b;
-}
-/* 탭 내용 스타일 */
-.ability-tab-content {
-    display: none;
-    border-top: none;
-}
-.ability-tab-content.active {
-    display: block;
-}
-
-
-/* 하이퍼스탯 css */
-.hyper-stat-container{
-  border-top: #000000;
-  background-color: #ffffff;
-  border-radius: 15px; /* 둥근 테두리 */
-}
-.hyper-stat-container p {
-  text-align: center; /* 텍스트 가운데 정렬 */
-  font-weight: bold; /* (선택 사항) 제목 강조 */
-  font-size: 1.1rem; /* (선택 사항) 제목 크기 조정 */
-  margin-bottom: 10px; /* (선택 사항) 아래쪽 간격 추가 */
-}
-  /* 탭 버튼 스타일 */
-  .hyper-tab-buttons {
-    display: flex;
-    align-items: center; /* 세로 가운데 정렬 */
-    padding: 5px 10px;
-    border-radius: 5px; /* 모서리를 둥글게 */
-    color: #000000; /* 텍스트 색상 */
-    height: 30px;
-}
-
-/* 왼쪽 제목 스타일 */
-.hyper-tab-title {
-    margin-right: 10px; /* 오른쪽 간격 */
-    font-size: 14px; /* 텍스트 크기 */
-    color: #000000; /* 제목 텍스트 색상 */
-}
-
-/* 오른쪽 버튼 컨테이너 */
-.hyper-tab-actions {
-    display: flex;
-    gap: 5px; /* 버튼 사이 간격 */
-    flex-grow: 1; /* 버튼들이 공간을 나눔 */
-}
-.hyper-tab-button { 
-  flex: 1; /* 버튼 너비를 동일하게 설정 */
-  padding: 1px 1px; /* 버튼 안의 여백을 줄여서 크기를 작게 만듦 */
-  cursor: pointer;
-  text-align: center;
-  background-color: #464545;
-  border: none;
-  border-bottom: 2px solid transparent;
-  width: 100%; /* 모든 버튼의 고정 너비 */
-
-  /* transition: all 0.3s; */
-}
-.hyper-tab-button.active {
-    font-weight: bold;
-    background-color: #6b6b6b;
-}
-/* 탭 내용 스타일 */
-.hyper-tab-content {
-    display: none;
-    border-top: none;
-}
-.hyper-tab-content.active {
-    display: block;
-}
-
-.hyperstat-row {
-  display: flex;
-  justify-content: space-between; /* 양쪽 정렬 */
-  align-items: center; /* 세로 정렬 */
-  padding: 1px 0;
-}
-
-/* 스탯 유형 */
-.hyperstat-type {
-  font-weight: bold; /* 굵은 텍스트 */
-  color: #333; /* 텍스트 색상 */
-}
-
-/* 스탯 레벨 */
-.hyperstat-level {
-  font-size: 14px; /* 글자 크기 */
-  color: #666; /* 텍스트 색상 */
-}
-.hyper-tab-button:hover {
-  background-color: #919191;
-}
-
-/* 스탯 더보기 토글 */
-
-.hidden-content {
-  display: none; /* 기본적으로 숨김 */
-  margin-top: 10px;
-}
-
-.toggle-button {
-  margin: 10px 0;
-  padding: 5px 10px;
   width: 100%;
-  background-color: #a09f9f;
-  color: rgb(255, 255, 255);
-  border: none;
-  border-radius: 5px;
-  /* cursor: pointer; */
-}
-
-.toggle-button:focus {
-  outline: none;
-}
-
-.toggle-button:hover {
-  background-color: #919191;
-}
-
-/* 3컬럼 css */
-.skill-container{
-  margin: 2px;
-  border-radius: 15px; /* 둥근 테두리 */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
-  border: 2px solid rgb(175, 175, 175);
-  padding: 0px 4px;
-  background-color: #e5e5e563;
-} 
-
-/* 전투력/스탯 */
-.stat-block {
+  height: 100%;
   display: flex;
-  justify-content: center; /* 가로 가운데 정렬 */
-  margin-bottom: 15px; /* 블록 간격 */
+  flex: 1; /* 남은 공간 차지 */
+  flex-direction: column;
+  background-color: #ffffff;
+  /* overflow: hidden; */
 }
-
-.stat-content {
+.navbar {
   display: flex;
-  flex-direction: column; /* 요소를 위아래로 정렬 */
+  top: 0; /* 화면의 상단에 위치 */
+  left: 0; /* 화면의 왼쪽 경계에 맞춤 */
+  z-index: 1000; /* 다른 요소보다 위에 표시 */
+  background-color: #EEB36D; /* 상단바 배경색 */
+  color: white;
+  width: 100%; /* 부모 너비를 초과하지 않도록 설정 */
+  max-width: 100%; /* 최대 너비 제한 */
+  height: 80px;
+  overflow-x: hidden; /* 초과되는 내용을 숨김 */
+  box-sizing: border-box; /* padding과 border를 포함한 너비 계산 */
+  padding: 10px 20px;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+.logo-image{
+  height: 55px;
+  margin-left: 340px;
+}
+/* 검색창 컨테이너 */
+.navbar-search {
+  display: flex;
   align-items: center; /* 세로 가운데 정렬 */
-  text-align: center; /* 텍스트 가운데 정렬 */
+  margin-right: 340px;
 }
 
-.stat-title {
-  font-weight: bold; /* 제목 강조 */
-  font-size: 0.9rem; /* 제목 크기 */
-  margin-bottom: 5px; /* 제목과 값 간격 */
+/* 입력 박스와 버튼을 감싸는 컨테이너 */
+.search-container {
+  position: relative;
+  width: 225px;
+  height: 37px;
 }
 
-.stat-number {
-  font-size: 1.1rem; /* 값 크기 */
-  color: #333; /* 텍스트 색상 */
+.search-container .search-input {
+  width: 100%;
+  padding: 9px 11px 9px 19px; /* 오른쪽 패딩 추가 (버튼 공간 확보) */
+  border: 5px solid #FAE0BD;
+  border-radius: 20px; /* 양쪽 끝 둥글게 */
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+  margin: 4px;
 }
 
-.divider {
-  border-top: 1px solid #ddd; /* 구분선 추가 */
-  padding-top: 15px; /* 구분선과 콘텐츠 간격 */
+.search-container .search-button {
+  position: absolute;
+  top: 50%;
+  right: 10px; /* 입력 박스 오른쪽 안쪽에 위치 */
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #00bcd4;
+  font-size: 16px;
+  cursor: pointer;
 }
+.search-container .search-icon {
+  position: absolute;
+  top: 68%;
+  right: 10px; /* 입력 박스 오른쪽 안쪽에 위치 */
+  transform: translateY(-50%);
+  width: 25px; /* 이미지 크기 */
+  height: 25px;
+  cursor: pointer; /* 클릭 가능 표시 */
+}
+
+/* 화면 어두워지는 오버레이 */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정색 */
+  z-index: 999; /* 사이드바보다 아래 */
+  display: none; /* 기본적으로 숨김 */
+}
+
+/* 사이드바 스타일 */
+#sidebar {
+  height: 100%;
+  width: 300px; /* 사이드바 너비 */
+  position: fixed;
+  top: 0;
+  right: -500px; /* 초기 상태에서 화면 밖으로 완전히 숨김 */
+  background-color: #ffffff;
+  overflow-y: auto;
+  padding-left: 45px;
+  padding-right: 30px;
+  transition: right 0.5s ease; /* 부드럽게 이동 효과 */
+  z-index: 1000;
+}
+
+/* 사이드바 메뉴 스타일 */
+.sidebar-menu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+/* 토글 이미지 크기 조절 */
+#toggle-image {
+  width: 45px; /* 이미지 너비 */
+  height: 45px; /* 이미지 높이 */
+  object-fit: contain; /* 이미지 비율 유지하며 조절 */
+  transition: transform 0.3s ease; /* 애니메이션 효과 */
+}
+.sidebar-menu li {
+  border-top: 1px solid #EEB36D;
+}
+
+.sidebar-menu li:last-child {
+  border-bottom: none;
+}
+
+.sidebar-menu li a {
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 122.103%; /* 19.536px */
+  padding: 15px 20px;
+  display: block;
+  text-align: right; /* 텍스트 우측 정렬 */
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* .sidebar-menu li a:hover {
+  background-color: #575757;
+  color: #f1f1f1;
+} */
+
+/* 사이드바 토글 버튼 */
+#sidebar-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  cursor: poin
+}
+
+/* 메인 박스 */
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 292px 450px 450px; /* 열 비율 */
+  grid-template-rows: 306px 485px; /* 행 비율 */
+  gap: 20px; /* 박스 간 간격 */
+  width: max-content; /* 컨테이너가 내부 콘텐츠 크기에 맞도록 설정 */
+  margin: 0 auto; /* 수평 정렬 */
+  margin-top: 60px;
+}
+
+.wrapper > div {
+  background-color: #EEB36D;
+  display: flex; /* Flexbox 활성화 */
+  flex-direction: column; /* 세로 방향으로 배치 */
+  justify-content: space-between; /* 상하 여유 공간 균등 분배 */
+  align-items: center; /* 수평 가운데 정렬 */
+  padding: 4px;
+  height: 100%; /* 부모 요소 높이 채우기 */
+  border-radius: 8px;
+}
+
+/* 각 박스 위치 지정 */
+.basic {
+  display: flex; /* Flexbox 활성화 */
+  flex-direction: column; /* 세로 방향으로 배치 */
+  justify-content: space-between; /* 상하 여유 공간 균등 분배 */
+  align-items: center; /* 수평 가운데 정렬 */
+  padding: 4px;
+  height: 100%; /* 부모 요소 높이 채우기 */
+}
+
+.title {
+  color: #ffffff;
+  text-align: right;
+  /* 카드_메인 */
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 2px;
+}
+
+.character-img {
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.basic-info {
+  background-color: #ffffff;
+  border: 2px solid #F4C362;
+  font-size: 16px;
+  color: #555;
+  width: 100%;
+  height: 41px;
+}
+
+.two {
+  grid-column: 2 / 3; /* 두 번째 열 */
+  grid-row: 1 / 2; /* 첫 번째 행 */
+}
+
+.ability {
+  grid-column: 3 / 4; /* 세 번째 열 */
+  grid-row: 1 / 2; /* 첫 번째 행 */
+}
+
+.final_stat {
+  grid-column: 1 / 2; /* 첫 번째 열 */
+  grid-row: 2 / 3; /* 두 번째 행 */
+}
+.stat-container {
+  width: 100%;
+  display: flex; /* Flexbox 활성화 */
+  flex-direction: column; /* 세로 방향으로 정렬 */
+  gap: 3px; /* 각 행 간 간격 */
+  height: 100%; /* 부모 높이 채우기 */
+}
+
+.stat-box {
+  width: 100%;
+  background-color: #ffffff;
+  text-align: center;
+  flex: 1; /* 각 박스가 동일한 크기를 유지 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  color: #333;
+}
+.equipment {
+  grid-column: 2 / 3; /* 두 번째 열 */
+  grid-row: 2 / 3; /* 두 번째 행 */
+}
+.equipment-container {
+  width: 100%;
+  background-color: #ffffff;
+  display: flex; /* Flexbox 활성화 */
+  flex-direction: column; /* 세로 방향으로 정렬 */
+  gap: 3px; /* 각 행 간 간격 */
+  height: 100%; /* 부모 높이 채우기 */
+}
+.cash {
+  grid-column: 3 / 4; /* 세 번째 열 */
+  grid-row: 2 / 3; /* 두 번째 행 */
+}
+.cash-container {
+  width: 100%;
+  background-color: #ffffff;
+  display: flex; /* Flexbox 활성화 */
+  flex-direction: column; /* 세로 방향으로 정렬 */
+  gap: 3px; /* 각 행 간 간격 */
+  height: 100%; /* 부모 높이 채우기 */
+}
+      /* 반응형 레이아웃 */
+      @media (max-width: 900px) {
+          .wrapper {
+              grid-template-columns: 1fr; /* 열을 1열로 변경 */
+              grid-template-rows: auto; /* 행 크기는 내용에 맞게 자동 설정 */
+          }
+
+          .basic { grid-column: 1; grid-row: auto; }
+          .two { grid-column: 1; grid-row: auto; }
+          .ability { grid-column: 1; grid-row: auto; }
+          .final_stat { grid-column: 1; grid-row: auto; }
+          .equipment { grid-column: 1; grid-row: auto; }
+          .cash { grid-column: 1; grid-row: auto; }
+      }
