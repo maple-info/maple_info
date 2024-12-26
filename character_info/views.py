@@ -48,18 +48,35 @@ async def get_character_info(character_name, date=None):
         if date:
             params["date"] = date
 
-        # API 경로에 대한 데이터 요청
-        endpoints = [
-            "/character/basic", "/character/stat", "/character/item-equipment", 
-            "/character/ability", "/character/set-effect", "/character/link-skill", 
-            "/character/hexamatrix", "/character/hexamatrix-stat", "/character/symbol-equipment", 
-            "/character/vmatrix", "/character/hyper-stat", "/character/skill", 
-            "/character/cashitem-equipment", "/character/beauty-equipment", 
-            "/character/android-equipment", "/character/pet-equipment"
-        ]
+        # 스킬 정보 요청
+        skill_grades = ["0", "1", "1.5", "2", "2.5", "3", "4", "hyperpassive", "hyperactive", "5", "6"]
+        skill_info = {}
+        for grade in skill_grades:
+            skill_params = params.copy()
+            skill_params["character_skill_grade"] = grade
+            grade_skill_info = await get_api_data(session, "/character/skill", skill_params)
+            if grade_skill_info:
+                skill_info[grade] = grade_skill_info
         
-        results = await asyncio.gather(*[get_api_data(session, endpoint, params) for endpoint in endpoints])
-        
+        # 추가된 API 경로에 대한 데이터 요청
+        cashitem_info = await get_api_data(session, "/character/cashitem-equipment", params)
+        beauty_info = await get_api_data(session, "/character/beauty-equipment", params)
+        android_info = await get_api_data(session, "/character/android-equipment", params)
+        pet_info = await get_api_data(session, "/character/pet-equipment", params)
+
+        basic_info = await get_api_data(session, "/character/basic", params)
+        stat_info = await get_api_data(session, "/character/stat", params)
+        item_equipment_info = await get_api_data(session, "/character/item-equipment", params)
+        ability_info = await get_api_data(session, "/character/ability", params)
+        set_effect_info = await get_api_data(session, "/character/set-effect", params)
+        link_skill_info = await get_api_data(session, "/character/link-skill", params)
+        hexamatrix_info = await get_api_data(session, "/character/hexamatrix", params)
+        hexamatrix_stat_info = await get_api_data(session, "/character/hexamatrix-stat", params)
+        symbol_equipment_info = await get_api_data(session, "/character/symbol-equipment", params)
+        vmatrix_info = await get_api_data(session, "/character/vmatrix", params)
+        hyper_stat_info = await get_api_data(session, "/character/hyper-stat", params)
+        skill_info = await get_api_data(session, "/character/skill", params)
+
         return {
             "basic_info": results[0],
             "stat_info": results[1],
@@ -157,7 +174,10 @@ def extract_ability_presets(ability_data):
     for preset_key, preset_value in ability_data.items():
         if preset_key.startswith('ability_preset_'):
             preset_number = preset_key.split('_')[-1]
-            if preset_value is None:
+
+            # 각 프리셋의 데이터 추출
+
+            if preset_value is None:  # None 체크 추가
                 logger.warning(f"프리셋 값이 None입니다: {preset_key}")
                 continue
 
@@ -413,6 +433,11 @@ from asgiref.sync import sync_to_async
 
 import hashlib
 
+def character_info_view(request):
+    character_name = request.GET.get('character_name')
+
+
+
 async def character_info_view(request, character_name):
     # URL에서 받은 character_name 인수 사용
     character_name = request.GET.get('character_name')  # 쿼리 파라미터에서 캐릭터 이름 가져오기
@@ -451,6 +476,7 @@ async def character_info_view(request, character_name):
         vmatrix_data = extract_vmatrix(character_info.get('vmatrix_info', {}))
         hyper_stat_data = extract_hyper_stats(character_info.get('hyper_stat_info', []))
         character_skill_data = extract_character_skills(character_info.get('skill_info', []))
+
         # 템플릿으로 전달할 컨텍스트
         context = {
             'character_name': character_name,
@@ -469,14 +495,16 @@ async def character_info_view(request, character_name):
             'android_data': android_data,        # 추가된 안드로이드 데이터
             'pet_data': pet_data,                # 추가된 펫 데이터
             'beauty_data': beauty_data,          # 추가된 뷰티 데이터
+
             'hyper_stat_data': hyper_stat_data,
             'character_skill_data': character_skill_data,
         }
 
-        return render(request, 'character_info/info.html', context)
+        return render(request, 'info.html', context)
     else:
-        return render(request, 'character_info/error.html', {'error': '캐릭터 정보를 찾을 수 없습니다.'})
+        return render(request, 'error.html', {'error': '캐릭터 정보를 찾을 수 없습니다.'})
     
+
 def extract_cash_item_equipment(cash_item_info):
     """
     캐시 아이템 정보를 추출하여 기본 정보와 프리셋 정보를 정리

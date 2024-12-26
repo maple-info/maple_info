@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <title>메이플스토리 챗봇</title>
     <link href="/static/css/chatbot.css" rel="stylesheet" />
-</head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <body>
-    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
       <!-- 상단바 -->
   <header class="navbar">
     <img src="/static/image/m_logo.png" href="/" class="logo-image">
@@ -26,22 +25,51 @@
         <!-- History Content -->
     </div>
     <div id="charcter-info">
-        <!-- Character Info Content -->
+        <!-- <form id="search-form">
+            <input type="text" id="nickname" name="nickname" placeholder="Enter character nickname" required>
+            <button type="submit">Search</button>
+        </form>
+    
+        <div id="character-result" style="margin-top: 20px;">
+            <h2>Character Information</h2>
+            <p id="character-name"></p>
+            <p id="character-level"></p>
+            <p id="world-name"></p>
+            <p id="character-class"></p>
+            <img id="character-image" src="" alt="Character Image" style="display: none; max-width: 200px;">
+        </div> -->
     </div>
 </div>
 
   <div id="chat-container">
+    <!-- 사이드바 -->
+    <div id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- 사이드바 -->
+    <div id="sidebar" class="hidden">
+        <ul class="sidebar-menu">
+            <li><a href="#">CHAT BOT</a></li>
+            <li><a href="#">캐릭터검색</a></li>
+            <li><a href="#">길드검색</a></li>
+            <li><a href="#">랭킹</a></li>
+            <li><a href="#">아이템검색</a></li>
+        </ul>
+    </div>
+    <!-- 사이드바 토글 버튼 -->
+    <button id="sidebar-toggle" onclick="toggleSidebar()">
+        <img src="/static/image/side_bar.png" alt="Toggle Sidebar" id="toggle-image">
+    </button>
     <div id="chat-box">
         <!-- 사용자 메시지 템플릿 -->
         <div id="user-template" class="message user-message" style="display: none;">
             <img src="/static/image/물의정령.png" alt="사용자" class="message-icon" style='max-width: 50px; max-height: 50px;'>
             <div class="message-content"></div>          
         </div>
-        <!-- 봇 메시지 템플릿 -->
-        <div id="bot-template" class="message bot-message" style="display: none;">
-            <div class="message-content"></div>
-            <img src="/static/image/chatbot_image.png" alt="봇" class="message-icon">
-        </div>
+    </div>
+    <!-- 봇 메시지 고정 박스 -->
+    <div id="bot-template" class="message bot-message">
+        <div class="message-content"></div>
+        <img src="/static/image/chatbot_image.png" alt="봇" class="message-icon">
     </div>
     <div id="chat-input">
         <input type="text" id="message" placeholder="메이플에 관해서 궁금한게 있나요? 정령에게 메세지를 보내보세요!" autocomplete="off">
