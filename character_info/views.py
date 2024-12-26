@@ -82,7 +82,9 @@ async def get_character_info(character_name, date=None):
         hexamatrix_stat_info = await get_api_data(session, "/character/hexamatrix-stat", params)
         symbol_equipment_info = await get_api_data(session, "/character/symbol-equipment", params)
         vmatrix_info = await get_api_data(session, "/character/vmatrix", params)
-        
+        hyper_stat_info = await get_api_data(session, "/character/hyper-stat", params)
+        skill_info = await get_api_data(session, "/character/skill", params)
+
         return {
             "basic_info": basic_info,
             "stat_info": stat_info,
@@ -218,6 +220,7 @@ def extract_ability_presets(ability_data):
             preset_number = preset_key.split('_')[-1]
 
             # 각 프리셋의 데이터 추출
+
             if preset_value is None:  # None 체크 추가
                 logger.warning(f"프리셋 값이 None입니다: {preset_key}")
                 continue  # None인 경우 건너뛰기
@@ -554,68 +557,78 @@ from asgiref.sync import sync_to_async
 
 import hashlib
 
-import logging
+def character_info_view(request):
+    character_name = request.GET.get('character_name')
 
-logger = logging.getLogger(__name__)
+
 
 async def character_info_view(request, character_name):
     # URL에서 받은 character_name 인수 사용
     character_name = request.GET.get('character_name')  # 쿼리 파라미터에서 캐릭터 이름 가져오기
+    character_info = await get_character_info(character_name)
 
-    try:
-        character_info = await get_character_info(character_name)
+    if character_info:
+        # 각 데이터를 추출하는 함수들
+        final_stats = await sync_to_async(extract_final_stats)(character_info.get('stat_info', {}))
+        equipment_data = await sync_to_async(extract_item_equipment)(character_info.get('item_equipment_info', []))
+        ability_data = await sync_to_async(extract_ability_presets)(character_info.get('ability_info', {}))
+        set_effect_data = await sync_to_async(extract_set_effect)(character_info.get('set_effect_info', []))
+        link_skill_data = await sync_to_async(extract_link_skills)(character_info.get('link_skill_info', []))
+        hexa_stats = await sync_to_async(extract_hexa_stats)(character_info.get('hexamatrix_stat_info', []))
+        hexa_data = await sync_to_async(extract_hexa)(character_info.get('hexamatrix_info', []))
+        symbol_data = await sync_to_async(extract_symbols)(character_info.get('symbol_equipment_info', []))
+        vmatrix_data = await sync_to_async(extract_vmatrix)(character_info.get('vmatrix_info', {}))
+        character_skill_data = await sync_to_async(extract_character_skills)(character_info.get('skill_info', {}))
 
-        if character_info:
-            # 각 데이터를 추출하는 함수들
-            final_stats = await sync_to_async(extract_final_stats)(character_info.get('stat_info', {}))
-            equipment_data = await sync_to_async(extract_item_equipment)(character_info.get('item_equipment_info', []))
-            ability_data = await sync_to_async(extract_ability_presets)(character_info.get('ability_info', {}))
-            set_effect_data = await sync_to_async(extract_set_effect)(character_info.get('set_effect_info', []))
-            link_skill_data = await sync_to_async(extract_link_skills)(character_info.get('link_skill_info', []))
-            hexa_stats = await sync_to_async(extract_hexa_stats)(character_info.get('hexamatrix_stat_info', []))
-            hexa_data = await sync_to_async(extract_hexa)(character_info.get('hexamatrix_info', []))
-            symbol_data = await sync_to_async(extract_symbols)(character_info.get('symbol_equipment_info', {}))
-            vmatrix_data = await sync_to_async(extract_vmatrix)(character_info.get('vmatrix_info', {}))
-            character_skill_data = await sync_to_async(extract_character_skills)(character_info.get('skill_info', {}))
+        # 캐가된 데이터 추출
+        cash_item_data = await sync_to_async(extract_cash_item_equipment)(character_info.get('cashitem_info', {}))
+        android_data = await sync_to_async(extract_android_info)(character_info.get('android_info', {}))
+        pet_data = await sync_to_async(extract_pet_info)(character_info.get('pet_info', {}))
+        beauty_data = await sync_to_async(extract_beauty_info)(character_info.get('beauty_info', {}))
 
-            # 캐가된 데이터 추출
-            cash_item_data = await sync_to_async(extract_cash_item_equipment)(character_info.get('cashitem_info', {}))
-            android_data = await sync_to_async(extract_android_info)(character_info.get('android_info', {}))
-            pet_data = await sync_to_async(extract_pet_info)(character_info.get('pet_info', {}))
-            beauty_data = await sync_to_async(extract_beauty_info)(character_info.get('beauty_info', {}))
+        # 캐시 저장
+        cache.set(f'character_info_{character_name}', character_info, timeout=600)
 
-            # 캐시 저장
-            cache.set(f'character_info_{character_name}', character_info, timeout=600)
+        final_stats = extract_final_stats(character_info.get('stat_info', {}))
+        equipment_data = extract_item_equipment(character_info.get('item_equipment_info', []))
+        ability_data = extract_ability_presets(character_info.get('ability_info', {}))
+        set_effect_data = extract_set_effect(character_info.get('set_effect_info', []))
+        link_skill_data = extract_link_skills(character_info.get('link_skill_info', []))
+        hexa_stats = extract_hexa_stats(character_info.get('hexamatrix_stat_info', []))
+        hexa_data = extract_hexa(character_info.get('hexamatrix_info', []))
+        symbol_data = extract_symbols(character_info.get('symbol_equipment_info', []))
+        vmatrix_data = extract_vmatrix(character_info.get('vmatrix_info', {}))
+        hyper_stat_data = extract_hyper_stats(character_info.get('hyper_stat_info', []))
+        character_skill_data = extract_character_skills(character_info.get('skill_info', []))
 
-            # 템플릿으로 전달할 컨텍스트
-            context = {
-                'character_name': character_name,
-                'final_stats': final_stats,
-                'equipment_data': equipment_data,
-                'ability_data': ability_data,
-                'set_effect_data': set_effect_data,
-                'link_skill_data': link_skill_data,
-                'hexa_stats': hexa_stats,
-                'hexa_data': hexa_data,
-                'symbol_data': symbol_data,
-                'preset_range': range(1, 4),
-                'vmatrix_data': vmatrix_data,
-                'character_skill_data': character_skill_data,
-                'cash_item_data': cash_item_data,  # 추가된 캐시 아이템 데이터
-                'android_data': android_data,        # 추가된 안드로이드 데이터
-                'pet_data': pet_data,                # 추가된 펫 데이터
-                'beauty_data': beauty_data,          # 추가된 뷰티 데이터
-            }
+        # 템플릿으로 전달할 컨텍스트
+        context = {
+            'character_name': character_name,
+            'final_stats': final_stats,
+            'equipment_data': equipment_data,
+            'ability_data': ability_data,
+            'set_effect_data': set_effect_data,
+            'link_skill_data': link_skill_data,
+            'hexa_stats': hexa_stats,
+            'hexa_data': hexa_data,
+            'symbol_data': symbol_data,
+            'preset_range': range(1, 4),
+            'vmatrix_data': vmatrix_data,
+            'character_skill_data': character_skill_data,
+            'cash_item_data': cash_item_data,  # 추가된 캐시 아이템 데이터
+            'android_data': android_data,        # 추가된 안드로이드 데이터
+            'pet_data': pet_data,                # 추가된 펫 데이터
+            'beauty_data': beauty_data,          # 추가된 뷰티 데이터
 
-            return render(request, 'info.html', context)
-        else:
-            context = {'error': '캐릭터 정보를 찾을 수 없습니다.'}
-            return render(request, 'info.html', context)
-    except Exception as e:
-        context = {'error': '서버 오류가 발생했습니다.'}
-        return render(request, 'info.html', context)
+            'hyper_stat_data': hyper_stat_data,
+            'character_skill_data': character_skill_data,
+        }
+
+        return render(request, 'character_info/info.html', context)
+    else:
+        return render(request, 'character_info/error.html', {'error': '캐릭터 정보를 찾을 수 없습니다.'})
     
-    
+
 def extract_cash_item_equipment(cash_item_info):
     """
     캐시 아이템 정보를 추출하여 기본 정보와 프리셋 정보를 정리

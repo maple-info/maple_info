@@ -131,7 +131,7 @@ def load_faiss_indices(base_folder):
                     index = faiss.read_index(path)
                     
                     # 메타데이터 파일 경로 설정
-                    metadata_path = os.path.join("C:/Users/ccg70/OneDrive/desktop/nexon_project/maple_db/data/rag/metadata", entry.replace('.faiss', '_metadata.json'))
+                    metadata_path = os.path.join("C:/Users/daehwan/Desktop/maple_db/maple_db/data/rag/metadata", entry.replace('.faiss', '_metadata.json'))
                     
                     # 메타데이터 파일 읽기
                     with open(metadata_path, 'r', encoding='utf-8') as f:
@@ -175,8 +175,8 @@ def chatbot_view(request):
 
         try:
             faiss_folders = [
-                "C:/Users/ccg70/OneDrive/desktop/nexon_project/maple_db/faiss_index/",
-                "C:/Users/ccg70/OneDrive/desktop/nexon_project/chatbot_project/character_faiss/"
+                "C:/Users/daehwan/Desktop/maple_db/maple_db/faiss_index/",
+                "C:/Users/daehwan/Desktop/maple_info/maple_info/character_faiss/"
             ]
 
             indices = load_faiss_indices(faiss_folders)
@@ -260,7 +260,7 @@ def create_system_message(character_info):
         f"상대방의 레벨은 {character_info.get('basic_info', {}).get('character_level', '알 수 없음')}입니다."
     )
 
-FAISS_INDEX_PATH = r'C:\Users\ccg70\OneDrive\desktop\nexon_project\chatbot_project\character_faiss'
+FAISS_INDEX_PATH = r"C:\Users\daehwan\Desktop\maple_info\maple_info\character_faiss"
 
 
 def save_to_faiss(character_name, character_info):
@@ -339,3 +339,28 @@ def remove_image_links(data, keep_basic_info_image=False):
         return data
 
 
+from django.http import JsonResponse
+import logging
+
+logger = logging.getLogger(__name__)
+
+def search_character(request):
+    if request.method == 'POST':
+        nickname = request.POST.get('nickname')
+        logger.debug(f"Received nickname: {nickname}")
+
+        # 임시 응답 (테스트용)
+        if nickname == "test":
+            return JsonResponse({
+                'character_name': 'Test Character',
+                'character_level': '99',
+                'world_name': 'Maple World',
+                'character_class': 'Warrior',
+                'character_image': 'https://example.com/test-image.png',
+            })
+
+        logger.error("Character not found.")
+        return JsonResponse({'error': 'Character not found'}, status=404)
+
+    logger.error("Invalid request method.")
+    return JsonResponse({'error': 'Invalid request'}, status=400)
