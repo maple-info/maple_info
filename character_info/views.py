@@ -680,4 +680,3 @@ def extract_pet_info(pet_info):
         }
 
     return pet_data
-
