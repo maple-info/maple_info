@@ -624,9 +624,9 @@ async def character_info_view(request, character_name):
             'character_skill_data': character_skill_data,
         }
 
-        return render(request, 'character_info/info.html', context)
+        return render(request, 'info.html', context)
     else:
-        return render(request, 'character_info/error.html', {'error': '캐릭터 정보를 찾을 수 없습니다.'})
+        return render(request, 'error.html', {'error': '캐릭터 정보를 찾을 수 없습니다.'})
     
 
 def extract_cash_item_equipment(cash_item_info):
