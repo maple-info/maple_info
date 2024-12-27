@@ -6,6 +6,11 @@
         function openPopup(url) {
             window.open(url, '구글 로그인', 'width=600,height=600');
         }
+
+        function closePopupAndReload() {
+            window.opener.location.reload();
+            window.close();
+        }
     </script>
     
     <link href="/static/css/home.css" rel="stylesheet" />
@@ -65,9 +70,12 @@
     <div id="sidebar" class="hidden">
         <ul class="sidebar-menu">
             <!-- 구글 로그인 -->
-            <li><a href="#">
-                <button onclick="openPopup({% url 'google_login' %})">로그인</button>
-            </a></li>
+            <li>
+                <form method="post" action="{% url 'google_login' %}">
+                    {% csrf_token %}
+                    <button type="submit">로그인</button>
+                </form>
+            </li>
             <li><a href="#">캐릭터검색</a></li>
             <li><a href="#">길드검색</a></li>
             <li><a href="#">랭킹</a></li>

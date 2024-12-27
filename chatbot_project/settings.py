@@ -13,6 +13,11 @@ SECRET_KEY = config('DJANGO_SECRET_KEY') # .env 파일에서 시크릿 키 호�
 OPENAI_API_KEY = config('OPENAI_API_KEY') # .env 파일에서 open ai 키 호출
 DEBUG = True
 
+GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
+GOOGLE_REDIRECT_URI = config('GOOGLE_REDIRECT_URI')
+
+
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
@@ -31,6 +36,7 @@ INSTALLED_APPS = [
     'allauth.account',  # 추가
     'allauth.socialaccount',  # 추가
     'django.contrib.humanize',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -43,8 +49,17 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'allauth.account.middleware.AccountMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",  # 클라이언트가 실행 중인 도메인
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000'
+]
 
 ROOT_URLCONF = "chatbot_project.urls"
 
@@ -154,6 +169,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        'chatbot': {  # 추가
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     },
 }
 
@@ -165,8 +185,8 @@ AUTHENTICATION_BACKENDS = [
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': config('GOOGLE_CLIENT_ID'),  # .env 파일에서 클라이언트 ID 가져오기
-            'secret': config('GOOGLE_CLIENT_SECRET'),  # .env 파일에서 비밀 키 가져오기
+            'client_id': GOOGLE_CLIENT_ID,  # .env 파일에서 클라이언트 ID 가져오기
+            'secret': GOOGLE_CLIENT_SECRET,  # .env 파일에서 비밀 키 가져오기
         },
         'SCOPE': [
             'profile',

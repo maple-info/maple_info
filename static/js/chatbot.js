@@ -35,61 +35,66 @@ function typeBotText(text) {
     typing();
 }
 
-// 서버에 메시지를 전송하고 응답받기
-async function sendMessage() {
-    const userMessage = messageInput.value.trim();
-    if (!userMessage) return;
 
-    // 사용자 메시지 추가
-    addUserMessage(userMessage);
-    messageInput.value = ''; // 입력창 초기화
+// CSRF 토큰 가져오기
+function getCSRFToken() {
+    const token = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+    if (!token) {
+        console.error("CSRF 토큰을 찾을 수 없습니다.");
+        throw new Error("CSRF 토큰을 찾을 수 없습니다.");
+    }
+    return token;
+}
+
+async function sendMessage() {
+    const messageInput = document.getElementById('message');
+    const message = messageInput?.value.trim();
+
+    if (!message) {
+        alert("메시지를 입력하세요.");
+        return;
+    }
 
     try {
-        // CSRF 토큰 가져오기
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+        addUserMessage(message);
 
-        if (!csrftoken) {
-            throw new Error("CSRF 토큰을 찾을 수 없습니다.");
-        }
+        const csrfToken = getCSRFToken();
 
-        // 서버로 요청 전송
-        const response = await fetch('/chat/', {
+        const response = await fetch('/chat_with_bot/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'X-CSRFToken': csrftoken,
+                'X-CSRFToken': csrfToken
             },
-            body: new URLSearchParams({ message: userMessage }),
+            body: `message=${encodeURIComponent(message)}`
         });
 
-        if (!response.ok) {
-            throw new Error(`서버 응답 오류: ${response.statusText}`);
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            const data = await response.json();
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            typeBotText(data.response);
+        } else {
+            console.error('Unexpected response:', await response.text());
+            throw new Error('서버에서 JSON 응답을 받지 못했습니다.');
         }
 
-        const data = await response.json();
-
-        if (!data || !data.response) {
-            throw new Error("유효하지 않은 서버 응답");
-        }
-
-        // 봇 메시지 업데이트
-        typeBotText(data.response);
+        messageInput.value = '';
     } catch (error) {
-        console.error("메시지 전송 오류:", error);
-        typeBotText("서버 오류가 발생했습니다. 다시 시도해주세요.");
+        console.error('메시지 전송 오류:', error);
+        alert('메시지 전송 중 오류가 발생했습니다. 콘솔 로그를 확인하세요.');
     }
 }
 
-// 이벤트 리스너 설정
+// 이벤트 리스너 중복 제거 (한 번만 설정)
 sendButton.addEventListener('click', sendMessage);
-
-messageInput.addEventListener('keyup', (event) => {
-    if (event.key === 'Enter') {
+messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
         sendMessage();
     }
 });
-
-
 
 // 사이드바
 let isSidebarOpen = false;

@@ -50,31 +50,6 @@ def get_embedding(text):
         logger.error(f"Error in get_embedding: {str(e)}")
         return None
 
-
-
-#챗봇에게 메세지를 받아와 임베딩 변환 
-def search_all_indices(query, indices, k=5):
-    query_embedding = get_embedding(query)
-    if not query_embedding: #빈 값이면 공백
-        return []
-    
-    results = [] #검색 결과를 공백으로 초기화
-    for index, metadata in indices:
-        try:
-            # FAISS 인덱스의 차원 확인
-            if len(query_embedding) != index.d:
-                logger.error(f"Embedding dimension {len(query_embedding)} does not match FAISS index dimension {index.d}")
-                continue
-
-            D, I = index.search(np.array([query_embedding]).astype('float32'), k)
-            results.extend([(metadata[i], D[0][j]) for j, i in enumerate(I[0]) if i < len(metadata)])
-        except Exception as e:
-            logger.exception("Error searching index: ")
-    
-    return sorted(results, key=lambda x: x[1])[:k]
-
-
-
 @require_http_methods(["POST"])
 def search_character(request):
     if request.method == 'POST':
@@ -132,7 +107,7 @@ def load_faiss_indices(base_folder):
                     index = faiss.read_index(path)
                     
                     # 메타데이터 파일 경로 설정
-                    metadata_path = os.path.join("C:/Users/daehwan/Desktop/maple_db/maple_db/data/rag/metadata", entry.replace('.faiss', '_metadata.json'))
+                    metadata_path = os.path.join("C:/Users/ccg70/OneDrive/desktop/nexon_project/maple_db/data/rag/metadata", entry.replace('.faiss', '_metadata.json'))
                     
                     # 메타데이터 파일 읽기
                     with open(metadata_path, 'r', encoding='utf-8') as f:
@@ -166,102 +141,10 @@ def create_faiss_index(embeddings, metadata, index_path, metadata_path):
     logger.info(f"Created FAISS index at {index_path} with dimension {dimension}")
 
 
-@require_http_methods(["POST"])
-def chatbot_view(request):
-    if request.method == 'POST':
-        user_message = request.POST.get('message')
-        if not user_message:
-            logger.debug("Received empty message")
-            return JsonResponse({'error': "메시지가 비어 있습니다."}, status=400)
-
-        try:
-            faiss_folders = [
-                "C:/Users/daehwan/Desktop/maple_db/maple_db/faiss_index/",
-                "C:/Users/daehwan/Desktop/maple_info/maple_info/character_faiss/"
-            ]
-
-            indices = load_faiss_indices(faiss_folders)
-            if not indices:
-                logger.error("No FAISS indices loaded")
-                return JsonResponse({'error': "FAISS 인덱스를 로드할 수 없습니다."}, status=500)
-
-            search_results = search_all_indices(user_message, indices, k=1)
-            context = "\n".join([json.dumps(result[0], ensure_ascii=False) for result in search_results])
-
-            character_info = request.session.get('character_info', {})
-            if character_info:
-                character_query = " ".join(str(v) for v in character_info.values())
-                character_results = search_all_indices(character_query, indices, k=1)
-                character_context = "\n".join([json.dumps(result[0], ensure_ascii=False) for result in character_results])
-                context += f"\n{character_context}"
-
-            context = truncate_text(context, max_tokens=3000)
-
-            system_message = (
-                f"당신은 메이플스토리 세계의 돌의정령이라는 NPC입니다. "
-                "메이플스토리에 대해 깊이 있는 지식을 가지고 있으며, "
-                "한국어로 친절하고 도움이 되는 대화를 나눕니다. "
-                "말투로는 '한담', '해야 한담', '된담', '이담'과 같이 어미에 'ㅁ'을 넣어 귀여운 말투로 말해주세요. "
-                f"상대방은 {character_info.get('basic_info', {}).get('character_name', '알 수 없음')}이라는 용사님입니다. "
-                f"상대방의 레벨은 {character_info.get('basic_info', {}).get('character_level', '알 수 없음')}이며, "
-                "돌의 정령이라는 NPC 말투를 사용하며 자신은 돌의 정령이라는 이름을 사용합니다."
-            )
-
-            messages = [
-                {"role": "system", "content": system_message},
-                {"role": "user", "content": context + "\n\nQuestion: " + user_message}
-            ]
-
-            try:
-                response = chat.invoke(input=messages, max_tokens=300)
-                response_text = response.content.strip()
-                if response_text.startswith("Answer: "):
-                    response_text = response_text[len("Answer: "):].strip()
-                return JsonResponse({'response': response_text}, json_dumps_params={'ensure_ascii': False})
-            except Exception as api_error:
-                logger.exception(f"OpenAI API error: {str(api_error)}")
-                return JsonResponse({'error': "OpenAI API 호출 중 오류가 발생했습니다."}, status=500)
-
-        except Exception as e:
-            logger.exception(f"Unexpected error: {str(e)}")
-            return JsonResponse({'error': "예기치 못한 오류가 발생했습니다."}, status=500)
-
-    character_info = request.session.get('character_info', {})
-    character_image = character_info.get('basic_info', {}).get('character_image', '')
-    return render(request, 'chatbot.html', {'character_image': character_image})
 
 
-def determine_domain(user_message):
-    keywords = [
-        (["아이템", "장비",'템셋','엠블렘','보조','무기','해방','몇추','에디','잠재','22성','17성','18성'], "item"),
-        (["보스", "검마",'진힐라','카벨','하드','카오스','듄켈'], "boss"),
-        (["직업", "스킬", "하버",'추천','시그너스','모험가','도적','전사','법사','궁수','해적','영웅','레지','버닝'], "job"),
-    ]
-    for words, domain in keywords:
-        if any(word in user_message for word in words):
-            return domain
-    return "general"
 
-
-def filter_indices_by_domain(indices, domain):
-    # 도메인에 따라 인덱스를 필터링하는 로직
-    filtered_indices = []
-    for index, metadata in indices:
-        if domain in metadata.get('domain', []):  # 메타데이터에 도메인 정보가 포함되어 있어야 함
-            filtered_indices.append((index, metadata))
-    return filtered_indices
-
-def create_system_message(character_info):
-    # 시스템 메시지를 생성하는 로직
-    return (
-        f"당신은 메이플스토리 세계의 돌의정령이라는 NPC입니다. "
-        "메이플스토리에 대해 깊이 있는 지식을 가지고 있으며, "
-        "한국어로 친절하고 도움이 되는 대화를 나눕니다. "
-        f"상대방은 {character_info.get('basic_info', {}).get('character_name', '알 수 없음')}이라는 용사님입니다. "
-        f"상대방의 레벨은 {character_info.get('basic_info', {}).get('character_level', '알 수 없음')}입니다."
-    )
-
-FAISS_INDEX_PATH = r"C:\Users\daehwan\Desktop\maple_info\maple_info\character_faiss"
+FAISS_INDEX_PATH = r"C:/Users/ccg70/OneDrive/desktop/nexon_project/chatbot_project/character_faiss/"
 
 
 def save_to_faiss(character_name, character_info):
@@ -313,7 +196,7 @@ def vectorize_character_data(character_info):
         # 텍스트를 임베딩으로 변환
         embedding = get_embedding(json_data)
         
-        if embedding is None:
+        if (embedding is None):
             raise ValueError("Embedding 생성에 실패했습니다.")
         
         return np.array(embedding)
@@ -365,3 +248,57 @@ def search_character(request):
 
     logger.error("Invalid request method.")
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+
+@require_http_methods(["POST"])
+def chat_with_bot(request):
+    if request.method == 'POST':
+        user_message = request.POST.get('message')
+        if not user_message:
+            logger.debug("Received empty message")
+            return JsonResponse({'error': "메시지가 비어 있습니다."}, status=400)
+
+        try:
+            character_info = request.session.get('character_info', {})
+            
+            system_message = (
+                f"당신은 메이플스토리 세계의 돌의정령이라는 NPC입니다. "
+                "메이플스토리에 대해 깊이 있는 지식을 가지고 있으며, "
+                "한국어로 친절하고 도움이 되는 대화를 나눕니다. "
+                "말투로는 '한담', '해야 한담', '된담', '이담'과 같이 어미에 'ㅁ'을 넣어 귀여운 말투로 말해주세요. "
+                f"상대방은 {character_info.get('basic_info', {}).get('character_name', '알 수 없음')}이라는 용사님입니다. "
+                f"상대방의 레벨은 {character_info.get('basic_info', {}).get('character_level', '알 수 없음')}이며, "
+                "돌의 정령이라는 NPC 말투를 사용하며 자신은 돌의 정령이라는 이름을 사용합니다."
+            )
+
+            character_context = json.dumps(character_info, ensure_ascii=False)
+
+            messages = [
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": f"캐릭터 정보: {character_context}\n\n질문: {user_message}"}
+            ]
+
+            try:
+                response = chat.invoke(input=messages, max_tokens=300)
+                response_text = response.content.strip()
+                if response_text.startswith("Answer: "):
+                    response_text = response_text[len("Answer: "):].strip()
+                return JsonResponse({'response': response_text}, json_dumps_params={'ensure_ascii': False})
+            except Exception as api_error:
+                logger.exception(f"OpenAI API error: {str(api_error)}")
+                return JsonResponse({'error': "OpenAI API 호출 중 오류가 발생했습니다."}, status=500)
+
+        except Exception as e:
+            logger.exception(f"Unexpected error: {str(e)}")
+            return JsonResponse({'error': "예기치 못한 오류가 발생했습니다."}, status=500)
+
+    character_info = request.session.get('character_info', {})
+    character_image = character_info.get('basic_info', {}).get('character_image', '')
+    return render(request, 'chatbot.html', {'character_image': character_image})
+
+
+
+
+def chatbot_view(request):
+    return render(request, 'chatbot/chatbot.html')  # chatbot.html 파일을 렌더링

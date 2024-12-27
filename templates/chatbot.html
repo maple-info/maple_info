@@ -5,6 +5,7 @@
     <title>메이플스토리 챗봇</title>
     <link href="/static/css/chatbot.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
 <body>
       <!-- 상단바 -->
   <header class="navbar">
@@ -25,19 +26,11 @@
         <!-- History Content -->
     </div>
     <div id="charcter-info">
-        <!-- <form id="search-form">
+        <form id="search-form" method="post" action="{% url 'character_info' %}">
+            {% csrf_token %}
             <input type="text" id="nickname" name="nickname" placeholder="Enter character nickname" required>
             <button type="submit">Search</button>
         </form>
-    
-        <div id="character-result" style="margin-top: 20px;">
-            <h2>Character Information</h2>
-            <p id="character-name"></p>
-            <p id="character-level"></p>
-            <p id="world-name"></p>
-            <p id="character-class"></p>
-            <img id="character-image" src="" alt="Character Image" style="display: none; max-width: 200px;">
-        </div> -->
     </div>
 </div>
 
@@ -72,6 +65,7 @@
         <img src="/static/image/chatbot_image.png" alt="봇" class="message-icon">
     </div>
     <div id="chat-input">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
         <input type="text" id="message" placeholder="메이플에 관해서 궁금한게 있나요? 정령에게 메세지를 보내보세요!" autocomplete="off">
         <button id="send">
             <img src="/static/image/말풍선.png" alt="전송" />
