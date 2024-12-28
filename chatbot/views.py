@@ -64,21 +64,12 @@ def search_character(request):
             logger.error(f"Character info not found for nickname: {nickname}")
             return JsonResponse({'error': 'Character info not found'}, status=404)
 
-        # 메타데이터 파일 경로 설정
-        metadata_file_path = os.path.join(FAISS_INDEX_PATH, f"{hash_nickname(nickname)}_metadata.json")
-
-        # 메타데이터 저장
-        try:
-            with open(metadata_file_path, 'w', encoding='utf-8') as f:
-                json.dump(character_info, f, ensure_ascii=False, indent=4)
-            logger.info(f"Saved metadata to {metadata_file_path}")
-        except Exception as e:
-            logger.error(f"Error saving metadata: {str(e)}")
-            return JsonResponse({'error': 'Error saving metadata'}, status=500)
-
         # 'basic_info'가 존재하는지 확인하고, 필요한 필드 추출
         basic_info = character_info.get('basic_info', {}) if isinstance(character_info, dict) else {}
         logger.debug(f"Basic info: {basic_info}")
+
+        # FAISS에 저장
+        save_to_faiss(basic_info.get('character_name', ''), character_info)
 
         context = {
             'character_name': basic_info.get('character_name', ''),
@@ -88,10 +79,31 @@ def search_character(request):
             'character_image': basic_info.get('character_image', ''),
         }
 
-        logger.debug(f"Response context: {context}")
         return JsonResponse(context)
-    logger.error("Invalid request method received.")
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+
+#챗봇에게 메세지를 받아와 임베딩 변환 
+def search_all_indices(query, indices, k=5):
+    query_embedding = get_embedding(query)
+    if not query_embedding: #빈 값이면 공백
+        return []
+    
+    results = [] #검색 결과를 공백으로 초기화
+    for index, metadata in indices:
+        try:
+            # FAISS 인덱스의 차원 확인
+            if len(query_embedding) != index.d:
+                logger.error(f"Embedding dimension {len(query_embedding)} does not match FAISS index dimension {index.d}")
+                continue
+
+            D, I = index.search(np.array([query_embedding]).astype('float32'), k)
+            results.extend([(metadata[i], D[0][j]) for j, i in enumerate(I[0]) if i < len(metadata)])
+        except Exception as e:
+            logger.exception("Error searching index: ")
+    
+    return sorted(results, key=lambda x: x[1])[:k]
 
 def load_faiss_indices(base_folder):
     indices = []
@@ -196,7 +208,7 @@ def vectorize_character_data(character_info):
         # 텍스트를 임베딩으로 변환
         embedding = get_embedding(json_data)
         
-        if (embedding is None):
+        if embedding is None:
             raise ValueError("Embedding 생성에 실패했습니다.")
         
         return np.array(embedding)
@@ -228,27 +240,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def search_character(request):
-    if request.method == 'POST':
-        nickname = request.POST.get('nickname')
-        logger.debug(f"Received nickname: {nickname}")
-
-        # 임시 응답 (테스트용)
-        if nickname == "test":
-            return JsonResponse({
-                'character_name': 'Test Character',
-                'character_level': '99',
-                'world_name': 'Maple World',
-                'character_class': 'Warrior',
-                'character_image': 'https://example.com/test-image.png',
-            })
-
-        logger.error("Character not found.")
-        return JsonResponse({'error': 'Character not found'}, status=404)
-
-    logger.error("Invalid request method.")
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
 
 
 @require_http_methods(["POST"])
@@ -261,23 +252,46 @@ def chat_with_bot(request):
 
         try:
             character_info = request.session.get('character_info', {})
-            
-            system_message = (
-                f"당신은 메이플스토리 세계의 돌의정령이라는 NPC입니다. "
-                "메이플스토리에 대해 깊이 있는 지식을 가지고 있으며, "
-                "한국어로 친절하고 도움이 되는 대화를 나눕니다. "
-                "말투로는 '한담', '해야 한담', '된담', '이담'과 같이 어미에 'ㅁ'을 넣어 귀여운 말투로 말해주세요. "
-                f"상대방은 {character_info.get('basic_info', {}).get('character_name', '알 수 없음')}이라는 용사님입니다. "
-                f"상대방의 레벨은 {character_info.get('basic_info', {}).get('character_level', '알 수 없음')}이며, "
-                "돌의 정령이라는 NPC 말투를 사용하며 자신은 돌의 정령이라는 이름을 사용합니다."
-            )
+            character_name = character_info.get('basic_info', {}).get('character_name', '')
 
-            character_context = json.dumps(character_info, ensure_ascii=False)
+            if character_name:
+                hashed_name = hashlib.sha256(character_name.encode('utf-8')).hexdigest()[:8]
+                faiss_file_path = os.path.join(FAISS_INDEX_PATH, f"{hashed_name}.faiss")
+                metadata_file_path = os.path.join(FAISS_INDEX_PATH, f"{hashed_name}_metadata.json")
 
-            messages = [
-                {"role": "system", "content": system_message},
-                {"role": "user", "content": f"캐릭터 정보: {character_context}\n\n질문: {user_message}"}
-            ]
+                if os.path.exists(faiss_file_path) and os.path.exists(metadata_file_path):
+                    index = faiss.read_index(faiss_file_path)
+                    with open(metadata_file_path, 'r', encoding='utf-8') as f:
+                        metadata = json.load(f)
+                    logger.info(f"Loaded FAISS index and metadata for {character_name}")
+                else:
+                    logger.error(f"FAISS index or metadata not found for {character_name}")
+                    return JsonResponse({'error': 'FAISS index or metadata not found'}, status=404)
+
+                system_message = (
+                    f"당신은 메이플스토리 세계의 돌의정령이라는 NPC입니다. "
+                    "메이플스토리에 대해 깊이 있는 지식을 가지고 있으며, "
+                    "한국어로 친절하고 도움이 되는 대화를 나눕니다. "
+                    "말투로는 '한담', '해야 한담', '된담', '이담'과 같이 어미에 'ㅁ'을 넣어 귀여운 말투로 말해주세요. "
+                    f"상대방은 {character_name}이라는 용사님입니다. "
+                    f"상대방의 레벨은 {character_info.get('basic_info', {}).get('character_level', '알 수 없음')}이며, "
+                    "돌의 정령이라는 NPC 말투를 사용하며 자신은 돌의 정령이라는 이름을 사용합니다."
+                )
+
+                character_context = json.dumps(character_info, ensure_ascii=False)
+
+                messages = [
+                    {"role": "system", "content": system_message},
+                    {"role": "user", "content": f"캐릭터 정보: {character_context}\n\n질문: {user_message}"}
+                ]
+            else:
+                messages = [
+                    {"role": "system", "content": "당신은 메이플스토리 세계의 돌의정령이라는 NPC입니다. "
+                                                  "메이플스토리에 대해 깊이 있는 지식을 가지고 있으며, "
+                                                  "한국어로 친절하고 도움이 되는 대화를 나눕니다. "
+                                                  "말투로는 '한담', '해야 한담', '된담', '이담'과 같이 어미에 'ㅁ'을 넣어 귀여운 말투로 말해주세요."},
+                    {"role": "user", "content": user_message}
+                ]
 
             try:
                 response = chat.invoke(input=messages, max_tokens=300)
@@ -293,9 +307,7 @@ def chat_with_bot(request):
             logger.exception(f"Unexpected error: {str(e)}")
             return JsonResponse({'error': "예기치 못한 오류가 발생했습니다."}, status=500)
 
-    character_info = request.session.get('character_info', {})
-    character_image = character_info.get('basic_info', {}).get('character_image', '')
-    return render(request, 'chatbot.html', {'character_image': character_image})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 

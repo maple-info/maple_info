@@ -7,73 +7,83 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-      <!-- 상단바 -->
-  <header class="navbar">
-    <img src="/static/image/m_logo.png" href="/" class="logo-image">
-    <div class="navbar-search">
-      <div class="search-container">
-          <input type="text" placeholder="캐릭터닉네임" class="search-input">
-          <img src="/static/image/돋보기.png" alt="Search" class="search-icon">
-      </div>
-  </div>
-  </header>
+    <!-- 상단바 -->
+    <header class="navbar">
+        <img src="/static/image/m_logo.png" href="/" class="logo-image">
+        <div class="navbar-search">
+            <div class="search-container">
+                <input type="text" id="header-nickname" placeholder="캐릭터 닉네임" class="search-input">
+                <button id="header-search-button">
+                    <img src="/static/image/돋보기.png" alt="Search" class="search-icon">
+                </button>
+            </div>
+        </div>
+    </header>
+
 <main>
-  <div id="left-box">
-    <div class="title-box">
-        <h1 class="title-text">CHAT BOT HISTORY</h1>
-    </div>
-    <div id="history">
-        <!-- History Content -->
-    </div>
-    <div id="charcter-info">
-        <form id="search-form" method="post" action="{% url 'character_info' %}">
-            {% csrf_token %}
-            <input type="text" id="nickname" name="nickname" placeholder="Enter character nickname" required>
-            <button type="submit">Search</button>
-        </form>
-    </div>
-</div>
-
-  <div id="chat-container">
-    <!-- 사이드바 -->
-    <div id="overlay" onclick="toggleSidebar()"></div>
-
-    <!-- 사이드바 -->
-    <div id="sidebar" class="hidden">
-        <ul class="sidebar-menu">
-            <li><a href="#">CHAT BOT</a></li>
-            <li><a href="#">캐릭터검색</a></li>
-            <li><a href="#">길드검색</a></li>
-            <li><a href="#">랭킹</a></li>
-            <li><a href="#">아이템검색</a></li>
-        </ul>
-    </div>
-    <!-- 사이드바 토글 버튼 -->
-    <button id="sidebar-toggle" onclick="toggleSidebar()">
-        <img src="/static/image/side_bar.png" alt="Toggle Sidebar" id="toggle-image">
-    </button>
-    <div id="chat-box">
-        <!-- 사용자 메시지 템플릿 -->
-        <div id="user-template" class="message user-message" style="display: none;">
-            <img src="/static/image/물의정령.png" alt="사용자" class="message-icon" style='max-width: 50px; max-height: 50px;'>
-            <div class="message-content"></div>          
+    <div id="left-box">
+        <div class="title-box">
+            <h1 class="title-text">CHAT BOT HISTORY</h1>
+        </div>
+        <div id="history">
+            <!-- History Content -->
+        </div>
+        <div id="character-info-container">
+            <h2>캐릭터 정보</h2>
+            <div class="search-input-group">
+                <input type="text" id="nickname" name="nickname" placeholder="캐릭터 닉네임을 입력하세요" required>
+                <button id="search-button">검색</button>
+            </div>
+            <div id="character-result">
+                <div class="character-profile">
+                    <img id="character-image" src="" alt="캐릭터 이미지" style="display: none;">
+                    <div class="character-details">
+                        <p id="character-name"></p>
+                        <p id="character-level"></p>
+                        <p id="world-name"></p>
+                        <p id="character-class"></p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- 봇 메시지 고정 박스 -->
-    <div id="bot-template" class="message bot-message">
-        <div class="message-content"></div>
-        <img src="/static/image/chatbot_image.png" alt="봇" class="message-icon">
-    </div>
-    <div id="chat-input">
-        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-        <input type="text" id="message" placeholder="메이플에 관해서 궁금한게 있나요? 정령에게 메세지를 보내보세요!" autocomplete="off">
-        <button id="send">
-            <img src="/static/image/말풍선.png" alt="전송" />
+
+    <div id="chat-container">
+        <!-- 사이드바 -->
+        <div id="overlay" onclick="toggleSidebar()"></div>
+        <div id="sidebar" class="hidden">
+            <ul class="sidebar-menu">
+                <li><a href="#">CHAT BOT</a></li>
+                <li><a href="#">캐릭터검색</a></li>
+                <li><a href="#">길드검색</a></li>
+                <li><a href="#">랭킹</a></li>
+                <li><a href="#">아이템검색</a></li>
+            </ul>
+        </div>
+        <button id="sidebar-toggle" onclick="toggleSidebar()">
+            <img src="/static/image/side_bar.png" alt="Toggle Sidebar" id="toggle-image">
         </button>
+        <div id="chat-box">
+            <!-- 사용자 메시지 템플릿 -->
+            <div id="user-template" class="message user-message" style="display: none;">
+                <img src="/static/image/물의정령.png" alt="사용자" class="message-icon" style="max-width: 50px; max-height: 50px;">
+                <div class="message-content"></div>
+            </div>
+        </div>
+        <div id="bot-template" class="message bot-message">
+            <div class="message-content"></div>
+            <img src="/static/image/chatbot_image.png" alt="봇" class="message-icon">
+        </div>
+        <div id="chat-input">
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            <input type="text" id="message" placeholder="메이플에 관해서 궁금한게 있나요? 정령에게 메세지를 보내보세요!" autocomplete="off">
+            <button id="send">
+                <img src="/static/image/말풍선.png" alt="전송" />
+            </button>
+        </div>
     </div>
-</div>
     <div id="right-box">
-    <!-- Right Box Content -->
+        <!-- Right Box Content -->
     </div>
 </main>
     <script src="/static/js/chatbot.js"></script>
