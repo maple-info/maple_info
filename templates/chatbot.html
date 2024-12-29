@@ -9,7 +9,9 @@
 <body>
     <!-- 상단바 -->
     <header class="navbar">
-        <img src="/static/image/m_logo.png" href="/" class="logo-image">
+        <a href="/">
+            <img src="/static/image/m_logo.png" alt="Logo" class="logo-image">
+        </a>
         <div class="navbar-search">
             <div class="search-container">
                 <input type="text" id="header-nickname" placeholder="캐릭터 닉네임" class="search-input">
@@ -26,25 +28,21 @@
             <h1 class="title-text">CHAT BOT HISTORY</h1>
         </div>
         <div id="history">
-            <!-- History Content -->
+            
         </div>
         <div id="character-info-container">
-            <h2>캐릭터 정보</h2>
-            <div class="search-input-group">
-                <input type="text" id="nickname" name="nickname" placeholder="캐릭터 닉네임을 입력하세요" required>
-                <button id="search-button">검색</button>
-            </div>
-            <div id="character-result">
-                <div class="character-profile">
-                    <img id="character-image" src="" alt="캐릭터 이미지" style="display: none;">
-                    <div class="character-details">
-                        <p id="character-name"></p>
-                        <p id="character-level"></p>
-                        <p id="world-name"></p>
-                        <p id="character-class"></p>
-                    </div>
+            <div id="search-results"></div>
+
+            <form id="search-form" data-url="{% url 'search_character' %}">
+                {% csrf_token %}
+                <div class="input-container">
+                    <input type="text" id="nickname" name="nickname" placeholder="캐릭터 검색" required>
+                    <button type="submit">
+                        <img src="/static/image/돋보기.png" alt="Search">
+                    </button>
                 </div>
-            </div>
+            </form>
+        
         </div>
     </div>
 
@@ -86,6 +84,12 @@
         <!-- Right Box Content -->
     </div>
 </main>
-    <script src="/static/js/chatbot.js"></script>
+
+<!-- jQuery 추가 -->
+<script>
+    const searchCharacterUrl = "{% url 'search_character' %}";
+</script>
+
+<script src="/static/js/chatbot.js"></script>
 </body>
 </html>
