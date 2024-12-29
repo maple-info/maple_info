@@ -19,7 +19,7 @@ main {
 #left-box {
     display: flex; /* Flexbox 활성화 */
     flex-direction: column; /* 세로로 정렬 */
-    width: 20%; /* 전체 화면의 25% */
+    width: 24%; /* 전체 화면의 25% */
     height: 100%; /* 부모 높이(100vh) 채우기 */
     background-color: #ffffff; /* 임의 배경색 */
     /* padding: 50px; */
@@ -27,6 +27,13 @@ main {
 .title-box{
     padding: 0px 10px;
     align-items: center;
+    color: #515151;
+/* 카드_메인_영문 */
+font-family: Pretendard;
+font-size: 18px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
 }
 .title-text {
     font-family: AppleSDGothicNeoH00;
@@ -38,29 +45,17 @@ main {
 }
 /* history */
 #history {
-    height: 540px;
+    height: 445px;
     background-color: #ffffff; /* 임의 배경색 */
     overflow-y: auto; /* 내용이 길면 스크롤 */
     padding: 25px;
-    border: 4px solid #EEB36D; /* 아래쪽 경계선 */
+    border: 4px solid #E5A12C; /* 아래쪽 경계선 */
     border-radius: 8px;
     margin-left: 58px;
     margin-right: 33px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
-/* charcter-info */
-#charcter-info {
-    height: 183px;
-    border: 4px solid #EEB36D; /* 아래쪽 경계선 */
-    border-radius: 8px;
-    overflow-y: auto; /* 내용이 길면 스크롤 */
-    height: 183px;
-    padding: 10px;
-    margin-left: 58px;
-    margin-right: 33px;
-    margin-bottom: 40px;
-}
 /* right-box */
 #right-box {
     display: flex; /* Flexbox 활성화 */
@@ -76,7 +71,7 @@ main {
   top: 0; /* 화면의 상단에 위치 */
   left: 0; /* 화면의 왼쪽 경계에 맞춤 */
   z-index: 1000; /* 다른 요소보다 위에 표시 */
-  background-color: #EEB36D; /* 상단바 배경색 */
+  background-color: #E5A12C; /* 상단바 배경색 */
   color: white;
   width: 100%; /* 부모 너비를 초과하지 않도록 설정 */
   max-width: 100%; /* 최대 너비 제한 */
@@ -153,7 +148,7 @@ main {
     flex: 1; /* 남은 공간 차지 */
     flex-direction: column;
     background-color: #ffffff;
-    border-left: 3px solid #EEB36D;
+    border-left: 4px solid #E5A12C;
     /* overflow: hidden; */
 }
 /* 채팅 메시지 박스 */
@@ -164,7 +159,7 @@ main {
     flex-direction: column;
     gap: 10px;
     width: 100%;
-    height: 100%;
+    height: 50%;
 }
 
 /* 메시지 스타일 */
@@ -187,14 +182,14 @@ main {
     border-radius: 10px;
     padding: 10px;
     color: rgb(0, 0, 0);
-    border: 3px solid #F5A335;
+    border: 3px solid #E5A12C;
     margin: 10px;
 }
 .user-message img{
     margin: 10px;
     width: 60px;
     height: 60px;
-    border: 3px solid #F5A335;
+    border: 3px solid #E5A12C;
     border-radius: 50%; /* 완전한 원 */
 }
 
@@ -206,7 +201,8 @@ main {
     height: 300px; /* 고정 높이 */
     overflow-y: visible; /* 세로 스크롤 활성화 */
     background-color: #625233;
-    border: 4px solid #000000;
+    border-radius: 10px;
+    border: 9px solid #3E2611;
     padding: 10px;
     margin: 30px;
     display: flex;
@@ -239,7 +235,7 @@ main {
     width: 250px;
     height: 250px;
     position: absolute; /* 부모 박스 기준으로 위치를 설정합니다. */
-    top: 40%; /* 수직 가운데 정렬 */
+    top: 50%; /* 수직 가운데 정렬 */
     right: -60px; /* 오른쪽으로 더 이동 (기존 0에서 -50px로 수정) */
     transform: translateY(-50%); /* 수직 가운데 정렬 보정 */
     z-index: 10; /* 가장 앞으로 튀어나오게 설정 */
@@ -262,8 +258,8 @@ main {
     display: flex;
     height: 50px;
     background-color: rgb(255, 255, 255);
-    border-radius: 50px;
-    border: 4px solid #F5A335;
+    border-radius: 102px;
+    border: 6px solid #E5A12C;
     /* margin-bottom: 20px; */
     margin-left: 20px;  
     margin-right: 20px;
@@ -374,4 +370,155 @@ main {
     background: none;
     border: none;
     cursor: poin
+}
+
+
+/* charcter-info */
+#character-info-container {
+    height: 193px;
+    border: 4px solid #E5A12C; /* 아래쪽 경계선 */
+    border-radius: 18px;
+    overflow-y: auto; /* 내용이 길면 스크롤 */
+    padding: 10px;
+    margin-left: 58px;
+    margin-right: 33px;
+    margin-bottom: 20px;
+}
+#search-result{
+    padding: 15px 23px 15px 23px;
+}
+
+/* 입력 박스와 버튼을 감싸는 컨테이너 */
+.input-container {
+    position: relative;
+    width: 100%;
+    height: 37px;
+}
+  
+.input-container input {
+    width: 60%;
+    padding: 9px 11px 9px 19px; /* 오른쪽 패딩 추가 (버튼 공간 확보) */
+    border: 2px solid #E5A12C;
+    border-radius: 18px; /* 양쪽 끝 둥글게 */
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    margin-top: 6px;
+    position: absolute;
+    right: 0; /* 부모 박스의 오른쪽 끝 */
+}
+  
+.input-container button {
+    position: absolute;
+    top: 55%; /* 세로 중앙 */
+    right: 10px; /* 입력 박스 오른쪽 안쪽에 위치 */
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.input-container img {
+    position: absolute;
+    top: 70%; /* 세로 중앙 */
+    right: 10px; /* 입력 박스 오른쪽 안쪽에 위치 */
+    transform: translateY(-40%);
+    width: 25px; /* 이미지 크기 */
+    height: 25px;
+    cursor: pointer; /* 클릭 가능 표시 */
+}
+
+
+/* 캐릭터박스 */
+
+/* 전체 캐릭터 박스 스타일 */
+.character-box {
+    display: flex; /* 가로 정렬 */
+    gap: 70px; /* 이미지와 텍스트 간격 */
+    align-items: center; /* 수직 중앙 정렬 */
+    max-width: 100%; /* 부모 박스의 최대 너비에 맞춤 */
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
+/* 첫 번째 박스 스타일 */
+.character-image-container {
+    width: 110px; /* 가로 크기 */
+    height: 110px; /* 세로 크기 */
+    border: 5px solid #EEB36D; /* 테두리 색상과 두께 */
+    border-radius: 50%; /* 원형 테두리 */
+    display: flex; /* 내부 내용 정렬 */
+    justify-content: center; /* 가로 정렬 */
+    align-items: center; /* 세로 정렬 */
+    text-align: center; /* 텍스트 정렬 */
+    font-size: 14px;
+    position: relative; /* 위치 조정을 위해 추가 */
+    top: -5px; /* 위로 20px 이동 */
+}
+
+/* 이미지 스타일 */
+.character-image {
+    width: 100%;
+    height: auto; /* 비율에 맞게 조정 */
+    object-fit: cover; /* 이미지 비율 유지하며 크기 조정 */
+}
+
+/* 텍스트 컨테이너 스타일 */
+.character-details {
+    flex: 1; /* 남은 공간 차지 */
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* 각 텍스트 항목 간 간격 */
+    margin-right: 5px;
+}
+
+
+/* 각 텍스트 행 스타일 */
+.character-detail {
+    display: flex;
+    justify-content: space-between; /* 이름과 값을 양끝으로 정렬 */
+    font-size: 14px; /* 글자 크기 */
+    color: #333;
+    line-height: 1.2; /* 텍스트 간격 */
+}
+.detail-divider {
+    border: none;
+    border-top: 1px solid #EEB36D; /* 얇은 밑줄 */
+    margin: 0; /* 간격 제거 */
+}
+/* 라벨 스타일 */
+.label {
+    font-weight: bold;
+    color: #555;
+    font-size: 12px; /* 글자 크기 */
+}
+.server-box{
+    border-radius: 41px;
+    border: 1px solid #E5A12C;
+}
+.server{
+    margin: 3px;
+    font-size: 10px;
+}
+/* 값 스타일 */
+.value {
+    color: #000;
+
+    text-align: justify;
+    /* 스텟수치 */
+    font-family: Pretendard;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.56px;
+}
+.nickname{
+    color: #000;
+    font-family: Pretendard;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: -0.3px;
 }
