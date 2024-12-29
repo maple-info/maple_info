@@ -100,7 +100,8 @@ async def get_character_info(character_name, date=None):
             "cashitem_info": cashitem_info,  # 추가된 캐시 아이템 정보
             "beauty_info": beauty_info,        # 추가된 뷰티 아이템 정보
             "android_info": android_info,      # 추가된 안드로이드 정보
-            "pet_info": pet_info                # 추가된 펫 정보
+            "pet_info": pet_info,                # 추가된 펫 정보
+            "hyper_stat_info": hyper_stat_info,
         }
 
 
