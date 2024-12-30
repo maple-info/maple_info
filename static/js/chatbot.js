@@ -83,42 +83,6 @@ function toggleSidebar() {
 }
 
 // 캐릭터 검색
-function handleCharacterSearch(e) {
-    e.preventDefault();
-    const nickname = $('#nickname').val().trim();
-    if (!nickname) {
-        alert("캐릭터 닉네임을 입력하세요.");
-        return;
-    }
-
-    const csrfToken = getCSRFToken();
-
-    $.ajax({
-        url: '/search_character/',
-        type: 'POST',
-        data: {
-            nickname: nickname,
-            csrfmiddlewaretoken: csrfToken
-        },
-        success: function (response) {
-            $('#character-name').text(`이름: ${response.character_name || '알 수 없음'}`);
-            $('#character-level').text(`레벨: ${response.character_level || '알 수 없음'}`);
-            $('#world-name').text(`월드: ${response.world_name || '알 수 없음'}`);
-            $('#character-class').text(`직업: ${response.character_class || '알 수 없음'}`);
-
-            if (response.character_image) {
-                $('#character-image').attr('src', response.character_image).show();
-            } else {
-                $('#character-image').hide();
-            }
-        },
-        error: function (xhr) {
-            const errorMessage = xhr.responseJSON?.error || '캐릭터 검색 중 문제가 발생했습니다.';
-            alert(errorMessage);
-        }
-    });
-}
-
 // 이벤트 리스너 설정
 function setupEventListeners() {
     sendButton.addEventListener('click', sendMessage);
@@ -131,4 +95,65 @@ function setupEventListeners() {
 // 초기화
 $(document).ready(() => {
     setupEventListeners();
+});
+
+
+$(document).ready(function() {
+    $('#search-form').on('submit', function(event) {
+        event.preventDefault(); // 기본 동작 방지
+
+        const nickname = $('#nickname').val().trim(); // 닉네임 가져오기
+        const csrfToken = $('input[name=csrfmiddlewaretoken]').val(); // CSRF 토큰 가져오기
+        const url = $(this).data('url'); // 렌더링된 URL 가져오기
+
+        if (!nickname) {
+            $('#search-results').html('<p style="color: red;">Please enter a nickname.</p>');
+            return;
+        }
+
+        // AJAX 요청
+        $.ajax({
+            type: 'POST',
+            url: url, // Django 뷰 URL
+            data: {
+                nickname: nickname,
+                csrfmiddlewaretoken: csrfToken,
+            },
+            success: function(response) {
+                // 성공 시 결과 표시
+                $('#search-results').html(`
+                    <div class="character-box">
+                        <!-- 왼쪽 이미지 박스 -->
+                        <div class="character-image-container">
+                            ${response.character_image 
+                                ? `<img src="${response.character_image}" alt="${response.character_name}" class="character-image">`
+                                : '<span class="no-image">이미지가 없습니다.</span>'}
+                        </div>
+                            
+                        <!-- 오른쪽 텍스트 박스 -->
+                        <div class="character-details">
+                            <div class="character-detail"<span class="value nickname">${response.character_name}</span><div class="server-box"><span class="server">${response.world_name}</span></div></div>
+                            <hr class="detail-divider">
+                            <div class="character-detail"><span class="label">레벨</span><span class="value">${response.character_level}</span></div>
+                            <hr class="detail-divider">
+                            <div class="character-detail"><span class="label">서버</span><span class="value">${response.world_name}</span></div>
+                            <hr class="detail-divider">
+                            <div class="character-detail"><span class="label">직업</span><span class="value">${response.character_class}</span></div>
+                            <hr class="detail-divider">
+                            <div class="character-detail"><span class="label">전투력</span><span class="value">${response.Combat_Power}</span></div>                    
+                            <hr class="detail-divider">
+                        </div>
+                    </div>
+                `);
+            },
+            error: function(xhr) {
+                // 에러 처리
+                if (xhr.status === 404) {
+                    $('#search-results').html('<p style="color: red;">Character not found. Please try again.</p>');
+                } else {
+                    $('#search-results').html('<p style="color: red;">An error occurred. Please try again later.</p>');
+                }
+            }
+        });
+    });
 });

@@ -50,38 +50,55 @@ def get_embedding(text):
         logger.error(f"Error in get_embedding: {str(e)}")
         return None
 
+
 @require_http_methods(["POST"])
 def search_character(request):
-    if request.method == 'POST':
-        nickname = request.POST.get('nickname')
-        logger.debug(f"Received nickname: {nickname}")
+    # 1. 닉네임 추출 및 유효성 검사
+    nickname = request.POST.get('nickname', '').strip()
+    if not nickname:
+        logger.error("No nickname provided in the request.")
+        return JsonResponse({'error': 'Nickname is required'}, status=400)
 
-        # 캐릭터 정보를 가져오는 로직
+    try:
+        # 2. 캐릭터 정보 가져오기
         character_info = async_to_sync(get_character_info)(nickname)
-        logger.debug(f"Raw character_info: {character_info}")
-
-        if not character_info:
-            logger.error(f"Character info not found for nickname: {nickname}")
+        if not character_info or not isinstance(character_info, dict):
+            logger.error(f"Character info not found or invalid for nickname: {nickname}")
             return JsonResponse({'error': 'Character info not found'}, status=404)
 
-        # 'basic_info'가 존재하는지 확인하고, 필요한 필드 추출
-        basic_info = character_info.get('basic_info', {}) if isinstance(character_info, dict) else {}
-        logger.debug(f"Basic info: {basic_info}")
+        # 3. 기본 정보 추출
+        basic_info = character_info.get('basic_info', {})
+        if not basic_info:
+            logger.warning(f"No basic_info found for character: {nickname}")
+            return JsonResponse({'error': 'Basic info is missing'}, status=404)
 
-        # FAISS에 저장
-        save_to_faiss(basic_info.get('character_name', ''), character_info)
+        # stat_info에서 전투력가져오기
+        stat_info = character_info.get('stat_info', {})
+        if not stat_info:
+            logger.warning(f"No basic_info found for character: {nickname}")
+            return JsonResponse({'error': 'Basic info is missing'}, status=404)
 
-        context = {
-            'character_name': basic_info.get('character_name', ''),
-            'character_level': basic_info.get('character_level', ''),
-            'world_name': basic_info.get('world_name', ''),
-            'character_class': basic_info.get('character_class', ''),
-            'character_image': basic_info.get('character_image', ''),
+        # 4. FAISS 저장
+        character_name = basic_info.get('character_name', '')
+        save_to_faiss(character_name, character_info)
+        logger.info(f"Character data saved to FAISS for: {character_name}")
+
+        # 5. 응답 데이터 구성
+        response_data = {
+            'character_name': character_name or 'Unknown',
+            'character_level': basic_info.get('character_level', 'Unknown'),
+            'world_name': basic_info.get('world_name', 'Unknown'),
+            'character_class': basic_info.get('character_class', 'Unknown'),
+            'Combat_Power': stat_info.get('전투력', 'Unknown'),
+            'character_image': basic_info.get('character_image', None),
         }
 
-        return JsonResponse(context)
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+        return JsonResponse(response_data, status=200)
 
+    except Exception as e:
+        # 예외 처리 및 로깅
+        logger.exception(f"Unexpected error while fetching character info: {str(e)}")
+        return JsonResponse({'error': 'An unexpected error occurred'}, status=500)
 
 
 #챗봇에게 메세지를 받아와 임베딩 변환 
@@ -119,7 +136,7 @@ def load_faiss_indices(base_folder):
                     index = faiss.read_index(path)
                     
                     # 메타데이터 파일 경로 설정
-                    metadata_path = os.path.join("C:/Users/ccg70/OneDrive/desktop/nexon_project/maple_db/data/rag/metadata", entry.replace('.faiss', '_metadata.json'))
+                    metadata_path = os.path.join("C:/Users/user/Desktop/maple_db/maple_db/data/rag/metadata", entry.replace('.faiss', '_metadata.json'))
                     
                     # 메타데이터 파일 읽기
                     with open(metadata_path, 'r', encoding='utf-8') as f:
@@ -156,7 +173,7 @@ def create_faiss_index(embeddings, metadata, index_path, metadata_path):
 
 
 
-FAISS_INDEX_PATH = r"C:/Users/ccg70/OneDrive/desktop/nexon_project/chatbot_project/character_faiss/"
+FAISS_INDEX_PATH = r"C:/Users/user/maple_info1105/maple_info/character_faiss/"
 
 
 def save_to_faiss(character_name, character_info):
