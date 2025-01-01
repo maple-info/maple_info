@@ -1,7 +1,7 @@
 # chatbot_project/urls.py
 from django.contrib import admin
 from django.urls import path, include
-from chatbot.views import chat_with_bot, chatbot_view
+from chatbot.views import chat_with_bot
 
 urlpatterns = [
     path('admin/', admin.site.urls),
