@@ -55,23 +55,12 @@ async def get_character_info(character_name, date=None):
         params = {"ocid": ocid}
         if date:
             params["date"] = date
-
-        # 스킬 정보 요청
-        skill_grades = ["0", "1", "1.5", "2", "2.5", "3", "4", "hyperpassive", "hyperactive", "5", "6"]
-        skill_info = {}
-        for grade in skill_grades:
-            skill_params = params.copy()
-            skill_params["character_skill_grade"] = grade
-            grade_skill_info = await get_api_data(session, "/character/skill", skill_params)
-            if grade_skill_info:
-                skill_info[grade] = grade_skill_info
         
         # 추가된 API 경로에 대한 데이터 요청
         cashitem_info = await get_api_data(session, "/character/cashitem-equipment", params)
         beauty_info = await get_api_data(session, "/character/beauty-equipment", params)
         android_info = await get_api_data(session, "/character/android-equipment", params)
         pet_info = await get_api_data(session, "/character/pet-equipment", params)
-
         basic_info = await get_api_data(session, "/character/basic", params)
         stat_info = await get_api_data(session, "/character/stat", params)
         item_equipment_info = await get_api_data(session, "/character/item-equipment", params)
@@ -83,7 +72,11 @@ async def get_character_info(character_name, date=None):
         symbol_equipment_info = await get_api_data(session, "/character/symbol-equipment", params)
         vmatrix_info = await get_api_data(session, "/character/vmatrix", params)
         hyper_stat_info = await get_api_data(session, "/character/hyper-stat", params)
-        skill_info = await get_api_data(session, "/character/skill", params)
+        
+        # 전직 차수별 스킬 정보 요청
+        skill_info = {}
+        for job_advancement in ["0", "1", "1.5", "2", "2.5", "3", "4", "hyperpassive", "hyperactive", "5", "6"]:
+            skill_info[job_advancement] = await get_api_data(session, "/character/skill", {"ocid": ocid, "job_advancement": job_advancement})
 
         return {
             "basic_info": basic_info,
@@ -96,11 +89,11 @@ async def get_character_info(character_name, date=None):
             "hexamatrix_stat_info": hexamatrix_stat_info,
             "symbol_equipment_info": symbol_equipment_info,
             "vmatrix_info": vmatrix_info,
-            "skill_info": skill_info,
-            "cashitem_info": cashitem_info,  # 추가된 캐시 아이템 정보
-            "beauty_info": beauty_info,        # 추가된 뷰티 아이템 정보
-            "android_info": android_info,      # 추가된 안드로이드 정보
-            "pet_info": pet_info,                # 추가된 펫 정보
+            "skill_info": skill_info,  # 전직 차수별 스킬 정보
+            "cashitem_info": cashitem_info,
+            "beauty_info": beauty_info,
+            "android_info": android_info,
+            "pet_info": pet_info,
             "hyper_stat_info": hyper_stat_info,
         }
 
@@ -424,134 +417,47 @@ def extract_hexa(hexamatrix_info):
     return hexa_data if hexa_data["character_hexa_core_equipment"] else None
 
 def extract_character_skills(skill_info):
-
-    # 데이터 검증
-    if not isinstance(skill_info, dict):
-        return {"error": "유효하지 않은 데이터 형식입니다."}
-
-    # 기본 데이터 구조 생성
-    character_skill_data = {
-        "character_class": skill_info.get("character_class", "정보 없음"),
-        "skill_grade": skill_info.get("character_skill_grade", "정보 없음"),
-        "skills": []
-    }
-
-        # 스킬 정보 추가
-        
-    for skill in skill_info.get("character_skill", []):
-        character_skill_data["skills"].append({
-            "skill_name": skill.get("skill_name", "정보 없음"),
-            "skill_description": skill.get("skill_description", "정보 없음"),
-            "skill_level": skill.get("skill_level", 0),
-            "skill_effect": skill.get("skill_effect", "정보 없음"),
-            "skill_effect_next": skill.get("skill_effect_next", "정보 없음"),
-            "skill_icon": skill.get("skill_icon", "정보 없음")
-        })
-
-    return character_skill_data
-
-def extract_vmatrix(vmatrix_info):
-    if not isinstance(vmatrix_info, dict):
-        return {}
+    """
+    캐릭터 스킬 정보를 추출하는 함수
+    Args:
+        skill_info (dict): API로부터 받은 전직 차수별 스킬 정보
+    Returns:
+        dict: 정제된 스킬 정보
+    """
+    logger.debug(f"Extracting character skills from: {skill_info}")
     
-    vmatrix_data = {
-        "character_class": vmatrix_info.get("character_class", "정보 없음"),
-        "v_cores": [],
-        "remain_slot_upgrade_point": vmatrix_info.get("character_v_matrix_remain_slot_upgrade_point", 0)
-    }
+    try:
+        if not isinstance(skill_info, dict):
+            logger.error("Invalid skill_info format: not a dictionary")
+            return {"error": "유효하지 않은 데이터 형식입니다."}
 
-    for core in vmatrix_info.get("character_v_core_equipment", []):
-        vmatrix_data["v_cores"].append({
-            "slot_id": core.get("slot_id", "정보 없음"),
-            "slot_level": core.get("slot_level", 0),
-            "name": core.get("v_core_name", "정보 없음"),
-            "type": core.get("v_core_type", "정보 없음"),
-            "level": core.get("v_core_level", 0),
-            "skill_1": core.get("v_core_skill_1", "정보 없음"),
-            "skill_2": core.get("v_core_skill_2", "정보 없음"),
-            "skill_3": core.get("v_core_skill_3", "정보 없음")
-        })
+        extracted_skills = {}
+        for job_advancement, skills in skill_info.items():
+            if skills is None:
+                continue
+            extracted_skills[job_advancement] = {
+                "date": skills.get("date", "정보 없음"),
+                "character_class": skills.get("character_class", "정보 없음"),
+                "character_skill_grade": skills.get("character_skill_grade", "정보 없음"),
+                "skills": [
+                    {
+                        "skill_name": skill.get("skill_name", "정보 없음"),
+                        "skill_description": skill.get("skill_description", "정보 없음"),
+                        "skill_level": int(skill.get("skill_level", 0)),
+                        "skill_effect": skill.get("skill_effect", "정보 없음"),
+                        "skill_effect_next": skill.get("skill_effect_next", "정보 없음"),
+                        "skill_icon": skill.get("skill_icon", "")
+                    }
+                    for skill in skills.get("character_skill", [])
+                ]
+            }
 
-    return vmatrix_data
+        return extracted_skills
+    except Exception as e:
+        logger.exception(f"Error extracting character skills: {str(e)}")
+        return {"error": f"스킬 정보 처리 중 오류 발생: {str(e)}"}
+    
 
-
-def extract_symbols(symbol_equipment_info):
-    if not isinstance(symbol_equipment_info, dict):
-        return {}
-
-    # 심볼 정보를 담을 기본 구조
-    symbol_data = {
-        "authentic_symbols": [],
-        "arcane_symbols": []
-    }
-
-    # symbol 데이터가 존재할 때
-    for symbol in symbol_equipment_info.get("symbol", []):
-        symbol_name = symbol.get("symbol_name", "")
-
-        # 어센틱 심볼 추출
-        if "어센틱" in symbol_name:
-            symbol_data["authentic_symbols"].append({
-                "name": symbol_name,
-                "icon": symbol.get("symbol_icon"),
-                "description": symbol.get("symbol_description"),
-                "force": symbol.get("symbol_force"),
-                "level": symbol.get("symbol_level"),
-                "stats": {
-                    "str": symbol.get("symbol_str"),
-                    "dex": symbol.get("symbol_dex"),
-                    "int": symbol.get("symbol_int"),
-                    "luk": symbol.get("symbol_luk"),
-                    "hp": symbol.get("symbol_hp"),
-                },
-                "growth_count": symbol.get("symbol_growth_count"),
-                "require_growth_count": symbol.get("symbol_require_growth_count")
-            })
-
-        # 아케인 심볼 추출
-        elif "아케인" in symbol_name:
-            symbol_data["arcane_symbols"].append({
-                "name": symbol_name,
-                "icon": symbol.get("symbol_icon"),
-                "description": symbol.get("symbol_description"),
-                "force": symbol.get("symbol_force"),
-                "level": symbol.get("symbol_level"),
-                "stats": {
-                    "str": symbol.get("symbol_str"),
-                    "dex": symbol.get("symbol_dex"),
-                    "int": symbol.get("symbol_int"),
-                    "luk": symbol.get("symbol_luk"),
-                    "hp": symbol.get("symbol_hp"),
-                },
-                "growth_count": symbol.get("symbol_growth_count"),
-                "require_growth_count": symbol.get("symbol_require_growth_count")
-            })
-
-    return symbol_data
-
-def extract_character_skills(skill_info):
-    if not isinstance(skill_info, dict):
-        return {"error": "유효하지 않은 데이터 형식입니다."}
-
-    extracted_skills = {}
-    for grade, grade_info in skill_info.items():
-        extracted_skills[grade] = {
-            "date": grade_info.get("date", "정보 없음"),
-            "character_class": grade_info.get("character_class", "정보 없음"),
-            "character_skill_grade": grade_info.get("character_skill_grade", "정보 없음"),
-            "skills": [
-                {
-                    "skill_name": skill.get("skill_name", "정보 없음"),
-                    "skill_description": skill.get("skill_description", "정보 없음"),
-                    "skill_level": skill.get("skill_level", 0),
-                    "skill_effect": skill.get("skill_effect", "정보 없음"),
-                    "skill_effect_next": skill.get("skill_effect_next", "정보 없음"),
-                    "skill_icon": skill.get("skill_icon", "정보 없음")
-                }
-                for skill in grade_info.get("character_skill", [])
-            ]
-        }
-    return extracted_skills
 
 from asgiref.sync import sync_to_async
 
@@ -580,27 +486,16 @@ async def character_info_view(request, character_name):
         symbol_data = await sync_to_async(extract_symbols)(character_info.get('symbol_equipment_info', []))
         vmatrix_data = await sync_to_async(extract_vmatrix)(character_info.get('vmatrix_info', {}))
         character_skill_data = await sync_to_async(extract_character_skills)(character_info.get('skill_info', {}))
-
-        # 캐가된 데이터 추출
         cash_item_data = await sync_to_async(extract_cash_item_equipment)(character_info.get('cashitem_info', {}))
         android_data = await sync_to_async(extract_android_info)(character_info.get('android_info', {}))
         pet_data = await sync_to_async(extract_pet_info)(character_info.get('pet_info', {}))
         beauty_data = await sync_to_async(extract_beauty_info)(character_info.get('beauty_info', {}))
+        hyper_stat_data = await sync_to_async(extract_hyper_stats)(character_info.get('hyper_stat_info', {}))
 
         # 캐시 저장
         cache.set(f'character_info_{character_name}', character_info, timeout=600)
 
-        final_stats = extract_final_stats(character_info.get('stat_info', {}))
-        equipment_data = extract_item_equipment(character_info.get('item_equipment_info', []))
-        ability_data = extract_ability_presets(character_info.get('ability_info', {}))
-        set_effect_data = extract_set_effect(character_info.get('set_effect_info', []))
-        link_skill_data = extract_link_skills(character_info.get('link_skill_info', []))
-        hexa_stats = extract_hexa_stats(character_info.get('hexamatrix_stat_info', []))
-        hexa_data = extract_hexa(character_info.get('hexamatrix_info', []))
-        symbol_data = extract_symbols(character_info.get('symbol_equipment_info', []))
-        vmatrix_data = extract_vmatrix(character_info.get('vmatrix_info', {}))
-        hyper_stat_data = extract_hyper_stats(character_info.get('hyper_stat_info', []))
-        character_skill_data = extract_character_skills(character_info.get('skill_info', []))
+
 
         # 템플릿으로 전달할 컨텍스트
         context = {
@@ -620,7 +515,6 @@ async def character_info_view(request, character_name):
             'android_data': android_data,        # 추가된 안드로이드 데이터
             'pet_data': pet_data,                # 추가된 펫 데이터
             'beauty_data': beauty_data,          # 추가된 뷰티 데이터
-
             'hyper_stat_data': hyper_stat_data,
             'character_skill_data': character_skill_data,
         }

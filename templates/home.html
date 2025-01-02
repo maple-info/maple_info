@@ -54,9 +54,7 @@
                 </button>
             </form>
         </div>
-    </form>
     </div>
-  </div>
   </header>
 <main>
   <div id="left-box">
@@ -69,13 +67,21 @@
     <!-- 사이드바 -->
     <div id="sidebar" class="hidden">
         <ul class="sidebar-menu">
-            <!-- 구글 로그인 -->
-            <li>
-                <form method="post" action="{% url 'google_login' %}">
-                    {% csrf_token %}
-                    <button type="submit">로그인</button>
-                </form>
-            </li>
+            {% if is_authenticated %}
+                <li>
+                    <form method="post" action="{% url 'google_logout' %}">
+                        {% csrf_token %}
+                        <button type="submit">로그아웃</button>
+                    </form>
+                </li>
+            {% else %}
+                <li>
+                    <form method="post" action="{% url 'google_login' %}">
+                        {% csrf_token %}
+                        <button type="submit">로그인</button>
+                    </form>
+                </li>
+            {% endif %}
             <li><a href="#">캐릭터검색</a></li>
             <li><a href="#">길드검색</a></li>
             <li><a href="#">랭킹</a></li>

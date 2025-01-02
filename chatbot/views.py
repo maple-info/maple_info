@@ -13,6 +13,9 @@ from langchain.embeddings import OpenAIEmbeddings
 from django.views.decorators.http import require_http_methods
 from character_info.views import get_character_info  # character_info의 get_character_info 함수 임포트
 from asgiref.sync import async_to_sync
+from dotenv import load_dotenv
+
+load_dotenv()  # .env 파일 로드
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
@@ -134,9 +137,8 @@ def load_faiss_indices(base_folder):
             elif entry.endswith('.faiss'):
                 try:
                     index = faiss.read_index(path)
-                    
                     # 메타데이터 파일 경로 설정
-                    metadata_path = os.path.join("C:/Users/user/Desktop/maple_db/maple_db/data/rag/metadata", entry.replace('.faiss', '_metadata.json'))
+                    metadata_path = os.path.join(settings.METADATA_PATH, entry.replace('.faiss', '_metadata.json'))
                     
                     # 메타데이터 파일 읽기
                     with open(metadata_path, 'r', encoding='utf-8') as f:
@@ -170,11 +172,7 @@ def create_faiss_index(embeddings, metadata, index_path, metadata_path):
     logger.info(f"Created FAISS index at {index_path} with dimension {dimension}")
 
 
-
-
-
-FAISS_INDEX_PATH = r"C:/Users/user/maple_info1105/maple_info/character_faiss/"
-
+FAISS_INDEX_PATH = os.getenv("FAISS_INDEX_PATH")
 
 def save_to_faiss(character_name, character_info):
     try:
