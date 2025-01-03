@@ -33,6 +33,27 @@ chat = ChatOpenAI(
     model_name="ft:gpt-4o-2024-08-06:personal::ASKX7WaZ"  # 채팅 모델로 설정
 )
 
+# 에이전트 초기화
+boss_agent = ChatOpenAI(
+    openai_api_key=settings.OPENAI_API_KEY,
+    model_name="ft:gpt-4o-2024-08-06:personal::BOSS_AGENT"
+)
+
+item_agent = ChatOpenAI(
+    openai_api_key=settings.OPENAI_API_KEY,
+    model_name="ft:gpt-4o-2024-08-06:personal::ITEM_AGENT"
+)
+
+newbie_agent = ChatOpenAI(
+    openai_api_key=settings.OPENAI_API_KEY,
+    model_name="ft:gpt-4o-2024-08-06:personal::NEWBIE_AGENT"
+)
+
+job_agent = ChatOpenAI(
+    openai_api_key=settings.OPENAI_API_KEY,
+    model_name="ft:gpt-4o-2024-08-06:personal::JOB_AGENT"
+)
+
 def hash_nickname(nickname):
     return hashlib.sha256(nickname.encode('utf-8')).hexdigest()[:8]
 
@@ -265,6 +286,14 @@ def chat_with_bot(request):
             logger.debug("Received empty message")
             return JsonResponse({'error': "메시지가 비어 있습니다."}, status=400)
 
+        agent_type = request.POST.get('agent_type', 'default')
+        agent = {
+            'boss': boss_agent,
+            'item': item_agent,
+            'newbie': newbie_agent,
+            'job': job_agent
+        }.get(agent_type, chat)
+
         try:
             character_info = request.session.get('character_info', {})
             character_name = character_info.get('basic_info', {}).get('character_name', '')
@@ -309,7 +338,7 @@ def chat_with_bot(request):
                 ]
 
             try:
-                response = chat.invoke(input=messages, max_tokens=300)
+                response = agent.invoke(input=messages, max_tokens=300)
                 response_text = response.content.strip()
                 if response_text.startswith("Answer: "):
                     response_text = response_text[len("Answer: "):].strip()
