@@ -7,6 +7,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 import requests
 from asgiref.sync import sync_to_async
+from .models import Character
 
 
 logger = logging.getLogger(__name__)
@@ -99,11 +100,20 @@ def google_callback(request):
 
     # 사용자 정보로 로그인 처리
     email = user_info.get('email')
-    if not email:
-        logger.error("사용자 이메일을 가져오지 못했습니다.")
+    google_id = user_info.get('id')
+    if not email or not google_id:
+        logger.error("사용자 이메일 또는 Google ID를 가져오지 못했습니다.")
         return redirect('main_home')
 
     user, created = User.objects.get_or_create(username=email, defaults={'email': email})
+    if created:
+        Character.objects.create(user=user, google_id=google_id)
+    else:
+        character = Character.objects.filter(user=user).first()
+        if character:
+            character.google_id = google_id
+            character.save()
+
     backend = 'django.contrib.auth.backends.ModelBackend'  # 사용 중인 인증 백엔드
     login(request, user, backend=backend)
 
