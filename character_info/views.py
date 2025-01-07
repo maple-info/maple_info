@@ -116,9 +116,17 @@ def character_info_view(request):
 
 
 
-async def character_info_view(request, character_name):
-    # URL에서 받은 character_name 인수 사용
-    character_name = request.GET.get('character_name')  # 쿼리 파라미터에서 캐릭터 이름 가져오기
+async def character_info_view(request, character_name=None):
+    if not character_name:
+        character_name = request.GET.get('character_name')  # 쿼리 파라미터에서 캐릭터 이름 가져오기
+        if not character_name:
+            # 세션에서 캐릭터 이름 가져오기
+            character_info = request.session.get('character_info')
+            if character_info:
+                character_name = character_info.get('character_name')
+            if not character_name:
+                return render(request, 'error.html', {'error': '캐릭터 이름을 입력해주세요.'})
+
     character_info = await get_character_info(character_name)
 
     if character_info:
@@ -142,7 +150,11 @@ async def character_info_view(request, character_name):
         # 캐시 저장
         cache.set(f'character_info_{character_name}', character_info, timeout=600)
 
-
+        # 세션에 캐릭터 정보 저장
+        request.session['character_info'] = {
+            'character_name': character_name,
+            'character_info': character_info,
+        }
 
         # 템플릿으로 전달할 컨텍스트
         context = {

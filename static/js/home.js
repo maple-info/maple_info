@@ -17,3 +17,21 @@ function toggleSidebar() {
 
     isSidebarOpen = !isSidebarOpen;
 }
+
+function openPopup(url) {
+    window.open(url, '구글 로그인', 'width=600,height=600');
+}
+
+function closePopupAndReload() {
+    window.opener.location.reload();
+    window.close();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.querySelector('.toggle-button');
+
+    toggleButton.addEventListener('click', function(event) {
+        event.preventDefault(); // 기본 동작 방지
+        this.classList.toggle('active'); // 클래스 토글
+    });
+});
