@@ -1,0 +1,13 @@
+<form method="post">
+    {% csrf_token %}
+    <label for="user_api_key">API Key:</label>
+    <input type="text" id="user_api_key" name="user_api_key" required>
+    <br>
+    <label for="character_name">캐릭터 닉네임:</label>
+    <input type="text" id="character_name" name="character_name" required>
+    <br>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <button type="submit">연동</button>
+</form>
