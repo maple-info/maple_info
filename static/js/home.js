@@ -35,3 +35,20 @@ document.addEventListener('DOMContentLoaded', function() {
         this.classList.toggle('active'); // 클래스 토글
     });
 });
+// 챗봇 메시지 넘기기
+document.addEventListener("DOMContentLoaded", function() {
+    const sendButton = document.getElementById("send");
+    const messageInput = document.getElementById("message");
+
+    sendButton.addEventListener("click", function() {
+        const message = messageInput.value.trim(); // 공백 제거한 메시지 저장
+        if (message) {
+            // message 값을 localStorage에 저장
+            localStorage.setItem("message", message);
+            // chatbot.html로 이동
+            window.location.href = "chatbot.html"; // 실제 chatbot.html 경로 입력
+        } else {
+            alert("메시지를 입력하세요!"); // 빈 메시지 처리
+        }
+    });
+});

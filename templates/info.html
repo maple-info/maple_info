@@ -12,44 +12,55 @@
 <body>
    
     <!-- 상단바 -->
-<header class="navbar">
-    <a href="/">
-        <img src="/static/image/m_logo.png" alt="Logo" class="logo-image">
-    </a>
-    <div class="navbar-search">
-        <div class="search-container">
-            <form action="{% url 'character_info:info' character_name='dummy' %}" method="GET">
-                <input id="input" name="character_name" type="text" placeholder="캐릭터닉네임" class="search-input">
-                <button type="submit" class="search-button">
-                    <img src="/static/image/돋보기.png" alt="Search" class="search-icon">
-                </button>
-            </form>
-        </div>
-    </div>
-  </header>
-
+    <header class="navbar">
+      <a href="/">
+          <img src="/static/image/m_logo.png" alt="Logo" class="logo-image">
+      </a>
+      <div class="navbar-search">
+          <div class="search-container">
+              <form action="{% url 'character_info:info' character_name='dummy' %}" method="GET">
+                  <input id="input" name="character_name" type="text" placeholder="캐릭터닉네임" class="search-input">
+                  <button type="submit" class="search-button">
+                      <img src="/static/image/돋보기.png" alt="Search" class="search-icon">
+                  </button>
+              </form>
+          </div>
+      </div>
+    </header>
+    <div class="second-navbar"> 
+      <ul class="navbar-menu"> 
+          <li class="nav-link active"><a href="{% url 'main_home' %}">홈</a></li> 
+          <li><a href="{% url 'chatbot' %}">CHAT BOT</a></li> 
+          <li><a href="/">캐릭터검색</a></li> 
+          <li><a href="#contact">랭킹</a></li> 
+          {% if is_authenticated %}
+          <li class="logout">
+              <form method="post" action="{% url 'google_logout' %}">
+                  {% csrf_token %}
+                  <a href="#" class="toggle-button">내정보</a>
+                  <a href="#" onclick="this.closest('form').submit(); return false;">
+                      <button class="logout-button" type="button">로그아웃</button>
+                  </a>
+              </form>
+          </li>
+      {% else %}
+          <li class="login">
+              <form method="post" action="{% url 'google_login' %}">
+                  {% csrf_token %}
+                  <a href="#" onclick="this.closest('form').submit(); return false;">
+                      <button type="button">로그인</button>
+                  </a>
+              </form>
+          </li>
+      {% endif %}
+      </ul> 
+  </div>
 <main>
 
 <div id="left-box">
 </div>
 <div id="main-box">
-    <!-- 사이드바 -->
-    <div id="overlay" onclick="toggleSidebar()"></div>
-
-    <!-- 사이드바 -->
-    <div id="sidebar" class="hidden">
-        <ul class="sidebar-menu">
-            <li><a href="#">CHAT BOT</a></li>
-            <li><a href="#">캐릭터검색</a></li>
-            <li><a href="#">길드검색</a></li>
-            <li><a href="#">랭킹</a></li>
-            <li><a href="#">아이템검색</a></li>
-        </ul>
-    </div>
-    <!-- 사이드바 토글 버튼 -->
-    <button id="sidebar-toggle" onclick="toggleSidebar()">
-        <img src="/static/image/side_bar.png" alt="Toggle Sidebar" id="toggle-image">
-    </button>
+   
 <div class="wrapper">
 
 <div class="basic">
@@ -60,6 +71,8 @@
   </div>
   <div class="basic-info">
       <span>{{ character_name }}</span>
+      <span>{{ character_level }}</span>
+      <span>{{ character_class }}</span>
 
   </div>
 </div>

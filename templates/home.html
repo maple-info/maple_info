@@ -61,9 +61,9 @@ function closePopupAndReload() {
   </header>
   <div class="second-navbar"> 
     <ul class="navbar-menu"> 
-        <li class="nav-link active"><a href="#home">홈</a></li> 
-        <li><a href="#about">CHAT BOT</a></li> 
-        <li><a href="#services">캐릭터검색</a></li> 
+        <li class="nav-link active"><a href="{% url 'main_home' %}">홈</a></li> 
+        <li><a href="{% url 'chatbot' %}">CHAT BOT</a></li> 
+        <li><a href="/">캐릭터검색</a></li> 
         <li><a href="#contact">랭킹</a></li> 
         {% if is_authenticated %}
         <li class="logout">
@@ -92,38 +92,7 @@ function closePopupAndReload() {
 </div>
 
   <div id="main-box">
-    <!-- 사이드바 -->
-    <div id="overlay" onclick="toggleSidebar()"></div>
-
-    <!-- 사이드바 -->
-    <div id="sidebar" class="hidden">
-        <ul class="sidebar-menu">
-            {% if is_authenticated %}
-                <li>
-                    <form method="post" action="{% url 'google_logout' %}">
-                        {% csrf_token %}
-                        <button type="submit">로그아웃</button>
-                    </form>
-                </li>
-            {% else %}
-                <li>
-                    <form method="post" action="{% url 'google_login' %}">
-                        {% csrf_token %}
-                        <button type="submit">로그인</button>
-                    </form>
-                </li>
-            {% endif %}
-            <li><a href="#">캐릭터검색</a></li>
-            <li><a href="#">길드검색</a></li>
-            <li><a href="#">랭킹</a></li>
-            <li><a href="#">아이템검색</a></li>
-        </ul>
-    </div>
-    <!-- 사이드바 토글 버튼 -->
-    <button id="sidebar-toggle" onclick="toggleSidebar()">
-        <img src="/static/image/side_bar.png" alt="Toggle Sidebar" id="toggle-image">
-    </button>
-
+  
     <div class="title-box">
         <div class="child-box">
             메이플 스토리
@@ -134,15 +103,34 @@ function closePopupAndReload() {
     </div>
     <div id="main-box1">
         <div id="chat-input">
-            <input type="text" id="message" placeholder="메이플에 관해서 궁금한게 있나요? 정령에게 메세지를 보내보세요!" autocomplete="off">
-            <button id="send">
-                <img src="/static/image/말풍선.png" alt="전송" />
-            </button>
+            <form action="{% url 'chatbot' %}" method="POST">
+                {% csrf_token %}
+                <input type="text" name="message" id="message" placeholder="메이플에 관해서 궁금한게 있나요? 정령에게 메세지를 보내보세요!" autocomplete="off">
+                <button type="submit" id="send">
+                    <img src="/static/image/말풍선.png" alt="전송" />
+                </button>
+            </form>
         </div>
         <div id="main-box2">
             <div id="recomend-search">
-
+                <div class="row">
+                    <img src="/static/image/말풍선.png">
+                    <div class='text'>메르세데스 4차 스킬트리 알려줘</div>
+                </div>
+                <div class="row">
+                    <img src="/static/image/말풍선.png">
+                    <div class='text'>180렙 신궁 사냥터 추천해줘.</div>
+                </div>                
+                <div class="row">
+                    <img src="/static/image/말풍선.png">
+                    <div class='text'>뇌전 드랍장소 알려줘.</div>
+                </div>
+                <div class="row">
+                    <img src="/static/image/말풍선.png">
+                    <div class='text'>핑크색 치장 아이템 추천해줘.</div>
+                </div>
             </div>
+            
             <div id="main_center_img">
                 <img src="/static/image/main_center_img.png" alt="Sample Image">
             </div>
