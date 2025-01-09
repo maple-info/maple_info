@@ -1,41 +1,46 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .models import CharacterInfo
-import requests
+import json
+import logging
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.views.decorators.http import require_http_methods
+import aiohttp
+from django.conf import settings
+from asgiref.sync import async_to_sync
 
-@login_required
+logger = logging.getLogger(__name__)
+BASE_URL = "https://open.api.nexon.com/maplestory/v1"
+
+async def get_api_data(session, endpoint, params=None, api_key=None):
+    headers = {"x-nxopen-api-key": api_key}
+    url = f"{BASE_URL}{endpoint}"
+    try:
+        async with session.get(url, headers=headers, params=params) as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                logger.error(f"API 요청 실패: {url}, 상태 코드: {response.status}")
+                return None
+    except Exception as e:
+        logger.error(f"API 요청 중 오류 발생: {url}, 오류: {str(e)}")
+        return None
+
+async def get_character_list(api_key):
+    async with aiohttp.ClientSession() as session:
+        return await get_api_data(session, "/character/list", api_key=api_key)
+
+@require_http_methods(["GET", "POST"])
 def input_user_api_key(request):
     if request.method == 'POST':
-        character_name = request.POST.get('character_name')
-        user_api_key = request.POST.get('user_api_key')
-
-        # 입력값 검증
-        if not character_name or not user_api_key:
-            return render(request, 'user_api_key.html', {'error': '닉네임과 API 키를 모두 입력해주세요.'})
-
+        api_key = request.POST.get('api_key')
+        
         try:
-            # OCID 조회
-            response = requests.get(
-                "https://open.api.nexon.com/maplestory/v1/id",
-                params={"character_name": character_name},
-                headers={"x-nxopen-api-key": user_api_key},
-            )
-            response.raise_for_status()
-            data = response.json()
-            ocid = data.get("ocid")
-
-            if not ocid:
-                return render(request, 'user_api_key.html', {'error': 'OCID를 가져올 수 없습니다.'})
-
-            # OCID 저장
-            CharacterInfo.objects.update_or_create(
-                user=request.user,
-                defaults={"ocid": ocid, "character_name": character_name},
-            )
-
-            return redirect('character_info')
-
-        except requests.RequestException as e:
-            return render(request, 'user_api_key.html', {'error': f'API 요청 실패: {str(e)}'})
-
-    return render(request, 'user_api_key.html')
+            character_list = async_to_sync(get_character_list)(api_key)
+            if character_list:
+                return JsonResponse({'status': 'success', 'characters': character_list})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'API 요청 실패'})
+        except Exception as e:
+            logger.error(f"캐릭터 리스트 조회 중 오류 발생: {str(e)}")
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    
+    return render(request, 'input_user_api_key.html')
