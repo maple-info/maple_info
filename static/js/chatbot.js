@@ -157,3 +157,97 @@ $(document).ready(function() {
         });
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    // 서버에서 전달된 message 값을 가져오기
+    const messageInput = document.getElementById("message");
+    const message = messageInput.value; // input 태그의 value에서 가져옴
+
+    if (message) {
+        // 메시지를 바로 처리 (예: 화면에 표시, 서버로 전송 등)
+        processMessage(message);
+    }
+});
+
+// 메시지 처리 함수
+document.addEventListener("DOMContentLoaded", () => {
+    // DOM 요소 가져오기
+    const messageInput = document.getElementById("message");
+    const sendButton = document.getElementById("send");
+    const chatBox = document.getElementById("chat-box");
+    const botMessageBox = document.querySelector(".bot-message .message-content"); // 봇 메시지 박스 가져오기
+
+    // 초기 메시지 처리
+    const initialMessage = messageInput.value.trim();
+    if (initialMessage) {
+        addUserMessage(initialMessage);
+        processMessage(initialMessage);
+    }
+
+    // 전송 버튼 클릭 이벤트
+    sendButton.addEventListener("click", async () => {
+        const message = messageInput.value.trim();
+        if (!message) {
+            alert("메시지를 입력하세요!");
+            return;
+        }
+
+        addUserMessage(message);
+        messageInput.value = ''; // 입력 필드 초기화
+        await processMessage(message);
+    });
+
+    // 사용자 메시지 추가
+    function addUserMessage(message) {
+        const userTemplate = document.getElementById("user-template");
+        const userMessage = userTemplate.cloneNode(true);
+        userMessage.style.display = "flex"; // 숨김 해제
+        userMessage.querySelector(".message-content").textContent = message;
+        chatBox.appendChild(userMessage);
+        scrollToBottom(); // 채팅창 스크롤 유지
+    }
+
+    // 봇 메시지 내용 업데이트
+    function updateBotMessage(message) {
+        if (botMessageBox) {
+            botMessageBox.textContent = message; // 봇 메시지 내용 업데이트
+        } else {
+            console.error("봇 메시지 박스가 없습니다!");
+        }
+    }
+
+    // 메시지 처리 함수
+    async function processMessage(message) {
+        const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+        try {
+            const response = await fetch('/chat_with_bot/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken
+                },
+                body: `message=${encodeURIComponent(message)}`
+            });
+
+            if (!response.ok) {
+                throw new Error(`서버 오류: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            updateBotMessage(data.response); // 봇의 응답 표시 (내용만 업데이트)
+        } catch (error) {
+            console.error("메시지 처리 오류:", error);
+            alert("메시지 처리 중 문제가 발생했습니다.");
+        }
+    }
+
+    // 채팅창 스크롤 유지
+    function scrollToBottom() {
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+});

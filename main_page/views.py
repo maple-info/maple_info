@@ -124,7 +124,9 @@ def google_logout(request):
     return redirect('main_home')
 
 async def chatbot_view(request):
-    return render(request, 'chatbot.html')  # chatbot 앱의 템플릿 경로
+    # POST 요청으로 전달된 message 값 가져오기
+    message = request.POST.get('message', '')  
+    return render(request, 'chatbot.html', {'message': message})
 
 async def character_info_view(request):
     # 챗봇 페이지에 대한 처리 로직 추가
