@@ -130,4 +130,5 @@ async def character_info_view(request):
     # 챗봇 페이지에 대한 처리 로직 추가
     return render(request, 'info.html')  # 챗봇 템플릿 렌더링
 
-
+async def input_user_api_key(request):
+    return render(request, 'user_api_key.html')  # 유저 API 키 입력 페이지 렌더링

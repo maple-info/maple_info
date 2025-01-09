@@ -8,4 +8,5 @@ urlpatterns = [
     path('logout/google/', views.google_logout, name='google_logout'),  # 로그아웃 경로 추가
     path('chatbot/', views.chatbot_view, name='chatbot'),  # 챗봇 페이지 경로 추가
     path('character_info/', views.character_info_view, name='character_info'),  # 캐릭터 정보 페이지 경로 추가
+    path('user_api_key/', views.input_user_api_key, name='input_user_api_key'),  # 유저 API 키 입력 페이지 경로 추가
 ]
