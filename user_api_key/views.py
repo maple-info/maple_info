@@ -36,11 +36,13 @@ def input_user_api_key(request):
         try:
             character_list = async_to_sync(get_character_list)(api_key)
             if character_list:
-                return JsonResponse({'status': 'success', 'characters': character_list})
+                # JSON 직렬화 시 ensure_ascii=False로 설정
+                response_data = json.dumps({'status': 'success', 'characters': character_list}, ensure_ascii=False)
+                return JsonResponse(response_data, safe=False)  # safe=False를 통해 문자열을 JSON으로 반환
             else:
-                return JsonResponse({'status': 'error', 'message': 'API 요청 실패'})
+                return JsonResponse({'status': 'error', 'message': 'API 요청 실패'}, safe=False)
         except Exception as e:
             logger.error(f"캐릭터 리스트 조회 중 오류 발생: {str(e)}")
-            return JsonResponse({'status': 'error', 'message': str(e)})
+            return JsonResponse({'status': 'error', 'message': str(e)}, safe=False)
     
     return render(request, 'input_user_api_key.html')
