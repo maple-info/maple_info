@@ -138,11 +138,87 @@ function closePopupAndReload() {
     </div>
     <div id="main-box3">
         <div id="event" class="box">
-            {{ event_info }}
+            <div id='title'>Event</div>
+            <div class="slider-container">
+                <div class="slider">
+                    {% if event_info.event_notice %}
+                        {% for event in event_info.event_notice %}
+                            <div class="slider-item">
+                                <p class="event-date-container">
+                                    <img src="{{ event.image_url }}">
+                                    <div class="event-title"><a href="{{ event.url }}" target="_blank">{{ event.title }}</a></div> <!-- h5 태그 닫기 오류 수정 -->
+                                    <img src="/static/image/calendar.png" alt="이벤트 기간 이미지" class="event-date-image">
+                                    <span class="event-date-text">
+                                        {% with event.date_event_start|date:"Y-m-d" as start_date %}
+                                            {% with event.date_event_end|date:"Y-m-d" as end_date %}
+                                                {% if start_date == end_date %}
+                                                    {{ start_date }}
+                                                {% else %}
+                                                    {{ start_date }} ~ {{ end_date }}
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endwith %}
+                                    </span>
+                                </p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="slider-item">
+                            <p>등록된 이벤트 공지가 없습니다.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <!-- 옆으로 넘기는 버튼 -->
+                <button class="prev event-prev" onclick="moveSlide(-1, 'event-slider')">
+                    <img src="/static/image/Polygon1.png" alt="Previous" class="slider-arrow">
+                </button>
+                <button class="next event-next" onclick="moveSlide(1, 'event-slider')">
+                    <img src="/static/image/Polygon2.png" alt="Next" class="slider-arrow">
+                </button>
+             </div>
+            
         </div>
-        <div id="cash_shop" class="box">
-            {{ cashitem_info }}
-        </div>
+
+            <div id="cashshop" class="box">
+                <div id='title'>Cash Shop</div>
+                <div class="slider-container">
+                    <div class="slider cashshop-slider">
+                        {% if cashshop_info.cashshop_notice %}
+                            {% for cashshop in cashshop_info.cashshop_notice %}
+                                <div class="slider-item">
+                                    <p class="event-date-container">
+                                        <img class="cashshop-img" src="{{ cashshop.image_url }}">
+                                        <div class="event-title"><a href="{{ cashshop.url }}" target="_blank">{{ cashshop.title }}</a></div>
+                                        <img src="/static/image/calendar.png" alt="이벤트 기간 이미지" class="event-date-image">
+                                        <span class="event-date-text">
+                                            {% with cashshop.date_sale_start as start_date %}
+                                                {% with cashshop.date_sale_end as end_date %}
+                                                    {% if start_date == end_date %}
+                                                        {{ start_date }}
+                                                    {% else %}
+                                                        {{ start_date }} ~ {{ end_date }}
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% endwith %}
+                                        </span>
+                                    </p>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="slider-item">
+                                <p>등록된 캐시샵 공지가 없습니다.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- 옆으로 넘기는 버튼 (캐시샵 영역) -->
+                    <button class="prev prev-cashshop" onclick="moveCashshopSlide(-1)">
+                        <img src="/static/image/Polygon1.png" alt="Previous" class="slider-arrow">
+                    </button>
+                    <button class="next next-cashshop" onclick="moveCashshopSlide(1)">
+                        <img src="/static/image/Polygon2.png" alt="Next" class="slider-arrow">
+                    </button>
+</div>
+    </div>
         <div id="rank_total" class="box">
             {{ ranking_info }}
         </div>
