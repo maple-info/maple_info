@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 import requests
 from asgiref.sync import sync_to_async
 from .models import Character
-
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 BASE_URL = "https://open.api.nexon.com/maplestory/v1"
@@ -44,17 +44,34 @@ async def get_api_data(session, endpoint, params=None):
 
 async def get_info():
     async with aiohttp.ClientSession() as session:
-        # 추가된 API 경로에 대한 데이터 요청
+        # 이벤트와 캐시샵 정보 가져오기
         event_info = await get_api_data(session, "/notice-event")
-        cashshop_info= await get_api_data(session, "/notice-cashshop")
-        # ranking_info= await get_api_data(session, "ranking/overall")
+        cashshop_info = await get_api_data(session, "/notice-cashshop")
 
+        # 이벤트 날짜를 datetime 객체로 변환
+        for event in event_info.get('event_notice', []):
+            event['date_event_start'] = datetime.fromisoformat(event['date_event_start'])
+            event['date_event_end'] = datetime.fromisoformat(event['date_event_end'])
+
+            # 이벤트 이미지 URL 설정
+            event_id = event.get('notice_id', None)
+            if event_id:
+                event['image_url'] = f"/static/image/{event_id}.png"
+            else:
+                event['image_url'] = "/static/image/default.png"
+        
+    # 캐시샵 정보에서 이미지 URL 설정
+        for cashshop in cashshop_info.get('cashshop_notice', []):
+            # 캐시샵 이미지 URL 설정
+            cashshop_id = cashshop.get('notice_id', None)
+            if cashshop_id:
+                cashshop['image_url'] = f"/static/image/{cashshop_id}.png"
+            else:
+                cashshop['image_url'] = "/static/image/default.png"
 
         return {
             "event_info": event_info,
             "cashshop_info": cashshop_info,
-            # "ranking_info" : ranking_info,
-
         }
 
 def google_login(request):
