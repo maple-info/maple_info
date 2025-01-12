@@ -38,7 +38,7 @@ def input_user_api_key(request):
             if character_list:
                 # JSON 직렬화 시 ensure_ascii=False로 설정
                 response_data = json.dumps({'status': 'success', 'characters': character_list}, ensure_ascii=False)
-                return JsonResponse(response_data, safe=False)  # safe=False를 통해 문자열을 JSON으로 반환
+                return JsonResponse(response_data, safe=False)  
             else:
                 return JsonResponse({'status': 'error', 'message': 'API 요청 실패'}, safe=False)
         except Exception as e:

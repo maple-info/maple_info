@@ -4,6 +4,7 @@ const sendButton = document.getElementById('send');
 const botTemplate = document.getElementById('bot-template');
 const botMessageContent = botTemplate.querySelector('.message-content');
 let isSidebarOpen = false;
+let currentSessionId = null;
 
 // 메시지를 추가하는 함수 (사용자 메시지)
 function addUserMessage(text) {
@@ -36,6 +37,61 @@ function getCSRFToken() {
     return token;
 }
 
+function loadChatSessions() {
+    $.ajax({
+        url: '/load_chat_history/', // 서버의 히스토리 엔드포인트
+        method: 'GET',
+        success: function (data) {
+            const sessionList = $('#chat-session-list');
+            sessionList.empty(); // 기존 목록 초기화
+
+            data.history.forEach(session => {
+                const listItem = $('<li>')
+                    .text(`Session at ${new Date(session.created_at).toLocaleString()}`)
+                    .attr('data-session-id', session.session_id)
+                    .addClass('session-item')
+                    .click(() => loadChatMessages(session.session_id)); // 클릭 시 채팅 내역 로드
+                sessionList.append(listItem);
+            });
+        },
+        error: function (xhr) {
+            if (xhr.status === 401) {
+                alert('로그인이 필요합니다.');
+            } else {
+                alert('채팅 세션을 불러오는 중 오류가 발생했습니다.');
+            }
+        }
+    });
+}
+
+
+function loadChatMessages(sessionId) {
+    $.ajax({
+        url: `/load_chat_messages/${sessionId}/`, // 세션 ID를 포함한 URL
+        method: 'GET',
+        success: function (data) {
+            const messageList = $('#chat-history-list');
+            messageList.empty(); // 기존 메시지 내역 초기화
+
+            data.messages.forEach(message => {
+                const listItem = $('<li>')
+                    .text(`[${message.sender}] ${message.text}`)
+                    .addClass(message.sender === 'user' ? 'user-message' : 'bot-message');
+                messageList.append(listItem);
+            });
+        },
+        error: function (xhr) {
+            alert('채팅 내역을 불러오는 중 오류가 발생했습니다.');
+        }
+    });
+}
+
+
+$(document).ready(function () {
+    loadChatSessions();
+});
+
+
 // 메시지 전송
 async function sendMessage() {
     const message = messageInput.value.trim();
@@ -66,6 +122,33 @@ async function sendMessage() {
 
         typeBotMessage(data.response); // 봇의 응답 표시
         messageInput.value = ''; // 입력 필드 초기화
+
+        // 채팅 메시지 저장
+        await fetch('/save_chat_message/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({ session_id: currentSessionId, sender: 'user', text: message })
+        });
+        await fetch('/save_chat_message/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({ session_id: currentSessionId, sender: 'bot', text: data.response })
+        });
+
+        // 채팅 내역 목록에 추가
+        const chatHistoryList = document.getElementById('chat-history-list');
+        const userListItem = document.createElement('li');
+        userListItem.textContent = `user: ${message}`;
+        chatHistoryList.appendChild(userListItem);
+        const botListItem = document.createElement('li');
+        botListItem.textContent = `bot: ${data.response}`;
+        chatHistoryList.appendChild(botListItem);
     } catch (error) {
         console.error('메시지 전송 오류:', error);
         alert('메시지 전송 중 문제가 발생했습니다.');
@@ -95,6 +178,7 @@ function setupEventListeners() {
 // 초기화
 $(document).ready(() => {
     setupEventListeners();
+    loadChatSessions(); // 채팅 세션 목록 불러오기
 });
 
 
