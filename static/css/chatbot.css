@@ -48,7 +48,7 @@ line-height: normal;
     height: 445px;
     background-color: #ffffff; /* 임의 배경색 */
     overflow-y: auto; /* 내용이 길면 스크롤 */
-    padding: 25px;
+    padding: 17px;
     border: 4px solid #E5A12C; /* 아래쪽 경계선 */
     border-radius: 8px;
     margin-left: 58px;
@@ -162,7 +162,7 @@ line-height: normal;
     flex-direction: column;
     gap: 10px;
     width: 100%;
-    height: 50%;
+    height: 100%;
 }
 
 /* 메시지 스타일 */
@@ -177,85 +177,54 @@ line-height: normal;
 }
 /* 사용자 메시지 스타일 */
 .user-message {
-    align-self: flex-start;
+    align-self: flex-end;
+    gap: 16px;
 }
 .user-message .message-content{
-    width: 90%;
-    background-color: rgb(255, 255, 255); /* 투명도 추가 */
-    border-radius: 10px;
-    padding: 10px;
-    color: rgb(0, 0, 0);
-    border: 3px solid #E5A12C;
-    margin: 10px;
+    display: flex;
+    padding: 11px 13px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 10px;
+    border-radius: 18px;
+    background-color: #FFF6EA;
 }
 .user-message img{
-    margin: 10px;
-    width: 60px;
-    height: 60px;
-    border: 3px solid #E5A12C;
-    border-radius: 50%; /* 완전한 원 */
+    width: 54px;
+    height: 54px;
+    border-radius: 54px;
+    border: 4px solid var(--main_green, #E5A12C);
+    background: url(<path-to-image>)
 }
 
 /* 봇 메시지 스타일 */
 
-#bot-template {
-    position: relative; /* 부모 박스를 기준으로 img 위치를 설정하려면 relative가 필요합니다. */
-    width: 90%; /* 고정 너비 */
-    height: 300px; /* 고정 높이 */
-    overflow-y: visible; /* 세로 스크롤 활성화 */
-    background-color: #625233;
-    border-radius: 10px;
-    border: 9px solid #3E2611;
-    padding: 10px;
-    margin: 30px;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-}
-
 .bot-message {
-    display: flex; /* 가로 배치 */
-    align-items: center; /* 세로 가운데 정렬 */
-    padding: 10px 10px 10px 60px; /* 왼쪽 공간 확보 (이미지가 튀어나올 경우 대비) */
-    margin-bottom: 10px; /* 메시지 간 간격 */
-    background-color: #f9f9f9; /* 배경색 */
-    border: 1px solid #ddd; /* 테두리 */
-    border-radius: 5px; /* 모서리 둥글게 */
-    box-sizing: border-box; /* 패딩 포함 크기 계산 */
-    width: 100%; /* 부모 요소의 너비 */ 
-    position: relative; /* 자식 요소의 절대 위치 기준 */
-}
-#bot-template .message-content{
-    width: 70%;
-    font-size: 14px; /* 텍스트 크기 */
-    color: #ffffff; /* 텍스트 색상 */
-    word-wrap: break-word; /* 긴 단어 줄바꿈 */
-    padding: 10px; /* 텍스트와 테두리 간 여백 */
-    box-sizing: border-box; /* 패딩 포함 크기 계산 */
+    margin-right: auto; /* 봇 메시지는 왼쪽으로 정렬 */
+    gap: 16px;
 }
 
-#bot-template .message-icon {
-    width: 250px;
-    height: 250px;
-    position: absolute; /* 부모 박스 기준으로 위치를 설정합니다. */
-    top: 50%; /* 수직 가운데 정렬 */
-    right: -60px; /* 오른쪽으로 더 이동 (기존 0에서 -50px로 수정) */
-    transform: translateY(-50%); /* 수직 가운데 정렬 보정 */
-    z-index: 10; /* 가장 앞으로 튀어나오게 설정 */
+.message-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 54px;
+    border: 4px solid var(--main_green, #E5A12C);
+    background: url(<path-to-image>)
+    
 }
-@media (max-width: 800px) {
-    #bot-template .message-icon {
-        display: none; /* 이미지를 숨깁니다 */
-    }
-    #bot-template .message-content{
-        width: 100%;
-        font-size: 14px; /* 텍스트 크기 */
-        color: #ffffff; /* 텍스트 색상 */
-        word-wrap: break-word; /* 긴 단어 줄바꿈 */
-        padding: 10px; /* 텍스트와 테두리 간 여백 */
-        box-sizing: border-box; /* 패딩 포함 크기 계산 */
-    }
+
+#bot-template .message-content {
+    display: flex;
+    padding: 11px 13px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 10px;
+    border-radius: 18px;
+    background-color: #FFF6EA;
 }
+
 /* 입력 영역 */
 #chat-input {
     display: flex;
@@ -379,14 +348,26 @@ line-height: normal;
     text-align: center; /* 텍스트 정렬 */
     font-size: 14px;
     position: relative; /* 위치 조정을 위해 추가 */
-    top: -5px; /* 위로 20px 이동 */
+    top: -5px; /* 컨테이너를 아래로 이동 */
+    overflow: hidden; /* 이미지가 컨테이너를 벗어나지 않도록 설정 */
+    background-color: #f9f9f9; /* 배경색 추가 (필요 시 조정 가능) */
 }
 
 /* 이미지 스타일 */
 .character-image {
-    width: 100%;
-    height: auto; /* 비율에 맞게 조정 */
-    object-fit: cover; /* 이미지 비율 유지하며 크기 조정 */
+    width: 150%; /* 컨테이너를 살짝 넘어서 채우도록 설정 */
+    height: 150%; /* 동일하게 높이도 늘려서 꽉 차도록 설정 */
+    object-fit: cover; /* 이미지 비율을 유지하며 컨테이너에 맞춤 */
+    border-radius: 50%; /* 이미지를 원형으로 표시 */
+    transform: translate(5px, 20px); /* 오른쪽(10px)과 아래로(10px) 이동 */
+}
+
+/* "이미지가 없습니다" 텍스트 스타일 */
+.no-image {
+    font-size: 14px; /* 텍스트 크기 */
+    color: #999; /* 텍스트 색상 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    padding: 10px; /* 텍스트 여백 */
 }
 
 /* 텍스트 컨테이너 스타일 */
