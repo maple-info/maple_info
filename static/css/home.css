@@ -258,7 +258,7 @@ main {
   border-radius: 67px;
   border: 2px solid #B6B6B6;
   width: 100%;
-  height: 30px;
+  height: 25px;
 }
 #recomend-search .row img { 
   margin-right: 10px; /* 이미지와 텍스트 사이의 간격 */
@@ -282,7 +282,7 @@ main {
   justify-content: flex-end; /* 이미지 오른쪽 끝에 정렬 */
 }
 #main_center_img img {
-  width: 100%; /* 이미지 너비 설정 */
+  width: 90%; /* 이미지 너비 설정 */
   height: auto; /* 비율 유지 */
 }
 
@@ -514,16 +514,27 @@ line-height: normal;
 
 /* 이전 버튼 (왼쪽) */
 .prev {
-  right: 60px; /* 화면 왼쪽에서 20px 떨어지게 설정 */
+  right: 50px; 
 }
 
 /* 다음 버튼 (오른쪽) */
 .next {
-  right: 40px; /* 화면 오른쪽에서 20px 떨어지게 설정 */
+  right: 30px; 
 }
 
 .event-date-container .cashshop-img{
-  height: 115px;
+  height: 124px;
   width: 290px;
   border-radius: 16px;
+}
+#cashshop #title{
+  text-align: left; /* 텍스트를 왼쪽 정렬 */
+  color: rgba(0, 0, 0, 0.70);
+  /* 스공수치 */
+  font-family: Pretendard;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.3px;
 }
