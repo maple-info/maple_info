@@ -34,7 +34,7 @@
                 <form method="post" action="{% url 'google_logout' %}">
                     {% csrf_token %}
                     <a href="#" class="toggle-button">내정보</a>
-                    <a href="#" onclick="this.closest('form').submit(); return false;">
+                    <a href="{% url 'chatbot' %}" onclick="this.closest('form').submit(); return false;">
                         <button class="logout-button" type="button">로그아웃</button>
                     </a>
                 </form>
@@ -43,7 +43,7 @@
             <li class="login">
                 <form method="post" action="{% url 'google_login' %}">
                     {% csrf_token %}
-                    <a href="#" onclick="this.closest('form').submit(); return false;">
+                    <a href="{% url 'chatbot' %}" onclick="this.closest('form').submit(); return false;">
                         <button type="button">로그인</button>
                     </a>
                 </form>
@@ -90,19 +90,18 @@
         
         </div>
     </div>
-
     <div id="chat-container">
-   
         <div id="chat-box">
             <!-- 사용자 메시지 템플릿 -->
             <div id="user-template" class="message user-message" style="display: none;">
-                <img src="/static/image/물의정령.png" alt="사용자" class="message-icon" style="max-width: 50px; max-height: 50px;">
+                <div class="message-content"></div>
+                <img src="/static/image/물의정령.png" alt="사용자" class="message-icon" id="user-icon">
+            </div>
+            <!-- 봇 메시지 템플릿 -->
+            <div id="bot-template" class="message bot-message" style="display: none;">
+                <img src="/static/image/chatbot_image.png" alt="봇" class="message-icon">
                 <div class="message-content"></div>
             </div>
-        </div>
-        <div id="bot-template" class="message bot-message">
-            <div class="message-content"></div>
-            <img src="/static/image/chatbot_image.png" alt="봇" class="message-icon">
         </div>
         <div id="chat-input">
             <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
@@ -112,6 +111,7 @@
             </button>
         </div>
     </div>
+    
     <div id="right-box">
         <!-- Right Box Content -->
     </div>
