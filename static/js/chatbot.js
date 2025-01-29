@@ -1,14 +1,10 @@
 const chatBox = document.getElementById('chat-box');
 const messageInput = document.getElementById('message');
-const sendButton = document.getElementById('send');
+const userTemplate = document.getElementById('user-template');
 const botTemplate = document.getElementById('bot-template');
-const botMessageContent = botTemplate.querySelector('.message-content');
-let isSidebarOpen = false;
-let currentSessionId = null;
 
-// 메시지를 추가하는 함수 (사용자 메시지)
+// 사용자 메시지 추가
 function addUserMessage(text) {
-    const userTemplate = document.getElementById('user-template');
     const messageElement = userTemplate.cloneNode(true);
     messageElement.querySelector('.message-content').textContent = text;
     messageElement.style.display = 'flex'; // 숨겨진 템플릿 표시
@@ -16,8 +12,13 @@ function addUserMessage(text) {
     chatBox.scrollTop = chatBox.scrollHeight; // 스크롤을 최하단으로 이동
 }
 
-// 봇의 텍스트를 타이핑 효과로 표시
-function typeBotMessage(text) {
+// 봇 메시지 추가 (타이핑 효과)
+function addBotMessage(text) {
+    const messageElement = botTemplate.cloneNode(true);
+    const botMessageContent = messageElement.querySelector('.message-content');
+    messageElement.style.display = 'flex'; // 숨겨진 템플릿 표시
+    chatBox.appendChild(messageElement);
+
     botMessageContent.textContent = ''; // 기존 텍스트 초기화
     let index = 0;
     const typingInterval = setInterval(() => {
@@ -26,71 +27,10 @@ function typeBotMessage(text) {
             index++;
         } else {
             clearInterval(typingInterval);
+            chatBox.scrollTop = chatBox.scrollHeight; // 스크롤을 최하단으로 이동
         }
     }, 50);
 }
-
-// CSRF 토큰 가져오기
-function getCSRFToken() {
-    const token = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
-    if (!token) throw new Error("CSRF 토큰을 찾을 수 없습니다.");
-    return token;
-}
-
-function loadChatSessions() {
-    $.ajax({
-        url: '/load_chat_history/', // 서버의 히스토리 엔드포인트
-        method: 'GET',
-        success: function (data) {
-            const sessionList = $('#chat-session-list');
-            sessionList.empty(); // 기존 목록 초기화
-
-            data.history.forEach(session => {
-                const listItem = $('<li>')
-                    .text(`Session at ${new Date(session.created_at).toLocaleString()}`)
-                    .attr('data-session-id', session.session_id)
-                    .addClass('session-item')
-                    .click(() => loadChatMessages(session.session_id)); // 클릭 시 채팅 내역 로드
-                sessionList.append(listItem);
-            });
-        },
-        error: function (xhr) {
-            if (xhr.status === 401) {
-                alert('로그인이 필요합니다.');
-            } else {
-                alert('채팅 세션을 불러오는 중 오류가 발생했습니다.');
-            }
-        }
-    });
-}
-
-
-function loadChatMessages(sessionId) {
-    $.ajax({
-        url: `/load_chat_messages/${sessionId}/`, // 세션 ID를 포함한 URL
-        method: 'GET',
-        success: function (data) {
-            const messageList = $('#chat-history-list');
-            messageList.empty(); // 기존 메시지 내역 초기화
-
-            data.messages.forEach(message => {
-                const listItem = $('<li>')
-                    .text(`[${message.sender}] ${message.text}`)
-                    .addClass(message.sender === 'user' ? 'user-message' : 'bot-message');
-                messageList.append(listItem);
-            });
-        },
-        error: function (xhr) {
-            alert('채팅 내역을 불러오는 중 오류가 발생했습니다.');
-        }
-    });
-}
-
-
-$(document).ready(function () {
-    loadChatSessions();
-});
-
 
 // 메시지 전송
 async function sendMessage() {
@@ -102,7 +42,8 @@ async function sendMessage() {
 
     try {
         addUserMessage(message); // 사용자 메시지 표시
-        const csrfToken = getCSRFToken();
+        messageInput.value = ''; // 입력 필드 초기화
+        const csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value;
 
         const response = await fetch('/chat_with_bot/', {
             method: 'POST',
@@ -120,39 +61,24 @@ async function sendMessage() {
         const data = await response.json();
         if (data.error) throw new Error(data.error);
 
-        typeBotMessage(data.response); // 봇의 응답 표시
-        messageInput.value = ''; // 입력 필드 초기화
-
-        // 채팅 메시지 저장
-        await fetch('/save_chat_message/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({ session_id: currentSessionId, sender: 'user', text: message })
-        });
-        await fetch('/save_chat_message/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({ session_id: currentSessionId, sender: 'bot', text: data.response })
-        });
-
-        // 채팅 내역 목록에 추가
-        const chatHistoryList = document.getElementById('chat-history-list');
-        const userListItem = document.createElement('li');
-        userListItem.textContent = `user: ${message}`;
-        chatHistoryList.appendChild(userListItem);
-        const botListItem = document.createElement('li');
-        botListItem.textContent = `bot: ${data.response}`;
-        chatHistoryList.appendChild(botListItem);
+        addBotMessage(data.response); // 봇 메시지 표시
     } catch (error) {
         console.error('메시지 전송 오류:', error);
         alert('메시지 전송 중 문제가 발생했습니다.');
     }
+}
+
+// 버튼 클릭 및 엔터키 이벤트 리스너
+document.getElementById('send').addEventListener('click', sendMessage);
+messageInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') sendMessage();
+});
+
+// CSRF 토큰 가져오기
+function getCSRFToken() {
+    const token = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+    if (!token) throw new Error("CSRF 토큰을 찾을 수 없습니다.");
+    return token;
 }
 
 // 사이드바 열고 닫기
@@ -178,9 +104,7 @@ function setupEventListeners() {
 // 초기화
 $(document).ready(() => {
     setupEventListeners();
-    loadChatSessions(); // 채팅 세션 목록 불러오기
 });
-
 
 $(document).ready(function() {
     $('#search-form').on('submit', function(event) {
@@ -205,18 +129,15 @@ $(document).ready(function() {
             },
             success: function(response) {
                 // 성공 시 결과 표시
-                $('#search-results').html(`
+                $('#search-results').html(` 
                     <div class="character-box">
-                        <!-- 왼쪽 이미지 박스 -->
                         <div class="character-image-container">
                             ${response.character_image 
                                 ? `<img src="${response.character_image}" alt="${response.character_name}" class="character-image">`
                                 : '<span class="no-image">이미지가 없습니다.</span>'}
                         </div>
-                            
-                        <!-- 오른쪽 텍스트 박스 -->
                         <div class="character-details">
-                            <div class="character-detail"<span class="value nickname">${response.character_name}</span><div class="server-box"><span class="server">${response.world_name}</span></div></div>
+                            <div class="character-detail"><span class="value nickname">${response.character_name}</span></div>
                             <hr class="detail-divider">
                             <div class="character-detail"><span class="label">레벨</span><span class="value">${response.character_level}</span></div>
                             <hr class="detail-divider">
@@ -224,14 +145,21 @@ $(document).ready(function() {
                             <hr class="detail-divider">
                             <div class="character-detail"><span class="label">직업</span><span class="value">${response.character_class}</span></div>
                             <hr class="detail-divider">
-                            <div class="character-detail"><span class="label">전투력</span><span class="value">${response.Combat_Power}</span></div>                    
+                            <div class="character-detail"><span class="label">전투력</span><span class="value">${response.Combat_Power}</span></div>
                             <hr class="detail-divider">
                         </div>
                     </div>
                 `);
+
+                // 사용자 아이콘 업데이트
+                const userIcon = document.getElementById('user-icon');
+                if (response.character_image) {
+                    userIcon.src = response.character_image; // 검색된 캐릭터 이미지로 변경
+                } else {
+                    userIcon.src = '/static/image/물의정령.png'; // 기본 이미지 사용
+                }
             },
             error: function(xhr) {
-                // 에러 처리
                 if (xhr.status === 404) {
                     $('#search-results').html('<p style="color: red;">Character not found. Please try again.</p>');
                 } else {
@@ -240,98 +168,4 @@ $(document).ready(function() {
             }
         });
     });
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    // 서버에서 전달된 message 값을 가져오기
-    const messageInput = document.getElementById("message");
-    const message = messageInput.value; // input 태그의 value에서 가져옴
-
-    if (message) {
-        // 메시지를 바로 처리 (예: 화면에 표시, 서버로 전송 등)
-        processMessage(message);
-    }
-});
-
-// 메시지 처리 함수
-document.addEventListener("DOMContentLoaded", () => {
-    // DOM 요소 가져오기
-    const messageInput = document.getElementById("message");
-    const sendButton = document.getElementById("send");
-    const chatBox = document.getElementById("chat-box");
-    const botMessageBox = document.querySelector(".bot-message .message-content"); // 봇 메시지 박스 가져오기
-
-    // 초기 메시지 처리
-    const initialMessage = messageInput.value.trim();
-    if (initialMessage) {
-        addUserMessage(initialMessage);
-        processMessage(initialMessage);
-    }
-
-    // 전송 버튼 클릭 이벤트
-    sendButton.addEventListener("click", async () => {
-        const message = messageInput.value.trim();
-        if (!message) {
-            alert("메시지를 입력하세요!");
-            return;
-        }
-
-        addUserMessage(message);
-        messageInput.value = ''; // 입력 필드 초기화
-        await processMessage(message);
-    });
-
-    // 사용자 메시지 추가
-    function addUserMessage(message) {
-        const userTemplate = document.getElementById("user-template");
-        const userMessage = userTemplate.cloneNode(true);
-        userMessage.style.display = "flex"; // 숨김 해제
-        userMessage.querySelector(".message-content").textContent = message;
-        chatBox.appendChild(userMessage);
-        scrollToBottom(); // 채팅창 스크롤 유지
-    }
-
-    // 봇 메시지 내용 업데이트
-    function updateBotMessage(message) {
-        if (botMessageBox) {
-            botMessageBox.textContent = message; // 봇 메시지 내용 업데이트
-        } else {
-            console.error("봇 메시지 박스가 없습니다!");
-        }
-    }
-
-    // 메시지 처리 함수
-    async function processMessage(message) {
-        const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-
-        try {
-            const response = await fetch('/chat_with_bot/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': csrfToken
-                },
-                body: `message=${encodeURIComponent(message)}`
-            });
-
-            if (!response.ok) {
-                throw new Error(`서버 오류: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            if (data.error) {
-                throw new Error(data.error);
-            }
-
-            updateBotMessage(data.response); // 봇의 응답 표시 (내용만 업데이트)
-        } catch (error) {
-            console.error("메시지 처리 오류:", error);
-            alert("메시지 처리 중 문제가 발생했습니다.");
-        }
-    }
-
-    // 채팅창 스크롤 유지
-    function scrollToBottom() {
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
 });

@@ -464,4 +464,3 @@ def chatbot_view(request):
     })
 
 
-

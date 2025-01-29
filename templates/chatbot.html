@@ -57,24 +57,8 @@
             <h1 class="title-text">CHAT BOT HISTORY</h1>
         </div>
         <div id="history">
-            <h2>Chat Bot History</h2>
-        
-            {% if user.is_authenticated %}
-                <ul id="chat-session-list">
-                    <!-- 채팅 세션 목록이 동적으로 추가됩니다 -->
-                </ul>
-                <ul id="chat-history-list">
-                    <!-- 선택된 세션의 채팅 내역이 동적으로 추가됩니다 -->
-                </ul>
-            {% else %}
-                <p>로그인 후 채팅 히스토리를 확인할 수 있습니다.</p>
-                <form method="post" action="{% url 'google_login' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="login-button">구글 로그인</button>
-                </form>
-            {% endif %}
+            
         </div>
-        
         <div id="character-info-container">
             <div id="search-results"></div>
 
