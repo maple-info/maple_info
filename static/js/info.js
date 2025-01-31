@@ -1,23 +1,3 @@
-// 사이드바
-let isSidebarOpen = false;
-
-function toggleSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
-
-    if (isSidebarOpen) {
-        // 닫기
-        sidebar.style.right = "-500px"; // 화면 밖으로 숨김
-        overlay.style.display = "none"; // 오버레이 숨김
-    } else {
-        // 열기
-        sidebar.style.right = "0"; // 화면 안으로 보임
-        overlay.style.display = "block"; // 오버레이 표시
-    }
-
-    isSidebarOpen = !isSidebarOpen;
-}
-
 
 // `equipment-data` 스크립트 태그에서 JSON 데이터를 가져옴
 const equipmentData = JSON.parse(document.getElementById('equipment-data').textContent);
@@ -56,8 +36,10 @@ const percentageKeys = [
     "max_mp_rate",
 ];
 // 툴팁을 보여주는 함수
+// 툴팁을 보여주는 함수
 function showTooltip(event, slot) {
     const item = equipmentData.item_equipment[slot];
+    const tooltip = document.getElementById("tooltip");
 
     if (item) {
         // 툴팁 내용 설정
@@ -143,15 +125,20 @@ function showTooltip(event, slot) {
 
         // 툴팁 위치 설정
         tooltip.style.display = 'block';
-        tooltip.style.left = `${event.pageX + 10}px`;
-        tooltip.style.top = `${event.pageY + 10}px`;
-        
+        tooltip.style.left = `${event.target.offsetLeft + event.target.offsetWidth + 10}px`;  // 부모 박스 기준으로 우측 위치
+        tooltip.style.top = `${event.target.offsetTop}px`;  // 동일한 수평선에 위치
+
         // 마우스가 요소에서 나가면 툴팁 숨기기
         event.target.addEventListener('mouseleave', hideTooltip);
     } else {
         tooltip.innerHTML = "장비 정보 없음";
     }
+}
 
+// 툴팁 숨기기 함수
+function hideTooltip() {
+    const tooltip = document.getElementById("tooltip");
+    tooltip.style.display = 'none';
 }
 
 // 툴팁을 숨기는 함수
