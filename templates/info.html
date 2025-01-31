@@ -211,7 +211,6 @@
                     <div class="title">어빌리티</div>
                     <div class="inner-box ability">
                         <div class="row ability-container">
-                            <p>어빌리티</p>
                             <div class="ability-tab-content active" id="ability-tab1">
                                 <div class="row">
                                     {% for preset_key, preset in ability_data.items %}
@@ -272,15 +271,18 @@
                         </div>
                     </div>
                 </div>
+
+                {% comment %} 6차스킬/심볼/아트박스 {% endcomment %}
                 <div class="hexa">
                     <div class="title">6차스킬/심볼/아트박스</div>
-                    <div class="inner-box hexa">캐릭터</div>
+                    <div class="inner-box hexa"> </div>
                 </div>
+
+                {% comment %} 하이퍼스탯탯 {% endcomment %}
                 <div class="hyperstat">
                     <div class="title">하이퍼스탯</div>
                     <div class="inner-box hyperstat">
                         <div class='row hyper-stat-container'>
-                            <p>하이퍼 스탯</p>
                             <div  class="hyper-tab-content active" id="preset-1">
                                 <div class="row">
                                     {% for preset_link, stats in hyper_stat_data.items %}
@@ -348,9 +350,11 @@
                         </div>
                     </div>
                 </div>
+
+                {% comment %} 스킬 {% endcomment %}
                 <div class="skill">
                     <div class="title">스킬</div>
-                    <div class="inner-box skill">캐릭터</div>
+                    <div class="inner-box skill">skill</div>
                 </div>
 
             </div>

@@ -334,14 +334,20 @@ main {
   width: 964px;  /* 전체 크기 조정 */
   height: 315px;
   background-color: #ffffff;
+  margin-right: aut;
 }
-.equipmen-box {
+.equipment-box {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   position: relative;  /* 부모 요소에 relative를 추가하여 슬롯들이 이 기준으로 위치하도록 설정 */
 }
-
+.equipment-tooltip{
+  
+  display: flex;
+  
+  position: relative;
+}
 .slot {
   background-color: rgba(194, 187, 187, 0.767);
   position: absolute;

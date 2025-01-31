@@ -74,9 +74,9 @@ async def get_character_info(character_name, date=None):
 
         # basic_info = await get_api_data(session, "/character/basic", params)
         stat_info = await get_api_data(session, "/character/stat", params)
-        # hyper_stat_info = await get_api_data(session, "/character/hyper-stat", params)
+        hyper_stat_info = await get_api_data(session, "/character/hyper-stat", params)
         item_equipment_info = await get_api_data(session, "/character/item-equipment", params)
-        # ability_info = await get_api_data(session, "/character/ability", params)
+        ability_info = await get_api_data(session, "/character/ability", params)
         # set_effect_info = await get_api_data(session, "/character/set-effect", params)
         # link_skill_info = await get_api_data(session, "/character/link-skill", params)
         # hexamatrix_info = await get_api_data(session, "/character/hexamatrix", params)
@@ -87,9 +87,9 @@ async def get_character_info(character_name, date=None):
         return {
             # "basic_info": basic_info,
             "stat_info": stat_info,
-            # "hyper_stat_info":hyper_stat_info,
+            "hyper_stat_info":hyper_stat_info,
             "item_equipment_info": item_equipment_info,
-            # "ability_info": ability_info,
+            "ability_info": ability_info,
             # "set_effect_info": set_effect_info,
             # "link_skill_info": link_skill_info,
             # "hexamatrix_info": hexamatrix_info,
