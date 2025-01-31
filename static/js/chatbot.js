@@ -101,9 +101,49 @@ function setupEventListeners() {
     $('#search-form').on('submit', handleCharacterSearch);
 }
 
+// 채팅 세션 불러오기
+async function loadChatSessions() {
+    try {
+        const response = await fetch('/get_chat_sessions/');
+        if (!response.ok) throw new Error('Failed to load chat sessions');
+        const data = await response.json();
+        const sessionList = document.getElementById('session-list');
+        sessionList.innerHTML = '';
+        data.sessions.forEach(session => {
+            const li = document.createElement('li');
+            li.textContent = `${session.created_at} - ${session.last_message}`;
+            li.dataset.sessionId = session.id;
+            li.addEventListener('click', () => loadSessionMessages(session.id));
+            sessionList.appendChild(li);
+        });
+    } catch (error) {
+        console.error('Error loading chat sessions:', error);
+    }
+}
+
+// 채팅 세션 메시지 불러오기
+async function loadSessionMessages(sessionId) {
+    try {
+        const response = await fetch(`/get_session_messages/${sessionId}/`);
+        if (!response.ok) throw new Error('Failed to load session messages');
+        const data = await response.json();
+        chatBox.innerHTML = '';
+        data.messages.forEach(msg => {
+            if (msg.sender === 'user') {
+                addUserMessage(msg.text);
+            } else {
+                addBotMessage(msg.text);
+            }
+        });
+    } catch (error) {
+        console.error('Error loading session messages:', error);
+    }
+}
+
 // 초기화
 $(document).ready(() => {
     setupEventListeners();
+    loadChatSessions(); // 채팅 세션 불러오기
 });
 
 $(document).ready(function() {

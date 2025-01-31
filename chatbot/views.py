@@ -359,100 +359,89 @@ def chat_with_bot(request):
 
 
 
-from .models import ChatHistory, ChatSession, ChatMessage
-
-@require_http_methods(["POST"])
-def save_chat_history(request):
-    if request.user.is_authenticated:
-        new_message = json.loads(request.body)
-        ChatHistory.objects.create(
-            user=request.user,
-            sender=new_message['sender'],
-            text=new_message['text']
-        )
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'error': 'User not authenticated'}, status=401)
-
-@login_required
-def load_chat_history(request):
-    try:
-        sessions = ChatSession.objects.filter(user=request.user).order_by('-created_at')
-        history = [
-            {
-                'session_id': session.id,
-                'created_at': session.created_at,
-                'messages': [
-                    {
-                        'sender': msg.sender,
-                        'text': msg.text,
-                        'timestamp': msg.timestamp,
-                    }
-                    for msg in session.messages.order_by('timestamp')
-                ]
-            }
-            for session in sessions
-        ]
-        return JsonResponse({'history': history}, json_dumps_params={'ensure_ascii': False})
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+# @login_required
+# def get_chat_sessions(request):
+#     """사용자의 채팅 세션 목록을 가져옴"""
+#     try:
+#         sessions = ChatSession.objects.filter(user=request.user).order_by('-last_message_time')
+#         sessions_data = []
+        
+#         for session in sessions:
+#             last_message = session.messages.last()
+#             sessions_data.append({
+#                 'id': session.id,
+#                 'created_at': session.created_at.strftime('%Y-%m-%d %H:%M'),
+#                 'last_message': last_message.text[:50] if last_message else '',
+#                 'messages_count': session.get_messages_count(),
+#             })
+        
+#         return JsonResponse({'sessions': sessions_data})
+#     except Exception as e:
+#         logger.exception("Error fetching chat sessions")
+#         return JsonResponse({'error': str(e)}, status=500)
 
 
-from .models import ChatSession, ChatMessage
+# @login_required
+# def get_session_messages(request, session_id):
+#     """특정 세션의 메시지 목록을 가져옴"""
+#     try:
+#         session = ChatSession.objects.get(id=session_id, user=request.user)
+#         messages = session.messages.all()
+        
+#         messages_data = [{
+#             'id': msg.id,
+#             'sender': msg.sender,
+#             'text': msg.text,
+#             'timestamp': msg.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+#             'is_read': msg.is_read
+#         } for msg in messages]
+        
+#         return JsonResponse({'messages': messages_data})
+#     except ChatSession.DoesNotExist:
+#         return JsonResponse({'error': '채팅 세션을 찾을 수 없습니다.'}, status=404)
+#     except Exception as e:
+#         logger.exception("Error fetching session messages")
+#         return JsonResponse({'error': str(e)}, status=500)
 
-@login_required
-def save_chat_message(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            session_id = data.get('session_id')
-            text = data.get('text')
-            sender = data.get('sender', 'user')
+# @login_required
+# def mark_messages_read(request, session_id):
+#     """세션의 모든 메시지를 읽음 상태로 표시"""
+#     try:
+#         session = ChatSession.objects.get(id=session_id, user=request.user)
+#         session.messages.filter(is_read=False).update(is_read=True)
+#         return JsonResponse({'status': 'success'})
+#     except ChatSession.DoesNotExist:
+#         return JsonResponse({'error': '채팅 세션을 찾을 수 없습니다.'}, status=404)
+#     except Exception as e:
+#         logger.exception("Error marking messages as read")
+#         return JsonResponse({'error': str(e)}, status=500)
 
-            if not text:
-                return JsonResponse({'error': 'Message text is required.'}, status=400)
+# @login_required
+# def delete_session(request, session_id):
+#     """채팅 세션 삭제"""
+#     try:
+#         session = ChatSession.objects.get(id=session_id, user=request.user)
+#         session.delete()
+#         return JsonResponse({'status': 'success'})
+#     except ChatSession.DoesNotExist:
+#         return JsonResponse({'error': '채팅 세션을 찾을 수 없습니다.'}, status=404)
+#     except Exception as e:
+#         logger.exception("Error deleting chat session")
+#         return JsonResponse({'error': str(e)}, status=500)
 
-            # 기존 세션 가져오기 또는 새 세션 생성
-            session, created = ChatSession.objects.get_or_create(id=session_id, user=request.user)
 
-            # 메시지 저장
-            message = ChatMessage.objects.create(
-                session=session,
-                sender=sender,
-                text=text
-            )
+# @require_http_methods(["POST"])
+# def save_chat_history(request):
+#     if request.user.is_authenticated:
+#         new_message = json.loads(request.body)
+#         ChatHistory.objects.create(
+#             user=request.user,
+#             sender=new_message['sender'],
+#             text=new_message['text']
+#         )
+#         return JsonResponse({'status': 'success'})
+#     return JsonResponse({'error': 'User not authenticated'}, status=401)
 
-            return JsonResponse({'status': 'success', 'message_id': message.id, 'session_id': session.id})
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-
-@require_http_methods(["GET"])
-@login_required
-def load_chat_sessions(request):
-    try:
-        sessions = ChatSession.objects.filter(user=request.user).order_by('-created_at')
-        session_data = [
-            {'id': session.id, 'created_at': session.created_at} for session in sessions
-        ]
-        return JsonResponse({'sessions': session_data})
-    except Exception as e:
-        logger.exception("Error loading chat sessions")
-        return JsonResponse({'error': 'An unexpected error occurred.'}, status=500)
-
-@require_http_methods(["GET"])
-@login_required
-def load_chat_messages(request, session_id):
-    try:
-        session = ChatSession.objects.get(id=session_id, user=request.user)
-        messages = session.messages.order_by('timestamp')
-        message_data = [
-            {'sender': message.sender, 'text': message.text, 'timestamp': message.timestamp} for message in messages
-        ]
-        return JsonResponse({'messages': message_data})
-    except ChatSession.DoesNotExist:
-        return JsonResponse({'error': 'Session not found.'}, status=404)
-    except Exception as e:
-        logger.exception("Error loading chat messages")
-        return JsonResponse({'error': 'An unexpected error occurred.'}, status=500)
 
 
 @sync_and_async_middleware
